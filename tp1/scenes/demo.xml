@@ -36,31 +36,24 @@
     </materials>
 
     <transformations>
-        <transformation id="y90rot">
-            <rotate axis="y" angle="-90" />
-        </transformation>
-    </transformations>
-    <transformations>
+      <transformation id="y90rot">
+        <rotate axis="y" angle="-90" />
+      </transformation>
       <transformation id="x90rot">
         <rotate axis="x" angle="90" />
       </transformation>
     </transformations>
 
     <primitives>
-        <primitive id="backWall">
-            <rectangle x1="0" y1="0" x2="20" y2="10" />
-        </primitive>
-    </primitives>  
-     <primitives>
-       <primitive id="sideWall">
-           <rectangle x1="0" y1="0" x2="10" y2="10" />
-       </primitive>
-    </primitives>
-
-  <primitives>
-    <primitive id="floor">
-      <rectangle x1="20" y1="10" x2="0" y2="0" />
-    </primitive>
+      <primitive id="backWall">
+        <rectangle x1="0" y1="0" x2="20" y2="10" />
+      </primitive>
+      <primitive id="sideWall">
+        <rectangle x1="0" y1="0" x2="10" y2="10" />
+      </primitive>
+      <primitive id="floor">
+        <rectangle x1="0" y1="0" x2="20" y2="10" />
+      </primitive>
   </primitives>
 
     <components>
