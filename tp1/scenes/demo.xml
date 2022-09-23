@@ -9,7 +9,7 @@
     </views>
 
     <ambient>
-        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+        <ambient r="0.1" g="0.1" b="0.15" a="1.0" />
         <background r="0.0" g="0.0" b="0.0" a="1.0" />
     </ambient>
 
@@ -48,6 +48,12 @@
             <rectangle x1="0" y1="0" x2="20" y2="10" />
         </primitive>
     </primitives>
+  
+      <primitives>
+        <primitive id="otherRect">
+            <rectangle x1="-10" y1="-5" x2="0" y2="0" />
+        </primitive>
+    </primitives>
 
     <components>
         <component id="demoRoot">
@@ -61,6 +67,7 @@
             <texture id="demoTexture"/>
             <children>
                 <primitiveref id="demoRectangle" />
+                <primitiveref id="otherRect" />
             </children>
         </component>
     </components>
