@@ -230,8 +230,95 @@ export class MySceneGraph {
      * @param {view block element} viewsNode
      */
     parseView(viewsNode) {
-        this.onXMLMinorError("To do: Parse views and create cameras.");
+        //this.onXMLMinorError("To do: Parse views and create cameras.");
+        this.onXMLMinorError("To do: Confirm views and cameras work");
 
+        var children = viewsNode.children;
+
+        this.cameras = [];
+        var hasCamera = false;
+
+        for(var i = 0; i < children.length; i++) {
+            var global = [];
+            var attributeNames = [];
+            //Check type of cam
+            if (children[i].nodeName != "perspective" && children[i].nodeName != "ortho") {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+            else {
+                attributeNames.push(...["from", "to"]);
+            }
+
+            // Get id of the current cam.
+            var camId = this.reader.getString(children[i], 'id');
+            if (camId == null)
+                return "no ID defined for view";
+
+            // Checks for repeated IDs.
+            if (this.cameras[camId] != null)
+                return "ID must be unique for each view (conflict: ID = " + camId + ")";
+
+            // Specifications for the current view.
+            var upIndex;
+            var reqs = ["near", "far"];
+            if(children[i].nodeName == "perspective")
+                reqs.push("angle");
+            else if(children[i].nodeName == "ortho") {
+                reqs.push(...["left", "right", "top", "bottom"]);
+            }
+
+            for(var k = 0; k < reqs.length; k++) {
+                var req = this.reader.getFloat(children[i], reqs[k])
+                if(req == null)
+                    return "no " + reqs[k] + " defined for view " + camId;  
+                global.push(req);
+            }
+
+            //children checks (from, to and opt up)
+            var grandChildren = children[i].children;
+            var nodeNames = [];
+            for (var j = 0; j < grandChildren.length; j++) {
+                nodeNames.push(grandChildren[j].nodeName);
+            }
+
+            for (var j = 0; j < attributeNames.length; j++) {
+                var attributeIndex = nodeNames.indexOf(attributeNames[j]);
+
+                if (attributeIndex != -1) {
+                    var aux = this.parseCoordinates3D(grandChildren[attributeIndex], "view position for ID " + camId);
+
+                    if (!Array.isArray(aux))
+                        return aux;
+
+                    global.push(aux);
+                }
+                else
+                    return "view " + attributeNames[i] + " undefined for ID = " + camId;
+            }
+
+            if(children[i].nodeName == "ortho") {
+                var upIndex = nodeNames.indexOf("up");
+
+                if (upIndex != -1) {
+                    var aux = this.parseCoordinates3D(grandChildren[upIndex], "view position for ID " + camId);
+
+                    if (!Array.isArray(aux))
+                        return aux;
+
+                    global.push(aux);
+                } else {
+                    global.push(...[0,1,0]);
+                }
+            }
+            this.cameras[camId] = global;
+            hasCamera = true;
+        }
+
+        if(!hasCamera)
+            return "Atleast one view must be defined";
+
+        this.log("Parsed views");
         return null;
     }
 
