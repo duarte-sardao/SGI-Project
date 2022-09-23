@@ -36,39 +36,76 @@
     </materials>
 
     <transformations>
-        <transformation id="demoTransform">
-            <scale x="5" y="1" z="5" />
-            <rotate axis="x" angle="-45" />
-            <rotate axis="z" angle="-45" />
+        <transformation id="y90rot">
+            <rotate axis="y" angle="-90" />
         </transformation>
+    </transformations>
+    <transformations>
+      <transformation id="x90rot">
+        <rotate axis="x" angle="90" />
+      </transformation>
     </transformations>
 
     <primitives>
-        <primitive id="demoRectangle">
+        <primitive id="backWall">
             <rectangle x1="0" y1="0" x2="20" y2="10" />
         </primitive>
-    </primitives>
-  
-      <primitives>
-        <primitive id="otherRect">
-            <rectangle x1="-10" y1="-5" x2="0" y2="0" />
-        </primitive>
+    </primitives>  
+     <primitives>
+       <primitive id="sideWall">
+           <rectangle x1="0" y1="0" x2="10" y2="10" />
+       </primitive>
     </primitives>
 
+  <primitives>
+    <primitive id="floor">
+      <rectangle x1="20" y1="10" x2="0" y2="0" />
+    </primitive>
+  </primitives>
+
     <components>
-        <component id="demoRoot">
-            <transformation>
-                <translate x="0" y="0" z="1" />
-                <scale x="2" y="1" z="1" />
-            </transformation>
+      
+        <component id="sceneRoot">
             <materials>
                 <material id="demoMaterial" />
             </materials>
-            <texture id="demoTexture"/>
+          <texture id="demoTexture" length_s="1" length_t="1" />
             <children>
-                <primitiveref id="demoRectangle" />
-                <primitiveref id="otherRect" />
+              <componentref id="walls" />
             </children>
         </component>
+      
+      <component id="walls">
+        <material id="inherit" />
+        <texture id="inherit" />
+        <children>
+          <primitiveref id="backWall" />
+          <componentref id="sideWallTrans" />
+          <componentref id="floorTrans" />
+        </children>
+      </component>
+
+      <component id="sideWallTrans">
+        <material id="inherit" />
+        <texture id="inherit" />
+        <transformation>
+          <transformationref id="y90rot" />
+        </transformation>
+        <children>
+          <primitiveref id="sideWall" />
+        </children>
+      </component>
+
+      <component id="floorTrans">
+        <material id="inherit" />
+        <texture id="inherit" />
+        <transformation>
+          <transformationref id="x90rot" />
+        </transformation>
+        <children>
+          <primitiveref id="floor" />
+        </children>
+      </component>
+      
     </components>
 </sxs>
