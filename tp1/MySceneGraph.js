@@ -1,5 +1,6 @@
 import { CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
+import { MyTriangle } from './MyTriangle';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -684,6 +685,8 @@ export class MySceneGraph {
         // Any number of primitives.
         for (var i = 0; i < children.length; i++) {
 
+            var prim;
+
             if (children[i].nodeName != "primitive") {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
                 continue;
@@ -733,13 +736,54 @@ export class MySceneGraph {
                 if (!(y2 != null && !isNaN(y2) && y2 > y1))
                     return "unable to parse y2 of the primitive coordinates for ID = " + primitiveId;
 
-                var rect = new MyRectangle(this.scene, primitiveId, x1, x2, y1, y2);
+                prim = new MyRectangle(this.scene, primitiveId, x1, x2, y1, y2);
 
-                this.primitives[primitiveId] = rect;
+            } else if(primitiveType == "triangle") {
+                var coords = ["x1", "y1", "z1", "x2", "y2", "z2", "x3", "y3", "z3"]
+                var l = [];
+
+                for(var i = 0; i < coords.length; i++) {
+                    var val = this.reader.getFloat(grandChildren[0], coords[i]);
+                    if (!(val != null && !isNaN(val)))
+                        return "unable to parse " +coords[i] +" of the primitive coordinates for ID = " + primitiveId;
+                    l.push(val);
+                }
+
+                prim = new MyTriangle(this.scene, primitiveId, l[0], l[1], l[2], l[3], l[4], l[5], l[6], l[7], l[8]);
+
+            } else if(primitiveType == "cylinder"){
+                // base
+                var base = this.reader.getFloat(grandChildren[0], 'base');
+                if (!(base != null && !isNaN(base)))
+                    return "unable to parse base of the primitive coordinates for ID = " + primitiveId;
+
+                // top
+                var top = this.reader.getFloat(grandChildren[0], 'top');
+                if (!(top != null && !isNaN(top)))
+                    return "unable to parse top of the primitive coordinates for ID = " + primitiveId;
+
+                // height
+                var height = this.reader.getFloat(grandChildren[0], 'height');
+                if (!(height != null && !isNaN(height) && height > 0))
+                    return "unable to parse height of the primitive coordinates for ID = " + primitiveId;
+
+                // slices
+                var slices = this.reader.getInteger(grandChildren[0], 'slices');
+                if (!(slices != null && !isNaN(slices) && slices >= 3))
+                    return "unable to parse slices of the primitive coordinates for ID = " + primitiveId;
+
+                // stacks
+                var stacks = this.reader.getInteger(grandChildren[0], 'stacks');
+                if (!(stacks != null && !isNaN(stacks) && stacks > 0))
+                    return "unable to parse stacks of the primitive coordinates for ID = " + primitiveId;
+
+                prim = new MyCylinder(this.scene, primitiveId, base, top, height, slices, stacks);
             }
             else {
                 console.warn("To do: Parse other primitives.");
             }
+
+            this.primitives[primitiveId] = prim;
         }
 
         this.log("Parsed primitives");
