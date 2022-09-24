@@ -483,7 +483,40 @@ export class MySceneGraph {
     parseTextures(texturesNode) {
 
         //For each texture in textures block, check ID and file URL
-        this.onXMLMinorError("To do: Parse textures.");
+        //this.onXMLMinorError("To do: Parse textures.");
+        this.onXMLMinorError("To do: Confirm textures parse.");
+
+        var children = texturesNode.children;
+
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "texture") {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            // Get id of the current material.
+            var textureID = this.reader.getString(children[i], 'id');
+            if (textureID == null)
+                return "no ID defined for texture";
+
+            // Checks for repeated IDs.
+            if (this.textures[textureID] != null)
+                return "ID must be unique for each texture (conflict: ID = " + textureID + ")";
+
+            var textureLink = this.reader.getString(children[i], "file");
+            var file = new File(textureLink);
+            if(!file.exists()) {
+                this.onXMLMinorError("file doesn't exist " + textureLink);
+            } else {
+                var ext = filename.split('.').pop();
+                if(ext != "jpg" && ext != "png")
+                    this.onXMLMinorError("wrong filetype " + ext)
+                else
+                    this.textures[textureID] = file;
+            }
+        }
+
+        this.log("Parsed textures");
         return null;
     }
 
@@ -497,10 +530,13 @@ export class MySceneGraph {
         this.materials = [];
 
         var grandChildren = [];
+        var attributeNames = ["emission", "ambient", "diffuse", "specular"];
         var nodeNames = [];
 
         // Any number of materials.
         for (var i = 0; i < children.length; i++) {
+
+            var global = [];
 
             if (children[i].nodeName != "material") {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
@@ -514,13 +550,38 @@ export class MySceneGraph {
 
             // Checks for repeated IDs.
             if (this.materials[materialID] != null)
-                return "ID must be unique for each light (conflict: ID = " + materialID + ")";
+                return "ID must be unique for each material (conflict: ID = " + materialID + ")";
 
-            //Continue here
-            this.onXMLMinorError("To do: Parse materials.");
+            var shiny = this.reader.getFloat(children[i], 'shininess');
+            if (shiny == null)
+                return "no shininess defined for mat";
+            else
+                global.push(shiny);
+
+            
+            grandChildren = children[i].children;
+            for (var j = 0; j < grandChildren.length; j++) {
+                nodeNames.push(grandChildren[j].nodeName);
+            }
+            for(var j = 0; j < attributeNames.length; j++) {
+                var attributeIndex = nodeNames.indexOf(attributeNames[j]);
+
+                if (attributeIndex != -1) {
+                    var aux = this.parseColor(grandChildren[attributeIndex], attributeNames[j] + " for ID" + materialID);
+
+                    if (!Array.isArray(aux))
+                        return aux;
+
+                    global.push(aux);
+                } else {
+                    return attributeNames[j] + " undefined for mat " + materialID;
+                }
+            }
+            this.materials[materialID] = global;
         }
 
-        //this.log("Parsed materials");
+        this.onXMLMinorError("Verify material parsing");
+        this.log("Parsed materials");
         return null;
     }
 
@@ -567,17 +628,44 @@ export class MySceneGraph {
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
                         break;
                     case 'scale':                        
-                        this.onXMLMinorError("To do: Parse scale transformations.");
+                        var coordinates = this.parseCoordinates3D(grandChildren[j], "scale transformation for ID " + transformationID);
+                        if (!Array.isArray(coordinates))
+                            return coordinates;
+
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
                         break;
                     case 'rotate':
-                        // angle
-                        this.onXMLMinorError("To do: Parse rotate transformations.");
+                        var axis = this.reader.getString(grandChildren[j], 'axis');
+                        var axisVec = [];
+                        if (axis == null)
+                            return "no axis defined for rotation";
+                        
+                        switch(axis) {
+                            case 'x':
+                                axisVec = [1,0,0];
+                                break;
+                            case 'y':
+                                axisVec = [0,1,0];
+                                break;
+                            case 'z':
+                                axisVec = [0,0,1];
+                                break;
+                            default:
+                                return "wrong axis defined for rotaation";
+                        }
+
+                        var angle = this.reader.getFloat(grandChildren[j], 'angle');
+                        if (angle == null)
+                            return "no angle defined for rotation";
+
+                        transfMatrix = mat4.rotate(transfMatrix, transfMatrix, angle, axisVec);
                         break;
                 }
             }
             this.transformations[transformationID] = transfMatrix;
         }
 
+        this.onXMLMinorError("To do: verify transformations");
         this.log("Parsed transformations");
         return null;
     }
