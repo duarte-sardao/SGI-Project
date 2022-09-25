@@ -59,6 +59,9 @@
     <components>
       
         <component id="sceneRoot">
+          <transformation>
+            <translate x="0" y="0" z="0"/>
+          </transformation>
             <materials>
                 <material id="demoMaterial" />
             </materials>
@@ -69,8 +72,13 @@
         </component>
       
       <component id="walls">
-        <material id="inherit" />
-        <texture id="inherit" />
+        <transformation>
+          <translate x="0" y="0" z="0"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="backWall" />
           <componentref id="sideWallTrans" />
@@ -79,8 +87,10 @@
       </component>
 
       <component id="sideWallTrans">
-        <material id="inherit" />
-        <texture id="inherit" />
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
         <transformation>
           <transformationref id="y90rot" />
         </transformation>
@@ -90,8 +100,10 @@
       </component>
 
       <component id="floorTrans">
-        <material id="inherit" />
-        <texture id="inherit" />
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
         <transformation>
           <transformationref id="x90rot" />
         </transformation>
