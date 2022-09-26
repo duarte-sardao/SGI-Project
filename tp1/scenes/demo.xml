@@ -37,10 +37,13 @@
 
     <transformations>
       <transformation id="y90rot">
-        <rotate axis="y" angle="-90" />
+        <rotate axis="y" angle="90" />
       </transformation>
       <transformation id="x90rot">
-        <rotate axis="x" angle="90" />
+        <rotate axis="x" angle="-90" />
+      </transformation>
+      <transformation id="invert">
+        <scale x="-1" y="-1" z="-1" />
       </transformation>
     </transformations>
 
@@ -92,6 +95,7 @@
         </materials>
         <texture id="inherit" length_s="1" length_t="1"/>
         <transformation>
+          <translate x="0" y="0" z="10" />
           <transformationref id="y90rot" />
         </transformation>
         <children>
@@ -105,7 +109,8 @@
         </materials>
         <texture id="inherit" length_s="1" length_t="1"/>
         <transformation>
-          <transformationref id="x90rot" />
+          <translate x="0" y="0" z="10" />
+          <transformationref id="x90rot"/>
         </transformation>
         <children>
           <primitiveref id="floor" />

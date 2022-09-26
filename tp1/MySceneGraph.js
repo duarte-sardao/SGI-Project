@@ -642,7 +642,7 @@ export class MySceneGraph {
                     if (angle == null)
                         return "no angle defined for rotation";
 
-                    transfMatrix = mat4.rotate(transfMatrix, transfMatrix, angle, axisVec);
+                    transfMatrix = mat4.rotate(transfMatrix, transfMatrix, angle*DEGREE_TO_RAD, axisVec);
                     break;
                 case 'transformationref':
                     if(component) {
@@ -1115,8 +1115,33 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
+        this.displayNode(this.root);
 
         //To test the parsing/creation of the primitives, call the display function directly
         //this.primitives['demoRectangle'].display();
     }
+
+    /**
+     * Explores component graph to display
+     * @param {*} id
+     */
+    displayNode(id) {
+    var component = this.components[id];
+    var children = component['children'];
+    var primitives = component['primitives'];
+    var transfMatrix = component['transformation'];
+    this.scene.pushMatrix();
+    this.scene.multMatrix(transfMatrix);
+
+    for(var i = 0; i < primitives.length; i++) {
+        primitives[i].display();
+    }
+
+    for(var i = 0; i < children.length; i++) {
+        this.displayNode(children[i]);
+    }
+
+    this.scene.popMatrix();
+    return null;
+}
 }
