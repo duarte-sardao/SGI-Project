@@ -3,19 +3,19 @@ import {CGFobject} from '../lib/CGF.js';
 * MyCylinder
 * @constructor
  * @param scene - Reference to MyScene object
- * @param baseRadius - Radius at base
- * @param topRadius - Radius at the top
- * @param slices - Number of slices in rotation
+ * @param complexity - Object complexity (number of faces)
  * @param height - Height
  * @param textRepeat - Amount of repetitions of texture on y scale
 */
 export class MyCylinder extends CGFobject {
-    constructor(scene, baseRadius, topRadius, slices, height) {
+    constructor(scene, id, base, top, height, slices, stacks) {
         super(scene);
-        this.baseRadius = baseRadius;
-        this.topRadius = topRadius;
-        this.slices = slices;
+        this.id = id;
+        this.base = base;
+        this.top = top;
         this.height = height;
+        this.slices = slices;
+        this.stacks = stacks;
         this.initBuffers();
     }
     initBuffers() {
@@ -29,88 +29,102 @@ export class MyCylinder extends CGFobject {
 
         var xPos = 0.0;
 
-        for(var i = 0; i < this.slices; i++){
-            // All vertices have to be declared for a given face
-            // even if they are shared with others, as the normals 
-            // in each face will be different
+        var org = this.base;
+        var radstep = (this.top - this.base) / this.stacks;
+        var end = org + radstep;
+        var curheight = 0;
+        var heightstep = this.height / this.stacks;
+        var nextheight = heightstep;
+        var accslices = 0;
 
-            var sa=Math.sin(ang);
-            var saa=Math.sin(ang+alphaAng);
-            var ca=Math.cos(ang);
-            var caa=Math.cos(ang+alphaAng);
+        for(var j = 0; j < this.stacks; j++) { //basically make a bunch of stacked cylinders
 
-            this.vertices.push(this.baseRadius*ca, this.baseRadius*sa, 0);
-            this.vertices.push(this.baseRadius*caa, this.baseRadius*saa, 0);
-            this.vertices.push(this.baseRadius*caa, this.baseRadius*saa, this.height);
-            this.vertices.push(this.baseRadius*ca, this.baseRadius*sa, 0);
+            for(var i = 0; i < this.slices; i++){
+                // All vertices have to be declared for a given face
+                // even if they are shared with others, as the normals 
+                // in each face will be different
 
-            /**this.vertices.push(ca, 0, -sa);
-            this.vertices.push(caa, 0, -saa);
-            this.vertices.push(ca, this.height, -sa);
-            this.vertices.push(caa, this.height, -saa);
-            this.vertices.push(ca, 0, -sa);
-            this.vertices.push(caa, 0, -saa);
-            this.vertices.push(ca, this.height, -sa);
-            this.vertices.push(caa, this.height, -saa);*/
+                var sa=Math.sin(ang)*org;
+                var saa=Math.sin(ang+alphaAng)*org;
+                var ca=Math.cos(ang)*org;
+                var caa=Math.cos(ang+alphaAng)*org;
 
-            /**
-            this.texCoords.push(xPos,this.texrep);
-            this.texCoords.push(xPos + (1/this.slices) ,this.texrep);
-            this.texCoords.push(xPos,0);
-            this.texCoords.push(xPos + (1/this.slices),0);
-            this.texCoords.push(0,0);
-            this.texCoords.push(0,0);
-            this.texCoords.push(0,0);
-            this.texCoords.push(0,0);
-            */
+                var esa=Math.sin(ang)*end;
+                var esaa=Math.sin(ang+alphaAng)*end;
+                var eca=Math.cos(ang)*end;
+                var ecaa=Math.cos(ang+alphaAng)*end;
+
+                this.vertices.push(ca, -sa, curheight);
+                this.vertices.push(caa, -saa, curheight);
+                this.vertices.push(eca, -esa, nextheight);
+                this.vertices.push(ecaa, -esaa, nextheight);
+                this.vertices.push(ca, -sa, curheight);
+                this.vertices.push(caa, -saa, curheight);
+                this.vertices.push(eca, -esa, nextheight);
+                this.vertices.push(ecaa, -esaa, nextheight);
+
+                
+                this.texCoords.push(xPos,1.0);
+                this.texCoords.push(xPos + (1/this.slices) ,1.0);
+                this.texCoords.push(xPos,0);
+                this.texCoords.push(xPos + (1/this.slices),0);
+                this.texCoords.push(0,0);
+                this.texCoords.push(0,0);
+                this.texCoords.push(0,0);
+                this.texCoords.push(0,0);
 
 
-            //VERIFY NORMALS
+                // triangle normal computed by cross product of two edges
+                var normalA= [
+                    ca,
+                    -sa,
+                    curheight
+                ];
 
-            // triangle normal computed by cross product of two edges
-            var normalA= [
-                ca,
-                0,
-                -sa
-            ];
+                var normalB = [
+                    caa,
+                    -saa,
+                    curheight
+                ];
 
-            var normalB = [
-                caa,
-                0,
-                -saa
-            ];
+                // normalization
+                var nsize=Math.sqrt(
+                    normalA[0]*normalA[0]+
+                    normalA[1]*normalA[1]+
+                    normalA[2]*normalA[2]
+                    );
+                normalA[0]/=nsize;
+                normalA[1]/=nsize;
+                normalA[2]/=nsize;
+                normalB[0]/=nsize; //size is radius so same for both
+                normalB[1]/=nsize;
+                normalB[2]/=nsize;
 
-            // normalization
-            var nsize=Math.sqrt(
-                normalA[0]*normalA[0]+
-                normalA[1]*normalA[1]+
-                normalA[2]*normalA[2]
-                );
-            normalA[0]/=nsize;
-            normalA[1]/=nsize;
-            normalA[2]/=nsize;
-            normalB[0]/=nsize; //size is radius so same for both
-            normalB[1]/=nsize;
-            normalB[2]/=nsize;
+                // push normal once for each vertex of this triangle
+                this.normals.push(...normalA);
+                this.normals.push(...normalB);
+                this.normals.push(...normalA);
+                this.normals.push(...normalB);
+                this.normals.push(...normalA);
+                this.normals.push(...normalB);
+                this.normals.push(...normalA);
+                this.normals.push(...normalB);
 
-            // push normal once for each vertex of this triangle
-            this.normals.push(...normalA);
-            this.normals.push(...normalB);
-            this.normals.push(...normalA);
-            this.normals.push(...normalB);
-            this.normals.push(...normalA);
-            this.normals.push(...normalB);
-            this.normals.push(...normalA);
-            this.normals.push(...normalB);
+                this.indices.push(accslices+8*i, (accslices+8*i+1) , (accslices+8*i+2) );
+                this.indices.push((accslices+8*i+3), (accslices+8*i+2), (accslices+8*i+1) );
+                this.indices.push((accslices+8*i+2+4), (accslices+8*i+1+4), accslices+8*i+4);
+                this.indices.push((accslices+8*i+1+4), (accslices+8*i+2+4), (accslices+8*i+3+4));
+                
+                
+                ang+=alphaAng;
+                xPos += 1/this.slices;
+            }
 
-            this.indices.push(8*i, (8*i+1) , (8*i+2) );
-            this.indices.push((8*i+3), (8*i+2), (8*i+1) );
-            this.indices.push((8*i+2+4), (8*i+1+4), 8*i+4);
-            this.indices.push((8*i+1+4), (8*i+2+4), (8*i+3+4));
-            
-            
-            ang+=alphaAng;
-            xPos += 1/this.slices;
+            accslices += 8*this.slices;
+            org = end;
+            end += radstep;
+            curheight = nextheight;
+            nextheight += heightstep;
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;

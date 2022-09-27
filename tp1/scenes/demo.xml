@@ -60,6 +60,9 @@
       <primitive id="testtriangle">
         <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="0" />
       </primitive>
+      <primitive id="testcylinder">
+        <cylinder base="2" top="2" height="4" slices="20" stacks="20" />
+      </primitive>
   </primitives>
 
     <components>
@@ -88,6 +91,7 @@
         <children>
           <primitiveref id="backWall" />
           <primitiveref id="testtriangle" />
+          <primitiveref id="testcylinder" />
           <componentref id="sideWallTrans" />
           <componentref id="floorTrans" />
         </children>

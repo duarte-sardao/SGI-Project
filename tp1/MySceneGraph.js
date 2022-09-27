@@ -1,6 +1,7 @@
 import { CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
+import { MyCylinder } from "./MyCylinder.js";
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -766,8 +767,8 @@ export class MySceneGraph {
                 var coords = ["x1", "y1", "z1", "x2", "y2", "z2", "x3", "y3", "z3"]
                 var l = [];
 
-                for(var i = 0; i < coords.length; i++) {
-                    var val = this.reader.getFloat(grandChildren[0], coords[i]);
+                for(var j = 0; j < coords.length; j++) {
+                    var val = this.reader.getFloat(grandChildren[0], coords[j]);
                     if (!(val != null && !isNaN(val)))
                         return "unable to parse " +coords[i] +" of the primitive coordinates for ID = " + primitiveId;
                     l.push(val);
