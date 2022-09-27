@@ -57,12 +57,30 @@
       <primitive id="floor">
         <rectangle x1="0" y1="0" x2="20" y2="10" />
       </primitive>
-      <primitive id="testtriangle">
-        <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="0" />
+      <primitive id="topBench">
+        <rectangle x1="0" y1="0" x2="9" y2="2" />
       </primitive>
-      <primitive id="testcylinder">
-        <cylinder base="2" top="2" height="4" slices="20" stacks="20" />
+      <primitive id="bottomBench">
+        <rectangle x1="0" y1="0" x2="9" y2="2" />
       </primitive>
+      <primitive id="frontBench">
+        <rectangle x1="0" y1="0" x2="9" y2="2" />
+      </primitive>
+      <primitive id="backBench">
+        <rectangle x1="0" y1="0" x2="9" y2="2" />
+      </primitive>
+      <primitive id="leftBench">
+        <rectangle x1="0" y1="0" x2="2" y2="2" />
+      </primitive>
+      <primitive id="rightBench">
+        <rectangle x1="0" y1="0" x2="2" y2="2" />
+      </primitive>
+      <!-- <primitive id="testtriangle"> -->
+      <!-- <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="0" /> -->
+      <!-- </primitive> -->
+      <!-- <primitive id="testcylinder"> -->
+      <!--  <cylinder base="2" top="2" height="4" slices="20" stacks="20" /> -->
+      <!-- </primitive> -->
   </primitives>
 
     <components>
@@ -77,6 +95,7 @@
           <texture id="demoTexture" length_s="1" length_t="1" />
             <children>
               <componentref id="walls" />
+              <componentref id="bench" />
             </children>
         </component>
       
@@ -90,10 +109,28 @@
         <texture id="inherit" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="backWall" />
-          <primitiveref id="testtriangle" />
-          <primitiveref id="testcylinder" />
+          <!-- <primitiveref id="testtriangle" /> -->
+          <!-- <primitiveref id="testcylinder" /> -->
           <componentref id="sideWallTrans" />
           <componentref id="floorTrans" />
+        </children>
+      </component>
+
+      <component id="bench">
+        <transformation>
+          <translate x="0" y="0" z="0"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="topBenchTrans" />
+          <componentref id="bottomBenchTrans" />
+          <componentref id="frontBenchTrans" />
+          <componentref id="backBenchTrans" />
+          <componentref id="leftBenchTrans" />
+          <componentref id="rightBenchTrans" />
         </children>
       </component>
 
@@ -122,6 +159,88 @@
         </transformation>
         <children>
           <primitiveref id="floor" />
+        </children>
+      </component>
+
+      <component id="topBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="0" y="2" z="2" />
+          <transformationref id="x90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="topBench" />
+        </children>
+      </component>
+
+      <component id="bottomBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="0" y="0" z="2" />
+          <transformationref id="x90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="topBench" />
+        </children>
+      </component>
+
+      <component id="frontBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="0" y="0" z="2" />
+        </transformation>
+        <children>
+          <primitiveref id="frontBench" />
+        </children>
+      </component>
+
+      <component id="backBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <children>
+          <primitiveref id="frontBench" />
+        </children>
+      </component>
+
+      <component id="leftBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="0" y="0" z="2" />
+          <transformationref id="y90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="rightBench" />
+        </children>
+      </component>
+
+      <component id="rightBenchTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" length_s="1" length_t="1"/>
+        <transformation>
+          <translate x="9" y="0" z="2" />
+          <transformationref id="y90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="rightBench" />
         </children>
       </component>
       
