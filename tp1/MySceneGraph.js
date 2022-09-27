@@ -1,4 +1,4 @@
-import { CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
@@ -76,6 +76,8 @@ export class MySceneGraph {
      * @param {XML root element} rootElement
      */
     parseXMLFile(rootElement) {
+        this.matoffset = 0;
+
         if (rootElement.nodeName != "sxs")
             return "root tag <sxs> missing";
 
@@ -913,14 +915,12 @@ export class MySceneGraph {
                 var matid = this.reader.getString(node, "id");
                 if(matid == null)
                     return "no ID defined for material reference";
-                if(matid == "inherit") {
-                    mats.push(matid);
-                    continue;
+                if(matid != "inherit") {
+                    var mat = this.materials[matid];
+                    if(mat == null)
+                        return "unknown material " + matid;
                 }
-                var mat = this.materials[matid];
-                if(mat == null)
-                    return "unknown material " + matid;
-                mats.push(mat);
+                mats.push(matid);
             }
             if(mats.length == 0)
                 return "no materials defined for component " + componentID;
@@ -928,19 +928,20 @@ export class MySceneGraph {
             // Texture
             var textnode = grandChildren[textureIndex];
             var tid = this.reader.getString(textnode, "id");
-            var length_s = this.reader.getFloat(textnode, "length_s");
-            var length_t = this.reader.getFloat(textnode, "length_t");
-            if(tid == null || length_s == null || length_t == null)
-                return "wrong texture definition on component " + componentID;
-            var tex;
-            if(tid == "inherit" || tid == "none") {
-                tex = tid;
-            } else {
-                tex = this.textures[tid];
+            if(tid == null)
+                return "no id for texture on " + componentID;
+            if(tid != "inherit" && tid != "none") {
+                var tex = this.textures[tid];
                 if(tex == null)
                     return "unknown texture " + tid; 
+                var length_s = this.reader.getFloat(textnode, "length_s");
+                var length_t = this.reader.getFloat(textnode, "length_t");
+                if(length_s == null || length_t == null)
+                    return "no length defined for texture  on " + componentID;
+                component["texture"] = [tid, length_s, length_t];
+            } else {
+                component["texture"] = [tid];
             }
-            component["texture"] = [tex, length_s, length_t];
             // Children
             grandgrandChildren = grandChildren[childrenIndex].children;
             var primmies = [];
@@ -1116,7 +1117,8 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
-        this.displayNode(this.root);
+        this.matsUpdated = false;
+        this.displayNode(this.root, null, null);
 
         //To test the parsing/creation of the primitives, call the display function directly
         //this.primitives['demoRectangle'].display();
@@ -1126,20 +1128,59 @@ export class MySceneGraph {
      * Explores component graph to display
      * @param {*} id
      */
-    displayNode(id) {
+    displayNode(id, lastmat, lasttex) {
     var component = this.components[id];
     var children = component['children'];
     var primitives = component['primitives'];
     var transfMatrix = component['transformation'];
     this.scene.pushMatrix();
+    //transform
     this.scene.multMatrix(transfMatrix);
+    
+    //appearance (saved until mats are udpated by pressing m)
+    var appearance;
+    if(component['appearance'] == null || this.matsUpdated) {
+        //material
+        this.matsUpdated = false;
+        appearance = new CGFappearance(this.scene);
+        var matl = component['materials'].length;
+        var matid = component['materials'][this.matoffset % matl];
+        if(matid == "inherit")
+            matid = lastmat;
+        var mat = this.materials[matid];
+        //order stored is shini/emmision/diffuse/specular
+        appearance.setShininess(mat[0]);
+        appearance.setEmission(mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+        appearance.setAmbient(mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+        appearance.setDiffuse(mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+        appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
 
+        //textures
+        var tex = component['texture'];
+        if(tex[0] == "inherit")
+            tex = lasttex;
+        if(tex[0] != "none") {
+            appearance.loadTexture(this.textures[tex[0]]);
+            //length s and t??????????
+        } else {
+            appearance.loadTexture(null);
+        }
+        appearance.setTextureWrap('REPEAT', 'REPEAT');
+
+        component['appearance'] = appearance;
+    } else {
+        appearance = component['appearance'];
+    }
+    appearance.apply();
+
+    //draw
     for(var i = 0; i < primitives.length; i++) {
         primitives[i].display();
     }
 
+    //keep exploring
     for(var i = 0; i < children.length; i++) {
-        this.displayNode(children[i]);
+        this.displayNode(children[i], matid, tex);
     }
 
     this.scene.popMatrix();

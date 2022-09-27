@@ -24,14 +24,21 @@
 
     <textures>
         <texture id="demoTexture" file="scenes/images/vidral.jpg" />
+        <texture id="otherTexture" file="scenes/images/trunk-image.jpg" />
     </textures>
 
     <materials>
         <material id="demoMaterial" shininess="10">
             <emission r="0.0" g="0.0" b="0.0" a="1.0" />
-            <ambient r="1.0" g="0.0" b="0.0" a="1.0" />
-            <diffuse r="0.6" g="0.0" b="0.0" a="1.0" />
-            <specular r="0.6" g="0.0" b="0.0" a="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <diffuse r="0.5" g="0.0" b="0.0" a="1.0" />
+            <specular r="0.5" g="0.0" b="0.0" a="1.0" />
+        </material>
+        <material id="otherMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
         </material>
     </materials>
 
@@ -87,7 +94,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <primitiveref id="backWall" />
           <primitiveref id="testtriangle" />
@@ -99,9 +106,9 @@
 
       <component id="sideWallTrans">
         <materials>
-            <material id="inherit" />
+            <material id="otherMaterial" />
         </materials>
-        <texture id="inherit" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <transformation>
           <translate x="0" y="0" z="10" />
           <transformationref id="y90rot" />
@@ -113,9 +120,9 @@
 
       <component id="floorTrans">
         <materials>
-            <material id="inherit" />
+            <material id="otherMaterial" />
         </materials>
-        <texture id="inherit" length_s="1" length_t="1"/>
+        <texture id="otherTexture" length_s="1" length_t="1"/>
         <transformation>
           <translate x="0" y="0" z="10" />
           <transformationref id="x90rot"/>
