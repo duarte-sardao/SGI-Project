@@ -1,4 +1,5 @@
 import { CGFobject } from '../lib/CGF.js';
+import { Helper } from './HelperFunctions.js';
 /**
  * MyRectangle
  * @constructor
@@ -18,6 +19,7 @@ export class MyTriangle extends CGFobject {
 		this.x3 = x3;
 		this.y3 = y3;
 		this.z3 = z3;
+		this.help = new Helper();
 
 		this.initBuffers();
 	}
@@ -35,40 +37,38 @@ export class MyTriangle extends CGFobject {
 		];
 
 		//normals
-		var vec1 = [this.x2-this.x1, this.y2-this.y1, this.z2-this.z1];
-		var vec2 = [this.x3-this.x1, this.y3-this.y1, this.z3-this.z1];
-		var cp = [vec1[1]*vec2[2] - vec1[2]*vec2[1], vec1[2]*vec2[0] - vec1[0]*vec2[2], vec1[0]*vec2[1] - vec1[1]*vec2[0]];
-		var nsize = Math.sqrt(
-			cp[0]*cp[0]+
-			cp[1]*cp[1]+
-			cp[2]*cp[2]
-			);
-		cp[0]/=nsize;
-		cp[1]/=nsize;
-		cp[2]/=nsize;
+		var cp = this.help.crossProduct([this.x1, this.y1, this.z1],[this.x2, this.y2, this.z2],[this.x3, this.y3, this.z3])
 
 		this.normals = [];
 		this.normals.push(...cp);
 		this.normals.push(...cp);
 		this.normals.push(...cp);
-		
-		/*
-		Texture coords (s,t)
-		+----------> s
-        |
-        |
-		|
-		v
-        t
-        */
+	
 
-		this.texCoords = [ //definir!
-			0, 1,
-			1, 1,
-			0, 0
+		var a = this.dist(0, 1);
+		var b = this.dist(1, 2);
+		var c = this.dist(0, 2);
+		var cosalpha = (Math.pow(a, 2) - Math.pow(b,2) + Math.pow(c, 2)) / (2*a*c);
+		var sinalpha = Math.sqrt(1-Math.pow(cosalpha, 2));
+
+		this.texCoords = [ //??
+			0, 0,
+			a, 0,
+			c*cosalpha, c*sinalpha
 		]
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
+	}
+
+	dist(c1, c2) {
+
+		c1 *= 3;
+		c2 *= 3;
+		return Math.sqrt(
+			Math.pow(this.vertices[0+c2] - this.vertices[0+c1], 2) + 
+			Math.pow(this.vertices[1+c2] - this.vertices[1+c1], 2) + 
+			Math.pow(this.vertices[2+c2] - this.vertices[2+c1], 2)
+		);
 	}
 
 	/**

@@ -1162,8 +1162,6 @@ export class MySceneGraph {
         if(tex[0] != "none") {
             appearance.loadTexture(this.textures[tex[0]]);
             //length s and t??????????
-        } else {
-            appearance.loadTexture(null);
         }
         appearance.setTextureWrap('REPEAT', 'REPEAT');
 
