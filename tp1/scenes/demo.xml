@@ -70,6 +70,9 @@
       <primitive id="testcylinder">
         <cylinder base="2" top="2" height="4" slices="20" stacks="20" />
       </primitive>
+      <primitive id="otherCylinder">
+        <cylinder base="1" top="1" height="6" slices="4" stacks="2" />
+      </primitive>
   </primitives>
 
     <components>
@@ -84,6 +87,7 @@
           <texture id="demoTexture" length_s="1" length_t="1" />
             <children>
               <componentref id="walls" />
+              <componentref id="cyl" />
             </children>
         </component>
       
@@ -131,6 +135,18 @@
           <primitiveref id="floor" />
         </children>
       </component>
-      
+
+      <component id="cyl">
+        <materials>
+          <material id="inherit" />
+        </materials>
+        <texture id="none" />
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <children>
+          <primitiveref id="otherCylinder" />
+        </children>
+      </component>
     </components>
 </sxs>

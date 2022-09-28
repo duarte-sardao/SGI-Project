@@ -34,12 +34,23 @@ export class MyTriangle extends CGFobject {
 			0, 1, 2
 		];
 
-		//Facing Z positive
-		this.normals = [
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1
-		];
+		//normals
+		var vec1 = [this.x2-this.x1, this.y2-this.y1, this.z2-this.z1];
+		var vec2 = [this.x3-this.x1, this.y3-this.y1, this.z3-this.z1];
+		var cp = [vec1[1]*vec2[2] - vec1[2]*vec2[1], vec1[2]*vec2[0] - vec1[0]*vec2[2], vec1[0]*vec2[1] - vec1[1]*vec2[0]];
+		var nsize = Math.sqrt(
+			cp[0]*cp[0]+
+			cp[1]*cp[1]+
+			cp[2]*cp[2]
+			);
+		cp[0]/=nsize;
+		cp[1]/=nsize;
+		cp[2]/=nsize;
+
+		this.normals = [];
+		this.normals.push(...cp);
+		this.normals.push(...cp);
+		this.normals.push(...cp);
 		
 		/*
 		Texture coords (s,t)
