@@ -51,10 +51,13 @@ export class MyTriangle extends CGFobject {
 		var cosalpha = (Math.pow(a, 2) - Math.pow(b,2) + Math.pow(c, 2)) / (2*a*c);
 		var sinalpha = Math.sqrt(1-Math.pow(cosalpha, 2));
 
+		var length_u = Math.max(this.x1, this.x2, this.x3) - Math.min(this.x1, this.x2, this.x3);
+		var length_v = Math.max(this.y1, this.y2, this.y3) - Math.min(this.y1, this.y2, this.y3);
+
 		this.texCoords = [ //??
 			0, 0,
-			a, 0,
-			c*cosalpha, c*sinalpha
+			a/length_u, 0,
+			c*cosalpha/length_u, c*sinalpha/length_v
 		]
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
