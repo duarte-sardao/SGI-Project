@@ -1,5 +1,9 @@
-export class Helper {
-    constructor() {}
+import { CGFobject } from '../lib/CGF.js';
+
+export class MyPrimitive extends CGFobject{
+    constructor(scene) {
+        super(scene);
+    }
     
     crossProduct(vert1, vert2, vert3) {
         var vec1 = [vert2[0]-vert1[0], vert2[1]-vert1[1], vert2[2]-vert1[2]];
@@ -15,4 +19,13 @@ export class Helper {
         cp[2]/=nsize;
         return cp;
     }
+
+    setLength(s, t) {
+        this.texCoords = [];
+		for(var i = 0; i < this.baseTexCoords.length; i+=2) {
+            this.texCoords.push(this.baseTexCoords[i] * s);
+            this.texCoords.push(this.baseTexCoords[i+1] * t);
+        }
+        this.updateTexCoordsGLBuffers();
+	}
 }

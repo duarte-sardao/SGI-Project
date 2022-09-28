@@ -1161,7 +1161,8 @@ export class MySceneGraph {
             tex = lasttex;
         if(tex[0] != "none") {
             appearance.loadTexture(this.textures[tex[0]]);
-            //length s and t??????????
+            var length_s = tex[1];
+            var length_t = tex[2];
         }
         appearance.setTextureWrap('REPEAT', 'REPEAT');
 
@@ -1173,7 +1174,9 @@ export class MySceneGraph {
 
     //draw
     for(var i = 0; i < primitives.length; i++) {
-        primitives[i].enableNormalViz();
+        //primitives[i].enableNormalViz();
+        if(length_s != null && length_t != null)
+            primitives[i].setLength(length_s, length_t);
         primitives[i].display();
     }
 

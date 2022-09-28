@@ -112,7 +112,7 @@
         <materials>
             <material id="otherMaterial" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="demoTexture" length_s="1" length_t="5"/>
         <transformation>
           <translate x="0" y="0" z="10" />
           <transformationref id="y90rot" />
@@ -140,7 +140,7 @@
         <materials>
           <material id="inherit" />
         </materials>
-        <texture id="none" />
+        <texture id="demoTexture" length_s="4" length_t="5" />
         <transformation>
           <translate x="4" y="0" z="0" />
         </transformation>

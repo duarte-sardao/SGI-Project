@@ -1,5 +1,4 @@
-import { CGFobject } from '../lib/CGF.js';
-import { Helper } from './HelperFunctions.js';
+import {MyPrimitive} from './MyPrimitive.js'
 /**
  * MyRectangle
  * @constructor
@@ -7,7 +6,7 @@ import { Helper } from './HelperFunctions.js';
  * @param x - Scale of rectangle in X
  * @param y - Scale of rectangle in Y
  */
-export class MyTriangle extends CGFobject {
+export class MyTriangle extends MyPrimitive {
 	constructor(scene, id, x1, y1, z1, x2, y2, z2, x3, y3, z3) {
 		super(scene);
 		this.x1 = x1;
@@ -19,7 +18,6 @@ export class MyTriangle extends CGFobject {
 		this.x3 = x3;
 		this.y3 = y3;
 		this.z3 = z3;
-		this.help = new Helper();
 
 		this.initBuffers();
 	}
@@ -37,7 +35,7 @@ export class MyTriangle extends CGFobject {
 		];
 
 		//normals
-		var cp = this.help.crossProduct([this.x1, this.y1, this.z1],[this.x2, this.y2, this.z2],[this.x3, this.y3, this.z3])
+		var cp = this.crossProduct([this.x1, this.y1, this.z1],[this.x2, this.y2, this.z2],[this.x3, this.y3, this.z3])
 
 		this.normals = [];
 		this.normals.push(...cp);
@@ -54,7 +52,7 @@ export class MyTriangle extends CGFobject {
 		var length_u = Math.max(this.x1, this.x2, this.x3) - Math.min(this.x1, this.x2, this.x3);
 		var length_v = Math.max(this.y1, this.y2, this.y3) - Math.min(this.y1, this.y2, this.y3);
 
-		this.texCoords = [ //??
+		this.baseTexCoords = [ //??
 			0, 0,
 			a/length_u, 0,
 			c*cosalpha/length_u, c*sinalpha/length_v
@@ -72,16 +70,6 @@ export class MyTriangle extends CGFobject {
 			Math.pow(this.vertices[1+c2] - this.vertices[1+c1], 2) + 
 			Math.pow(this.vertices[2+c2] - this.vertices[2+c1], 2)
 		);
-	}
-
-	/**
-	 * @method updateTexCoords
-	 * Updates the list of texture coordinates of the rectangle
-	 * @param {Array} coords - Array of texture coordinates
-	 */
-	updateTexCoords(coords) {
-		this.texCoords = [...coords];
-		this.updateTexCoordsGLBuffers();
 	}
 }
 

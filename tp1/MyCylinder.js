@@ -1,5 +1,4 @@
-import {CGFobject} from '../lib/CGF.js';
-import {Helper} from './HelperFunctions.js'
+import { MyPrimitive } from './MyPrimitive.js';
 /**
 * MyCylinder
 * @constructor
@@ -11,7 +10,7 @@ import {Helper} from './HelperFunctions.js'
  * @param slices - divisions along radius
  * @param stacks - divisions along z axis
 */
-export class MyCylinder extends CGFobject {
+export class MyCylinder extends MyPrimitive {
     constructor(scene, id, base, top, height, slices, stacks) {
         super(scene);
         this.id = id;
@@ -20,14 +19,13 @@ export class MyCylinder extends CGFobject {
         this.height = height;
         this.slices = slices;
         this.stacks = stacks;
-        this.help = new Helper();
         this.initBuffers();
     }
     initBuffers() {
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        this.texCoords = [];
+        this.baseTexCoords = [];
 
         var ang = 0;
         var alphaAng = 2*Math.PI/this.slices;
@@ -74,7 +72,7 @@ export class MyCylinder extends CGFobject {
                 this.vertices.push(...vert3);
                 this.vertices.push(...vert4);
 
-                var cp = this.help.crossProduct(vert1, vert2, vert3);
+                var cp = this.crossProduct(vert1, vert2, vert3);
                 this.normals.push(...cp);
                 this.normals.push(...cp);
                 this.normals.push(...cp);
@@ -88,10 +86,10 @@ export class MyCylinder extends CGFobject {
                 this.normals.push(...cp);    
                             
                 for(var k = 0; k < 2; k++) {
-                    this.texCoords.push(xPos,yPos);
-                    this.texCoords.push(xPos + (1/this.slices), yPos);
-                    this.texCoords.push(xPos, yPos+(1/this.stacks));
-                    this.texCoords.push(xPos + (1/this.slices),yPos+(1/this.stacks));
+                    this.baseTexCoords.push(xPos,yPos);
+                    this.baseTexCoords.push(xPos + (1/this.slices), yPos);
+                    this.baseTexCoords.push(xPos, yPos+(1/this.stacks));
+                    this.baseTexCoords.push(xPos + (1/this.slices),yPos+(1/this.stacks));
                 }
 
                 this.indices.push(accslices+8*i, (accslices+8*i+1) , (accslices+8*i+2) );

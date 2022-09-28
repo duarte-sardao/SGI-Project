@@ -1,4 +1,4 @@
-import { CGFobject } from '../lib/CGF.js';
+import {MyPrimitive} from './MyPrimitive.js'
 /**
  * MyRectangle
  * @constructor
@@ -6,7 +6,7 @@ import { CGFobject } from '../lib/CGF.js';
  * @param x - Scale of rectangle in X
  * @param y - Scale of rectangle in Y
  */
-export class MyRectangle extends CGFobject {
+export class MyRectangle extends MyPrimitive {
 	constructor(scene, id, x1, x2, y1, y2) {
 		super(scene);
 		this.x1 = x1;
@@ -49,7 +49,7 @@ export class MyRectangle extends CGFobject {
         t
         */
 
-		this.texCoords = [
+		this.baseTexCoords = [
 			0, 1,
 			1, 1,
 			0, 0,
@@ -59,14 +59,6 @@ export class MyRectangle extends CGFobject {
 		this.initGLBuffers();
 	}
 
-	/**
-	 * @method updateTexCoords
-	 * Updates the list of texture coordinates of the rectangle
-	 * @param {Array} coords - Array of texture coordinates
-	 */
-	updateTexCoords(coords) {
-		this.texCoords = [...coords];
-		this.updateTexCoordsGLBuffers();
-	}
+
 }
 
