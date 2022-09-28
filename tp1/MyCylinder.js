@@ -2,10 +2,13 @@ import {CGFobject} from '../lib/CGF.js';
 /**
 * MyCylinder
 * @constructor
- * @param scene - Reference to MyScene object
- * @param complexity - Object complexity (number of faces)
+ * @param scene - Reference to scene object
+ * @param id - Object id
+ * @param base - base (z=0) radius
+ * @param top - top (z=height) radius
  * @param height - Height
- * @param textRepeat - Amount of repetitions of texture on y scale
+ * @param slices - divisions along radius
+ * @param stacks - divisions along z axis
 */
 export class MyCylinder extends CGFobject {
     constructor(scene, id, base, top, height, slices, stacks) {
@@ -28,6 +31,7 @@ export class MyCylinder extends CGFobject {
         var alphaAng = 2*Math.PI/this.slices;
 
         var xPos = 0.0;
+        var yPos = 0.0;
 
         var org = this.base;
         var radstep = (this.top - this.base) / this.stacks;
@@ -54,61 +58,51 @@ export class MyCylinder extends CGFobject {
                 var eca=Math.cos(ang)*end;
                 var ecaa=Math.cos(ang+alphaAng)*end;
 
-                this.vertices.push(ca, -sa, curheight);
-                this.vertices.push(caa, -saa, curheight);
-                this.vertices.push(eca, -esa, nextheight);
-                this.vertices.push(ecaa, -esaa, nextheight);
-                this.vertices.push(ca, -sa, curheight);
-                this.vertices.push(caa, -saa, curheight);
-                this.vertices.push(eca, -esa, nextheight);
-                this.vertices.push(ecaa, -esaa, nextheight);
+                var vert1 = [ca, -sa, curheight];
+                var vert2 = [caa, -saa, curheight];
+                var vert3 = [eca, -esa, nextheight];
+                var vert4 = [ecaa, -esaa, nextheight];
 
-                
-                this.texCoords.push(xPos,1.0);
-                this.texCoords.push(xPos + (1/this.slices) ,1.0);
-                this.texCoords.push(xPos,0);
-                this.texCoords.push(xPos + (1/this.slices),0);
-                this.texCoords.push(0,0);
-                this.texCoords.push(0,0);
-                this.texCoords.push(0,0);
-                this.texCoords.push(0,0);
+                this.vertices.push(...vert1);
+                this.vertices.push(...vert2);
+                this.vertices.push(...vert3);
+                this.vertices.push(...vert4); //add twice for inside faces
+                this.vertices.push(...vert1);
+                this.vertices.push(...vert2);
+                this.vertices.push(...vert3);
+                this.vertices.push(...vert4);
 
 
-                // triangle normal computed by cross product of two edges
-                var normalA= [
-                    ca,
-                    -sa,
-                    curheight
-                ];
-
-                var normalB = [
-                    caa,
-                    -saa,
-                    curheight
-                ];
-
-                // normalization
-                var nsize=Math.sqrt(
-                    normalA[0]*normalA[0]+
-                    normalA[1]*normalA[1]+
-                    normalA[2]*normalA[2]
+                //normal with cross product
+                var vec1 = [vert2[0]-vert1[0], vert2[1]-vert1[1], vert2[2]-vert1[2]];
+                var vec2 = [vert3[0]-vert1[0], vert3[1]-vert1[1], vert3[2]-vert1[2]];
+                var cp = [vec1[1]*vec2[2] - vec1[2]*vec2[1], vec1[2]*vec2[0] - vec1[0]*vec2[2], vec1[0]*vec2[1] - vec1[1]*vec2[0]];
+                var nsize = Math.sqrt(
+                    cp[0]*cp[0]+
+                    cp[1]*cp[1]+
+                    cp[2]*cp[2]
                     );
-                normalA[0]/=nsize;
-                normalA[1]/=nsize;
-                normalA[2]/=nsize;
-                normalB[0]/=nsize; //size is radius so same for both
-                normalB[1]/=nsize;
-                normalB[2]/=nsize;
-
-                // push normal once for each vertex of this triangle
-                this.normals.push(...normalA);
-                this.normals.push(...normalB);
-                this.normals.push(...normalA);
-                this.normals.push(...normalB);
-                this.normals.push(...normalA);
-                this.normals.push(...normalB);
-                this.normals.push(...normalA);
-                this.normals.push(...normalB);
+                cp[0]/=nsize;
+                cp[1]/=nsize;
+                cp[2]/=nsize;
+                this.normals.push(...cp);
+                this.normals.push(...cp);
+                this.normals.push(...cp);
+                this.normals.push(...cp);
+                cp[0]*=(-1);
+                cp[1]*=(-1);  
+                cp[2]*=(-1);
+                this.normals.push(...cp);
+                this.normals.push(...cp);
+                this.normals.push(...cp);
+                this.normals.push(...cp);    
+                            
+                for(var k = 0; k < 2; k++) {
+                    this.texCoords.push(xPos,yPos);
+                    this.texCoords.push(xPos + (1/this.slices), yPos);
+                    this.texCoords.push(xPos, yPos+(1/this.stacks));
+                    this.texCoords.push(xPos + (1/this.slices),yPos+(1/this.stacks));
+                }
 
                 this.indices.push(accslices+8*i, (accslices+8*i+1) , (accslices+8*i+2) );
                 this.indices.push((accslices+8*i+3), (accslices+8*i+2), (accslices+8*i+1) );
@@ -120,6 +114,7 @@ export class MyCylinder extends CGFobject {
                 xPos += 1/this.slices;
             }
 
+            yPos += 1/this.stacks;
             accslices += 8*this.slices;
             org = end;
             end += radstep;
