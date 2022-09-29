@@ -1,4 +1,4 @@
-import { CGFappearance, CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFtexture, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
@@ -527,7 +527,7 @@ export class MySceneGraph {
                 else
                     this.textures[textureID] = file;
             }**/
-            this.textures[textureID] = textureLink;
+            this.textures[textureID] = new CGFtexture(this.scene, textureLink);
         }
 
         this.log("Parsed textures");
@@ -1160,7 +1160,7 @@ export class MySceneGraph {
         if(tex[0] == "inherit")
             tex = lasttex;
         if(tex[0] != "none") {
-            appearance.loadTexture(this.textures[tex[0]]);
+            appearance.setTexture(this.textures[tex[0]]);
             var length_s = tex[1];
             var length_t = tex[2];
         }
