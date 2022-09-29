@@ -50,10 +50,10 @@ export class MyRectangle extends MyPrimitive {
         */
 
 		this.baseTexCoords = [
-			0, 1,
-			1, 1,
-			0, 0,
-			1, 0
+			this.x1, this.y2,
+			this.x2, this.y2,
+			this.x1, this.y1,
+			this.x2, this.y1
 		]
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();

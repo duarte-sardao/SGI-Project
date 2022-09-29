@@ -144,7 +144,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="wallTexture" length_s="10" length_t="10"/>
+        <texture id="wallTexture" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="backWall" />
           <componentref id="sideWallTrans" />
@@ -159,7 +159,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="cabinDef" length_s="1" length_t="1"/>
+        <texture id="cabinDef" length_s="2" length_t="2"/>
         <children>
           <componentref id="topCabinTrans" />
           <componentref id="frontCabinTrans" />
@@ -234,7 +234,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="floorTexture" length_s="30" length_t="30"/>
+        <texture id="floorTexture" length_s="1" length_t="1"/>
         <transformation>
           <translate x="0" y="0" z="15" />
           <transformationref id="x90rot"/>
@@ -247,7 +247,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="cabinTop" length_s="4" length_t="1"/>
+        <texture id="cabinTop" length_s="3" length_t="2"/>
         <transformation>
           <translate x="0" y="2" z="2" />
           <transformationref id="x90rot"/>
@@ -261,7 +261,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="cabinFront" length_s="4" length_t="1"/>
+        <texture id="cabinFront" length_s="2.25" length_t="2"/>
         <transformation>
           <translate x="0" y="0" z="2" />
         </transformation>

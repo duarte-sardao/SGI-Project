@@ -23,8 +23,8 @@ export class MyPrimitive extends CGFobject{
     setLength(s, t) {
         this.texCoords = [];
 		for(var i = 0; i < this.baseTexCoords.length; i+=2) {
-            this.texCoords.push(this.baseTexCoords[i] * s);
-            this.texCoords.push(this.baseTexCoords[i+1] * t);
+            this.texCoords.push(this.baseTexCoords[i] / s);
+            this.texCoords.push(this.baseTexCoords[i+1] / t);
         }
         this.updateTexCoordsGLBuffers();
 	}
