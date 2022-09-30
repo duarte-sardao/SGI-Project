@@ -108,7 +108,6 @@
               <componentref id="oven" />
               <componentref id="chair" />
               <componentref id="table" />
-              <primitiveref id="test"/>
             </children>
         </component>
       
