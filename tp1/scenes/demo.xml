@@ -60,61 +60,31 @@
     </transformations>
 
     <primitives>
-      <primitive id="backWall">
-        <rectangle x1="0" y1="0" x2="15" y2="10" />
-      </primitive>
-      <primitive id="sideWall">
+      <primitive id="wall">
         <rectangle x1="0" y1="0" x2="15" y2="10" />
       </primitive>
       <primitive id="floor">
         <rectangle x1="0" y1="0" x2="15" y2="15" />
       </primitive>
-      <primitive id="topCabin">
+      <primitive id="cabinLong">
         <rectangle x1="0" y1="0" x2="9" y2="2" />
       </primitive>
-      <primitive id="frontCabin">
-        <rectangle x1="0" y1="0" x2="9" y2="2" />
-      </primitive>
-      <primitive id="leftCabin">
+      <primitive id="cabinShort">
         <rectangle x1="0" y1="0" x2="2" y2="2" />
       </primitive>
       <primitive id="chairTop">
-        <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="0" />
+        <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="1" />
       </primitive>
-      <primitive id="chairLegF">
+      <primitive id="chairLeg">
         <cylinder base="0.25" top="0.25" height="3" slices="20" stacks="20" />
-      </primitive>
-      <primitive id="chairLegS">
-        <cylinder base="0.25" top="0.25" height="3" slices="20" stacks="20" />
-      </primitive>
-      <primitive id="chairLegT">
-        <cylinder base="0.25" top="0.25" height="2.90" slices="20" stacks="20" />
       </primitive>
       <primitive id="tableTop">
         <rectangle x1="0" y1="0" x2="6" y2="4" />
       </primitive>
-      <primitive id="tableLegF">
+      <primitive id="tableLeg">
         <cylinder base="0.125" top="0.125" height="3" slices="20" stacks="20" />
       </primitive>
-      <primitive id="tableLegS">
-        <cylinder base="0.125" top="0.125" height="3" slices="20" stacks="20" />
-      </primitive>
-      <primitive id="tableLegT">
-        <cylinder base="0.125" top="0.125" height="3" slices="20" stacks="20" />
-      </primitive>
-      <primitive id="tableLegFF">
-        <cylinder base="0.125" top="0.125" height="3" slices="20" stacks="20" />
-      </primitive>
-      <primitive id="topOven">
-        <rectangle x1="0" y1="0" x2="3" y2="3" />
-      </primitive>
-      <primitive id="leftOven">
-        <rectangle x1="0" y1="0" x2="3" y2="3" />
-      </primitive>
-      <primitive id="rightOven">
-        <rectangle x1="0" y1="0" x2="3" y2="3" />
-      </primitive>
-      <primitive id="frontOven">
+      <primitive id="ovenSide">
         <rectangle x1="0" y1="0" x2="3" y2="3" />
       </primitive>
     </primitives>
@@ -146,7 +116,7 @@
         </materials>
         <texture id="wallTexture" length_s="1" length_t="1"/>
         <children>
-          <primitiveref id="backWall" />
+          <primitiveref id="wall" />
           <componentref id="sideWallTrans" />
           <componentref id="floorTrans" />
         </children>
@@ -226,7 +196,7 @@
           <transformationref id="y90rot" />
         </transformation>
         <children>
-          <primitiveref id="sideWall" />
+          <primitiveref id="wall" />
         </children>
       </component>
 
@@ -253,7 +223,7 @@
           <transformationref id="x90rot"/>
         </transformation>
         <children>
-          <primitiveref id="topCabin" />
+          <primitiveref id="cabinLong" />
         </children>
       </component>
 
@@ -266,7 +236,7 @@
           <translate x="0" y="0" z="2" />
         </transformation>
         <children>
-          <primitiveref id="frontCabin" />
+          <primitiveref id="cabinLong" />
         </children>
       </component>
 
@@ -281,7 +251,7 @@
           <transformationref id="y90rot"/>
         </transformation>
         <children>
-          <primitiveref id="leftCabin" />
+          <primitiveref id="cabinShort" />
         </children>
       </component>
 
@@ -295,7 +265,7 @@
           <transformationref id="x90rot"/>
         </transformation>
         <children>
-          <primitiveref id="topOven" />
+          <primitiveref id="ovenSide" />
         </children>
       </component>
 
@@ -308,7 +278,7 @@
           <translate x="9" y="0" z="3" />
         </transformation>
         <children>
-          <primitiveref id="frontOven" />
+          <primitiveref id="ovenSide" />
         </children>
       </component>
 
@@ -322,7 +292,7 @@
           <transformationref id="y90rot"/>
         </transformation>
         <children>
-          <primitiveref id="rightOven" />
+          <primitiveref id="ovenSide" />
         </children>
       </component>
 
@@ -337,7 +307,7 @@
           <rotate axis="y" angle="90" />
         </transformation>
         <children>
-          <primitiveref id="leftOven" />
+          <primitiveref id="ovenSide" />
         </children>
       </component>
 
@@ -348,8 +318,8 @@
         <texture id="inherit" />
         <transformation>
           <scale x="0.5" y="0.5" z="0.5" />
-          <translate x="4" y="1.80" z="13" />
-          <rotate axis="x" angle="-75" />
+          <translate x="4" y="2" z="13.5" />
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="chairTop" />
@@ -367,7 +337,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="chairLegS" />
+          <primitiveref id="chairLeg" />
         </children>
       </component>
 
@@ -382,7 +352,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="chairLegF" />
+          <primitiveref id="chairLeg" />
         </children>
       </component>
 
@@ -397,7 +367,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="chairLegT" />
+          <primitiveref id="chairLeg" />
         </children>
       </component>
 
@@ -425,7 +395,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="tableLegF" />
+          <primitiveref id="tableLeg" />
         </children>
       </component>
 
@@ -439,7 +409,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="tableLegS" />
+          <primitiveref id="tableLeg" />
         </children>
       </component>
 
@@ -453,7 +423,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="tableLegT" />
+          <primitiveref id="tableLeg" />
         </children>
       </component>
 
@@ -467,7 +437,7 @@
           <rotate axis="x" angle="-90" />
         </transformation>
         <children>
-          <primitiveref id="tableLegFF" />
+          <primitiveref id="tableLeg" />
         </children>
       </component>
       

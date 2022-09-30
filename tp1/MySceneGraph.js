@@ -867,8 +867,6 @@ export class MySceneGraph {
         var grandgrandChildren = [];
         var nodeNames = [];
 
-        var parented = [];
-
         // Any number of components.
         for (var i = 0; i < children.length; i++) {
 
@@ -954,15 +952,13 @@ export class MySceneGraph {
                 if(cid == null)
                     return "id not defined for component child " + componentID;
                 if(node.nodeName == "componentref") {
-                    if(parented.includes(cid))
-                        return "component can only have one parent";
                     childComps.push(cid);
-                    parented.push(cid);
                 } else {
                     var primitive = this.primitives[cid];
                     if(primitive == null)
                         return "Unknown primitive " + cid;
-                    primmies.push(primitive);
+                    let clone = Object.assign(Object.create(Object.getPrototypeOf(primitive)), primitive); //we clone the primitive, so one can be used several times
+                    primmies.push(clone);
                 }
             }
             if(primmies.length == 0 && childComps.length == 0)
