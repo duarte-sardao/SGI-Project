@@ -2,7 +2,7 @@ import { CGFappearance, CGFtexture, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
-//import { MySphere } from "./MySphere.js"
+import { MySphere } from "./MySphere.js"
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -1173,7 +1173,7 @@ export class MySceneGraph {
 
     //draw
     for(var i = 0; i < primitives.length; i++) {
-        primitives[i].enableNormalViz();
+        //primitives[i].enableNormalViz();
         if(!primitives[i].isQuadratic())
             primitives[i].setLength(component["s"], component["t"]);
         primitives[i].display();
