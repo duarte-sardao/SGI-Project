@@ -59,6 +59,11 @@ export class MyRectangle extends MyPrimitive {
 		this.initGLBuffers();
 	}
 
+	
+	isQuadratic() {
+		return false;
+	}
+
 
 }
 

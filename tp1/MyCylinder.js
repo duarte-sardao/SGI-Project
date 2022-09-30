@@ -26,7 +26,7 @@ export class MyCylinder extends MyPrimitive {
         this.indices = [];
         this.normals = [];
         this.normalRing = [];
-        this.baseTexCoords = [];
+        this.texCoords = [];
 
         var ang = 0;
         var alphaAng = 2*Math.PI/this.slices;
@@ -95,10 +95,10 @@ export class MyCylinder extends MyPrimitive {
                 }
 
                 for(var k = 0; k < 2; k++) {
-                    this.baseTexCoords.push(xPos,yPos);
-                    this.baseTexCoords.push(xPos + (1/this.slices), yPos);
-                    this.baseTexCoords.push(xPos, yPos+(1/this.stacks));
-                    this.baseTexCoords.push(xPos + (1/this.slices),yPos+(1/this.stacks));
+                    this.texCoords.push(xPos,yPos);
+                    this.texCoords.push(xPos + (1/this.slices), yPos);
+                    this.texCoords.push(xPos, yPos+(1/this.stacks));
+                    this.texCoords.push(xPos + (1/this.slices),yPos+(1/this.stacks));
                 }
 
                 this.indices.push(accslices+8*i, (accslices+8*i+1) , (accslices+8*i+2) );

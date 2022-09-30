@@ -71,5 +71,9 @@ export class MyTriangle extends MyPrimitive {
 			Math.pow(this.vertices[2+c2] - this.vertices[2+c1], 2)
 		);
 	}
+
+	isQuadratic() {
+		return false;
+	}
 }
 

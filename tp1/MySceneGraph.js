@@ -2,6 +2,7 @@ import { CGFappearance, CGFtexture, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
+import { MySphere } from "./MySphere.js"
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -957,9 +958,10 @@ export class MySceneGraph {
                     var primitive = this.primitives[cid];
                     if(primitive == null)
                         return "Unknown primitive " + cid;
-                    let clone = Object.assign(Object.create(Object.getPrototypeOf(primitive)), primitive); //we clone the primitive, so one can be used several times
+                    //let clone = Object.assign(Object.create(Object.getPrototypeOf(primitive)), primitive); //we clone the primitive, so one can be used several times
                     //we could do it without cloning, but we would have to update texcoords everytime, using more space might be preferably to the performance downside
-                    primmies.push(clone);
+                    //after speaking with prof, we went with updating texcoords everytime
+                    primmies.push(primitive);
                 }
             }
             if(primmies.length == 0 && childComps.length == 0)
@@ -1144,8 +1146,8 @@ export class MySceneGraph {
             tex = lasttex;
         if(tex[0] != "none") {
             appearance.setTexture(this.textures[tex[0]]);
-            var length_s = tex[1];
-            var length_t = tex[2];
+            component["s"] = tex[1];
+            component["t"] = tex[2];
         }
         appearance.setTextureWrap('REPEAT', 'REPEAT');
     } else {
@@ -1172,8 +1174,8 @@ export class MySceneGraph {
     //draw
     for(var i = 0; i < primitives.length; i++) {
         //primitives[i].enableNormalViz();
-        if(length_s != null && length_t != null)
-            primitives[i].setLength(length_s, length_t);
+        if(!primitives[i].isQuadratic())
+            primitives[i].setLength(component["s"], component["t"]);
         primitives[i].display();
     }
 
