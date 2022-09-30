@@ -75,12 +75,25 @@ export class MyCylinder extends MyPrimitive {
                 this.vertices.push(...vert4);
 
 
-                if(org != 0 && !ringComplete) { //only do it once, its the same for every stack (only do if radius is not 0)
-                    let midpoint = [0,0,curheight];
-                    let vec1 = this.normalize(this.subtractPoints(vert1, midpoint));
-                    let vec2 = this.normalize(this.subtractPoints(vert2, midpoint));//outer
-                    let vec3 = this.normalize(this.subtractPoints(midpoint, vert1));//inner
-                    let vec4 = this.normalize(this.subtractPoints(midpoint, vert2));
+                if(!ringComplete) { //only do it once, its the same for every stack
+                    let nheight;
+                    let nvert1;
+                    let nvert2;
+                    if(org != 0) { //need radius to not be 0
+                        nheight = curheight;
+                        nvert1 = vert1;
+                        nvert2 = vert2;
+                    } else {
+                        nheight = nextheight;
+                        nvert1 = vert3;
+                        nvert2 = vert4;
+                    }
+
+                    let midpoint = [0,0,nheight];
+                    let vec1 = this.normalize(this.subtractPoints(nvert1, midpoint));
+                    let vec2 = this.normalize(this.subtractPoints(nvert2, midpoint));//outer
+                    let vec3 = this.normalize(this.subtractPoints(midpoint, nvert1));//inner
+                    let vec4 = this.normalize(this.subtractPoints(midpoint, nvert2));
                     let zup = (this.base-this.top)/this.height; //z value needed on vector so normal is still perpendicular if base != height (ie cone rather than cylinder)
                     vec1[2] = zup;vec2[2] = zup;vec3[2] = -zup;vec4[2] = -zup;
                     vec1 = this.normalize(vec1);vec2 = this.normalize(vec2);vec3 = this.normalize(vec3);vec4 = this.normalize(vec4);
