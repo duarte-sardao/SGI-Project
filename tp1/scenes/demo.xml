@@ -122,6 +122,10 @@
       <primitive id="bowl">
         <cylinder base="0.001" top="1" height="0.5" slices="10" stacks="3" />
       </primitive>
+
+      <primitive id="testesphere">
+        <sphere radius="2" slices="20" stacks="20" />
+      </primitive>
     </primitives>
 
     <components>
@@ -167,6 +171,7 @@
         <texture id="wallTexture" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="wall" />
+          <primitiveref id="testesphere" />
           <componentref id="sideWallTrans" />
           <componentref id="floorTrans" />
         </children>
