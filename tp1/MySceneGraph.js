@@ -1171,7 +1171,7 @@ export class MySceneGraph {
 
     //draw
     for(var i = 0; i < primitives.length; i++) {
-        primitives[i].enableNormalViz();
+        //primitives[i].enableNormalViz();
         if(length_s != null && length_t != null)
             primitives[i].setLength(length_s, length_t);
         primitives[i].display();
