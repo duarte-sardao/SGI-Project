@@ -72,19 +72,24 @@ export class MyCylinder extends MyPrimitive {
                 this.vertices.push(...vert3);
                 this.vertices.push(...vert4);
 
-                var cp = this.crossProduct(vert1, vert2, vert3);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                cp[0]*=(-1);
-                cp[1]*=(-1);  
-                cp[2]*=(-1);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);    
-                            
+
+                let midpoint = [0,0,curheight];
+                let vec1 = this.normalize(this.subtractPoints(vert1, midpoint));
+                let vec2 = this.normalize(this.subtractPoints(vert2, midpoint));//outer
+                let vec3 = this.normalize(this.subtractPoints(midpoint, vert1));//inner
+                let vec4 = this.normalize(this.subtractPoints(midpoint, vert2));
+                let zup = (this.base-this.top)/this.height; //z value needed on vector so normal is still perpendicular if base != height (ie cone rather than cylinder)
+                vec1[2] = zup;vec2[2] = zup;vec3[2] = zup;vec4[2] = zup;
+                vec1 = this.normalize(vec1);vec2 = this.normalize(vec2);vec3 = this.normalize(vec3);vec4 = this.normalize(vec4);
+                this.normals.push(...vec3);
+                this.normals.push(...vec4);
+                this.normals.push(...vec3);
+                this.normals.push(...vec4);  
+                this.normals.push(...vec1);
+                this.normals.push(...vec2);
+                this.normals.push(...vec1);
+                this.normals.push(...vec2);
+
                 for(var k = 0; k < 2; k++) {
                     this.baseTexCoords.push(xPos,yPos);
                     this.baseTexCoords.push(xPos + (1/this.slices), yPos);

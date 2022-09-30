@@ -958,6 +958,7 @@ export class MySceneGraph {
                     if(primitive == null)
                         return "Unknown primitive " + cid;
                     let clone = Object.assign(Object.create(Object.getPrototypeOf(primitive)), primitive); //we clone the primitive, so one can be used several times
+                    //we could do it without cloning, but we would have to update texcoords everytime, using more space might be preferably to the performance downside
                     primmies.push(clone);
                 }
             }
@@ -1133,12 +1134,26 @@ export class MySceneGraph {
     //transform
     this.scene.multMatrix(transfMatrix);
     
-    //appearance (saved until mats are udpated by pressing m)
+    //appearance
     var appearance;
-    if(component['appearance'] == null || this.matsUpdated) {
+    if(component['appearance'] == null){ //first run trough we set the texture (which is constant)
+        appearance = new CGFappearance(this.scene);
+        //textures
+        var tex = component['texture'];
+        if(tex[0] == "inherit")
+            tex = lasttex;
+        if(tex[0] != "none") {
+            appearance.setTexture(this.textures[tex[0]]);
+            var length_s = tex[1];
+            var length_t = tex[2];
+        }
+        appearance.setTextureWrap('REPEAT', 'REPEAT');
+    } else {
+        appearance = component['appearance'];
+    }
+    if(component['appearance'] == null || this.matsUpdated) { //we set mat on first run trough and every subsequent one if mats were updated by pressing m
         //material
         this.matsUpdated = false;
-        appearance = new CGFappearance(this.scene);
         var matl = component['materials'].length;
         var matid = component['materials'][this.matoffset % matl];
         if(matid == "inherit")
@@ -1150,27 +1165,13 @@ export class MySceneGraph {
         appearance.setAmbient(mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
         appearance.setDiffuse(mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
         appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
-
-        //textures
-        var tex = component['texture'];
-        if(tex[0] == "inherit")
-            tex = lasttex;
-        if(tex[0] != "none") {
-            appearance.setTexture(this.textures[tex[0]]);
-            var length_s = tex[1];
-            var length_t = tex[2];
-        }
-        appearance.setTextureWrap('REPEAT', 'REPEAT');
-
         component['appearance'] = appearance;
-    } else {
-        appearance = component['appearance'];
     }
     appearance.apply();
 
     //draw
     for(var i = 0; i < primitives.length; i++) {
-        //primitives[i].enableNormalViz();
+        primitives[i].enableNormalViz();
         if(length_s != null && length_t != null)
             primitives[i].setLength(length_s, length_t);
         primitives[i].display();

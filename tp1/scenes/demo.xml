@@ -76,16 +76,20 @@
         <triangle x1="1" y1="1" z1="1" x2="5" y2="1" z2="1" x3="2" y3 ="4" z3="1" />
       </primitive>
       <primitive id="chairLeg">
-        <cylinder base="0.25" top="0.25" height="3" slices="20" stacks="20" />
+        <cylinder base="0.25" top="0.25" height="3" slices="6" stacks="3" />
       </primitive>
       <primitive id="tableTop">
         <rectangle x1="0" y1="0" x2="6" y2="4" />
       </primitive>
       <primitive id="tableLeg">
-        <cylinder base="0.125" top="0.125" height="3" slices="20" stacks="20" />
+        <cylinder base="0.125" top="0.125" height="3" slices="6" stacks="3" />
       </primitive>
       <primitive id="ovenSide">
         <rectangle x1="0" y1="0" x2="3" y2="3" />
+      </primitive>
+
+      <primitive id="test">
+        <cylinder base="1" top="10" height="8" slices="6" stacks="2"/>
       </primitive>
     </primitives>
 
@@ -104,6 +108,7 @@
               <componentref id="oven" />
               <componentref id="chair" />
               <componentref id="table" />
+              <primitiveref id="test"/>
             </children>
         </component>
       
