@@ -36,6 +36,7 @@
         <texture id="ovenFront" file="scenes/images/ovenfront.jpg" />
         <texture id="ovenTop" file="scenes/images/oventop.jpg" />
         <texture id="oven" file="scenes/images/oven.jpg" />
+        <texture id="ovenDoor" file="scenes/images/ovenDoor.jpg" />
     </textures>
 
     <materials>
@@ -62,6 +63,9 @@
     <transformations>
       <transformation id="y90rot">
         <rotate axis="y" angle="90" />
+      </transformation>
+      <transformation id="y-90rot">
+        <rotate axis="y" angle="-90" />
       </transformation>
       <transformation id="y180rot">
         <rotate axis="y" angle="180" />
@@ -116,11 +120,23 @@
       <primitive id="tableLeg">
         <cylinder base="0.2" top="0.13" height="3" slices="6" stacks="3" />
       </primitive>
+
       <primitive id="ovenSide">
         <rectangle x1="0" y1="0" x2="3" y2="3" />
       </primitive>
+      <primitive id="ovenInner">
+        <rectangle x1="0" y1="0" x2="3" y2="2" />
+      </primitive>
+
+      <primitive id="frontOvenHor">
+        <rectangle x1="0" y1="0" x2="3" y2="0.5" />
+      </primitive>
+      <primitive id="frontOvenVer">
+        <rectangle x1="0" y1="0" x2="0.5" y2="2" />
+      </primitive>
+
       <primitive id="bowl">
-        <cylinder base="0" top="1" height="0.5" slices="10" stacks="3" />
+        <cylinder base="0" top="1" height="0.3" slices="20" stacks="3" />
       </primitive>
 
       <primitive id="squareSide">
@@ -211,7 +227,6 @@
           <componentref id="drawerPair3" />
         </children>
       </component>
-
       <component id="drawerPair3">
         <transformation>
           <translate x="3" y="0" z="0"/>
@@ -224,7 +239,6 @@
           <componentref id="drawerPair2" />
         </children>
       </component>
-
       <component id="drawerPair2">
         <transformation>
           <translate x="3" y="0" z="0"/>
@@ -251,7 +265,6 @@
           <componentref id="singleDrawer2" />
         </children>
       </component>
-
       <component id="singleDrawer1">
         <transformation>
           <translate x="2" y="1.4" z="2"/>
@@ -265,7 +278,6 @@
           <componentref id="cube" />
         </children>
       </component>
-
       <component id="singleDrawer2">
         <transformation>
           <translate x="0" y="-1" z="0"/>
@@ -291,7 +303,243 @@
           <componentref id="topOvenTrans" />
           <componentref id="leftOvenTrans" /> 
           <componentref id="rightOvenTrans" /> 
-          <componentref id="frontOvenTrans" />
+          <componentref id="innerOvenBack" />
+          <componentref id="innerOvenLeft"/>
+          <componentref id="innerOvenRight"/>
+          <componentref id="innerOvenTopBottom" />
+          <componentref id="ovenFront1" />
+          <componentref id="ovenFront2" />
+          <componentref id="ovenDoorTrans" />
+        </children>
+      </component>
+
+      <component id="ovenDoorTrans">
+        <transformation>
+          <translate x="10.5" y="0.5" z="2.95"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none" />
+        <children>
+          <componentref id="ovenDoor" />
+        </children>
+      </component>
+
+      <component id="ovenDoor">
+        <transformation>
+          <rotate axis="x" angle="10" />
+          <translate x="0" y="1" z="0"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="ovenDoor" length_s="1" length_t="1" />
+        <children>
+          <componentref id="doorProper" />
+          <componentref id="doorHandle" />
+        </children>
+      </component>
+
+      <component id="doorProper">
+        <transformation>
+          <scale x="1" y="1" z="0.15" />
+        </transformation>
+        <materials>
+            <material id="metallic" />
+        </materials>
+        <texture id="inherit" />
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="doorHandle">
+        <transformation>
+          <translate x="0" y="0.5" z="0.4" />
+          <scale x="0.9" y="0.15" z="0.1" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="cube" />
+          <componentref id="doorHandleBit1" />
+          <componentref id="doorHandleBit2" />
+        </children>
+      </component>
+
+      <component id="doorHandleBit1">
+        <transformation>
+          <translate x="-0.9" y="0" z="-1.2" />
+          <scale x="0.1" y="1" z="1.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="doorHandleBit2">
+        <transformation>
+          <translate x="0.9" y="0" z="-1.2" />
+          <scale x="0.1" y="1" z="1.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="ovenFront2">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <transformation>
+          <translate x="12" y="3" z="3" />
+          <rotate axis="z" angle="180" />
+          <translate x="-9" y="0" z="-3" />
+        </transformation>
+        <children>
+          <componentref id="ovenFront1" />
+        </children>
+      </component>
+      <component id="ovenFront1">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <transformation>
+          <translate x="9" y="0" z="3" />
+        </transformation>
+        <children>
+          <componentref id="ovenFrontHor" />
+          <componentref id="ovenFrontVer" />
+        </children>
+      </component>
+      <component id="ovenFrontHor">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="oven" length_s="3" length_t="0.5"/>
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <children>
+          <primitiveref id="frontOvenHor" />
+        </children>
+      </component>     
+      <component id="ovenFrontVer">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="oven" length_s="0.5" length_t="2"/>
+        <transformation>
+          <translate x="0" y="0.5" z="0" />
+        </transformation>
+        <children>
+          <primitiveref id="frontOvenVer" />
+        </children>
+      </component>
+      <component id="topOvenTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="ovenTop" length_s="3" length_t="3" />
+        <transformation>
+          <translate x="9" y="3" z="3" />
+          <transformationref id="x90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="ovenSide" />
+        </children>
+      </component>
+      <component id="innerOvenBack">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <transformation>
+          <translate x="9" y="0" z="0.5" />
+        </transformation>
+        <children>
+          <primitiveref id="ovenSide" />
+        </children>
+      </component>
+      <component id="rightOvenTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="12" y="0" z="3" />
+          <transformationref id="y90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="ovenSide" />
+        </children>
+      </component>
+      <component id="innerOvenTopBottom">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <transformation>
+          <translate x="12" y="-9" z="0" />
+          <rotate axis="z" angle="90" />
+        </transformation>
+        <children>
+          <componentref id="innerOvenLeft" />
+          <componentref id="innerOvenRight" />
+        </children>
+      </component>
+      <component id="innerOvenLeft">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="oven" length_s="3" length_t="2" />
+        <transformation>
+          <translate x="9.5" y="0.5" z="3" />
+          <transformationref id="y90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="ovenInner" />
+        </children>
+      </component>
+      <component id="innerOvenRight">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="oven" length_s="3" length_t="2" />
+        <transformation>
+          <translate x="11.5" y="0.5" z="0" />
+          <transformationref id="y180rot"/>
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <children>
+          <primitiveref id="ovenInner" />
+        </children>
+      </component>
+      <component id="leftOvenTrans">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="9" y="0" z="0" />
+          <transformationref id="y180rot"/>
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <children>
+          <primitiveref id="ovenSide" />
         </children>
       </component>
 
@@ -596,62 +844,6 @@
         </transformation>
         <children>
           <primitiveref id="cabinShort" />
-        </children>
-      </component>
-
-      <component id="topOvenTrans">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="ovenTop" length_s="3" length_t="3" />
-        <transformation>
-          <translate x="9" y="3" z="3" />
-          <transformationref id="x90rot"/>
-        </transformation>
-        <children>
-          <primitiveref id="ovenSide" />
-        </children>
-      </component>
-
-      <component id="frontOvenTrans">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="ovenFront" length_s="3" length_t="3"/>
-        <transformation>
-          <translate x="9" y="0" z="3" />
-        </transformation>
-        <children>
-          <primitiveref id="ovenSide" />
-        </children>
-      </component>
-
-      <component id="rightOvenTrans">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit" />
-        <transformation>
-          <translate x="12" y="0" z="3" />
-          <transformationref id="y90rot"/>
-        </transformation>
-        <children>
-          <primitiveref id="ovenSide" />
-        </children>
-      </component>
-
-      <component id="leftOvenTrans">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit" />
-        <transformation>
-          <translate x="9" y="0" z="0" />
-          <transformationref id="y180rot"/>
-          <rotate axis="y" angle="90" />
-        </transformation>
-        <children>
-          <primitiveref id="ovenSide" />
         </children>
       </component>
 

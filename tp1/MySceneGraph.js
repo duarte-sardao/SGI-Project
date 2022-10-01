@@ -689,7 +689,7 @@ export class MySceneGraph {
 
             // Specifications for the current transformation.
             var transfMatrix = this.parseTransformation(children[i], transformationID, false);
-            if(typeof transfMatrix == String)
+            if(typeof transfMatrix == "string")
                 return transfMatrix;
             this.transformations[transformationID] = transfMatrix;
         }
@@ -903,7 +903,7 @@ export class MySceneGraph {
 
             // Transformations
             var transfMatrix = this.parseTransformation(grandChildren[transformationIndex], "component " + componentID, true);
-            if(typeof transfMatrix == String)
+            if(typeof transfMatrix == "string")
                 return transfMatrix;
             component["transformation"] = transfMatrix;
             // Materials
@@ -1116,7 +1116,6 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
-        this.matsUpdated = false;
         this.displayNode(this.root, null, null);
 
         //To test the parsing/creation of the primitives, call the display function directly
@@ -1137,38 +1136,29 @@ export class MySceneGraph {
     this.scene.multMatrix(transfMatrix);
     
     //appearance
-    var appearance;
-    if(component['appearance'] == null){ //first run trough we set the texture (which is constant)
-        appearance = new CGFappearance(this.scene);
-        //textures
-        var tex = component['texture'];
-        if(tex[0] == "inherit")
-            tex = lasttex;
-        if(tex[0] != "none") {
-            appearance.setTexture(this.textures[tex[0]]);
-            component["s"] = tex[1];
-            component["t"] = tex[2];
-        }
-        appearance.setTextureWrap('REPEAT', 'REPEAT');
-    } else {
-        appearance = component['appearance'];
+    let appearance = new CGFappearance(this.scene);
+    //textures
+    var tex = component['texture'];
+    if(tex[0] == "inherit")
+        tex = lasttex;
+    if(tex[0] != "none") {
+        appearance.setTexture(this.textures[tex[0]]);
+        component["s"] = tex[1];
+        component["t"] = tex[2];
     }
-    if(component['appearance'] == null || this.matsUpdated) { //we set mat on first run trough and every subsequent one if mats were updated by pressing m
-        //material
-        this.matsUpdated = false;
-        var matl = component['materials'].length;
-        var matid = component['materials'][this.matoffset % matl];
-        if(matid == "inherit")
-            matid = lastmat;
-        var mat = this.materials[matid];
-        //order stored is shini/emmision/diffuse/specular
-        appearance.setShininess(mat[0]);
-        appearance.setEmission(mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
-        appearance.setAmbient(mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
-        appearance.setDiffuse(mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-        appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
-        component['appearance'] = appearance;
-    }
+    appearance.setTextureWrap('REPEAT', 'REPEAT');
+    //material
+    var matl = component['materials'].length;
+    var matid = component['materials'][this.matoffset % matl];
+    if(matid == "inherit")
+        matid = lastmat;
+    var mat = this.materials[matid];
+    //order stored is shini/emmision/diffuse/specular
+    appearance.setShininess(mat[0]);
+    appearance.setEmission(mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+    appearance.setAmbient(mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+    appearance.setDiffuse(mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+    appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
     appearance.apply();
 
     //draw
