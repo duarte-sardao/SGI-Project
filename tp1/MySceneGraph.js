@@ -3,6 +3,7 @@ import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
 import { MySphere } from "./MySphere.js"
+import { MyTorus } from "./MyTorus.js"
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
