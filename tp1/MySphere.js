@@ -28,7 +28,7 @@ export class MySphere extends MyPrimitive {
         var alphaAng = 2*Math.PI/this.slices;
 
         var angStack = -Math.PI/2;
-        var tetaAng = (Math.PI/2)/this.stacks;
+        var tetaAng = (Math.PI)/this.stacks;
 
         var nextSlice = angSlice+alphaAng;
         var nextStack = angStack+tetaAng;
