@@ -1125,6 +1125,8 @@ export class MySceneGraph {
     /**
      * Explores component graph to display
      * @param {*} id
+     * @param {*} lastmat
+     * @param {*} lasttex
      */
     displayNode(id, lastmat, lasttex) {
     var component = this.components[id];
