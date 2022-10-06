@@ -254,6 +254,7 @@ export class MySceneGraph {
             }
             else {
                 attributeNames.push(...["from", "to"]);
+                global.push(children[i].nodeName);
             }
 
             // Get id of the current cam.
@@ -314,7 +315,7 @@ export class MySceneGraph {
 
                     global.push(aux);
                 } else {
-                    global.push(...[0,1,0]);
+                    global.push([0,1,0]);
                 }
             }
             this.cameras[camId] = global;
@@ -405,12 +406,11 @@ export class MySceneGraph {
                 return "ID must be unique for each light (conflict: ID = " + lightId + ")";
 
             // Light enable/disable
-            var enableLight = true;
-            var aux = this.reader.getBoolean(children[i], 'enabled');
-            if (!(aux != null && !isNaN(aux) && (aux == true || aux == false)))
+            var enableLight = this.reader.getBoolean(children[i], 'enabled');
+            if (!(enableLight != null && !isNaN(enableLight) && (enableLight == true || enableLight == false))) {
                 this.onXMLMinorError("unable to parse value component of the 'enable light' field for ID = " + lightId + "; assuming 'value = 1'");
-
-            enableLight = aux || 1;
+                enableLight = true;
+            }
 
             //Add enabled boolean and type name to light info
             global.push(enableLight);
@@ -439,7 +439,7 @@ export class MySceneGraph {
                     global.push(aux);
                 }
                 else
-                    return "light " + attributeNames[i] + " undefined for ID = " + lightId;
+                    return "light " + attributeNames[j] + " undefined for ID = " + lightId;
             }
 
             // Gets the additional attributes of the spot light
@@ -467,6 +467,17 @@ export class MySceneGraph {
                     return "light target undefined for ID = " + lightId;
 
                 global.push(...[angle, exponent, targetLight])
+            }
+
+            //Handles attenuation
+            var attnIndex = nodeNames.indexOf("attenuation");
+
+            if (attnIndex != -1) {
+                var aux = this.parseAttenuation(grandChildren[attnIndex], "attenuation for ID " + lightId);
+                if (!Array.isArray(aux))
+                    return aux;
+
+                global.push(aux);
             }
 
             this.lights[lightId] = global;
@@ -1027,6 +1038,49 @@ export class MySceneGraph {
         position.push(...[x, y, z]);
 
         return position;
+    }
+
+    /**
+     * Parse the attenuation from a node with ID = id
+     * @param {block element} node
+     * @param {message to be displayed in case of error} messageError
+     */
+     parseAttenuation(node, messageError) {
+        var attenuation = [];
+        var notzero = false;
+
+        // constant
+        var constant = this.reader.getFloat(node, 'constant');
+        if (!(constant != null && !isNaN(constant)))
+            return "unable to parse constant of the " + messageError;
+        if(constant != 0)
+            notzero = true;
+
+        // linear
+        var linear = this.reader.getFloat(node, 'linear');
+        if (!(linear != null && !isNaN(linear)))
+            return "unable to parse linear of the " + messageError;
+        if(linear != 0) {
+            if(notzero)
+                return "more than one non zero value set for attenuation of the " + messageError;
+            else
+                notzero = true;
+        }
+
+        // quadratic
+        var quadratic = this.reader.getFloat(node, 'quadratic');
+        if (!(quadratic != null && !isNaN(quadratic)))
+            return "unable to parse quadratic of the " + messageError;
+        if(quadratic != 0) {
+            if(notzero)
+                return "more than one non zero value set for attenuation of the " + messageError;
+            else
+                notzero = true;
+        }
+
+        attenuation.push(...[constant, linear, quadratic]);
+
+        return attenuation;
     }
 
     /**

@@ -1,4 +1,4 @@
-import { CGFscene } from '../lib/CGF.js';
+import { CGFcameraOrtho, CGFscene } from '../lib/CGF.js';
 import { CGFaxis,CGFcamera } from '../lib/CGF.js';
 
 
@@ -27,8 +27,6 @@ export class XMLscene extends CGFscene {
 
         this.sceneInited = false;
 
-        this.initCameras();
-
         this.enableTextures(true);
 
         this.gl.clearDepth(100.0);
@@ -44,7 +42,18 @@ export class XMLscene extends CGFscene {
      * Initializes the scene cameras.
      */
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+        this.cameras = [];
+        for(var key in this.graph.cameras) {
+            var camera = this.graph.cameras[key];
+            var camObj;
+            if(camera[0] == "perspective")
+                camObj = new CGFcamera(camera[3] * DEGREE_TO_RAD, camera[1], camera[2], camera[4], camera[5]);
+            else if(camera[0] == "ortho")
+                camObj = new CGFcameraOrtho(camera[3], camera[4], camera[6], camera[5], camera[1], camera[2], camera[7], camera[8], camera[9]);
+            this.cameras.push(camObj);
+        }
+        this.camera = this.cameras[0];
+        //this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -60,6 +69,7 @@ export class XMLscene extends CGFscene {
 
             if (this.graph.lights.hasOwnProperty(key)) {
                 var light = this.graph.lights[key];
+                var attn_offset = 0;
 
                 this.lights[i].setPosition(light[2][0], light[2][1], light[2][2], light[2][3]);
                 this.lights[i].setAmbient(light[3][0], light[3][1], light[3][2], light[3][3]);
@@ -70,6 +80,17 @@ export class XMLscene extends CGFscene {
                     this.lights[i].setSpotCutOff(light[6]);
                     this.lights[i].setSpotExponent(light[7]);
                     this.lights[i].setSpotDirection(light[8][0], light[8][1], light[8][2]);
+                    attn_offset += 3;
+                }
+
+                var attenuation = light[6+attn_offset];
+                if(attenuation != null) {
+                    if(attenuation[0] != 0)
+                        this.lights[i].setConstantAttenuation(attenuation[0])
+                    if(attenuation[1] != 0)
+                        this.lights[i].setLinearAttenuation(attenuation[1])
+                    if(attenuation[2] != 0)
+                        this.lights[i].setQuadraticAttenuation(attenuation[2])
                 }
 
                 this.lights[i].setVisible(true);
@@ -101,6 +122,8 @@ export class XMLscene extends CGFscene {
 
         this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
 
+        this.initCameras();
+
         this.initLights();
 
         this.sceneInited = true;
@@ -111,6 +134,8 @@ export class XMLscene extends CGFscene {
      */
     display() {
         // ---- BEGIN Background, camera and axis setup
+        if(!this.sceneInited)
+            return;
 
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -130,14 +155,11 @@ export class XMLscene extends CGFscene {
             this.lights[i].setVisible(true);
             this.lights[i].enable();
         }
+        // Draw axis
+        this.setDefaultAppearance();
 
-        if (this.sceneInited) {
-            // Draw axis
-            this.setDefaultAppearance();
-
-            // Displays the scene (MySceneGraph function).
-            this.graph.displayScene();
-        }
+        // Displays the scene (MySceneGraph function).
+        this.graph.displayScene();
 
         this.popMatrix();
         // ---- END Background, camera and axis setup
