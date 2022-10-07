@@ -52,6 +52,8 @@
         <texture id="ovenTop" file="scenes/images/oventop.jpg" />
         <texture id="oven" file="scenes/images/oven.jpg" />
         <texture id="ovenDoor" file="scenes/images/ovenDoor.jpg" />
+
+        <texture id="orange" file="scenes/images/orange.jpg" />
     </textures>
 
     <materials>
@@ -225,7 +227,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="orange" length_t="1" length_s="1"/>
         <children>
           <primitiveref id="orange" />
         </children>
@@ -237,7 +239,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="orange" length_t="1" length_s="1"/>
         <children>
           <primitiveref id="orange" />
         </children>
@@ -249,7 +251,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="orange" length_t="1" length_s="1"/>
         <children>
           <primitiveref id="orange" />
         </children>
@@ -261,7 +263,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="orange" length_t="1" length_s="1"/>
         <children>
           <primitiveref id="orange" />
         </children>
