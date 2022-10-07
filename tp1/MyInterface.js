@@ -21,13 +21,20 @@ export class MyInterface extends CGFinterface {
         // init GUI. For more information on the methods, check:
         //  http://workshop.chromeexperiments.com/examples/gui
 
+        return true;
+    }
+
+    postParsingSetup() {
         this.gui = new dat.GUI();
 
         // add a group of controls (and open/expand by defult)
+        this.gui.add(this.scene, 'selectedCamera', this.scene.cameraList).name('Cameras').onChange(this.scene.updateCamera.bind(this.scene));
+        for(var key in this.scene.lightList) {
+            //this.gui.add(this.scene, 'this.scene.lightVal[this.scene.lightList[key]]').name(key);
+        }
+        //this.gui.add(this.scene)
 
         this.initKeys();
-
-        return true;
     }
 
     /**

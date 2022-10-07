@@ -266,6 +266,8 @@ export class MySceneGraph {
             if (this.cameras[camId] != null)
                 return "ID must be unique for each view (conflict: ID = " + camId + ")";
 
+            global.push(camId);
+
             // Specifications for the current view.
             var upIndex;
             var reqs = ["near", "far"];
