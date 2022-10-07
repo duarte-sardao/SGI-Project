@@ -2,9 +2,9 @@
     <scene root="demoRoot" axis_length="5"/>
 
     <views default="defaultCamera">
-        <perspective id="defaultCamera" near="0.1" far="500" angle="45">
-            <from x="30" y="15  " z="30" />
-            <to x="0" y="-2" z="0" />
+        <perspective id="defaultCamera" near="0.1" far="500" angle="30">
+            <from x="15" y="10  " z="15" />
+            <to x="0" y="-3" z="0" />
         </perspective>
         <ortho id="orthCam"  near="0.1" far="500" left="-10" right="10" top="11" bottom="-11" >
             <from x="30" y="15  " z="30" />
@@ -196,7 +196,7 @@
 
       <component id="bowl">
         <transformation>
-          <translate x="7" y="3" z="8" />
+          <translate x="7" y="3" z="9" />
           <transformationref id="x90rot" />
         </transformation>
         <materials>
@@ -719,7 +719,7 @@
 
       <component id="chair">
         <transformation>
-          <translate x="0" y="0" z="0"/>
+          <translate x="0" y="0" z="4"/>
         </transformation>
         <materials>
             <material id="inherit" />
@@ -794,7 +794,7 @@
 
       <component id="table">
         <transformation>
-          <translate x="0" y="0" z="0"/>
+          <translate x="0" y="0" z="1"/>
         </transformation>
         <materials>
             <material id="inherit" />
