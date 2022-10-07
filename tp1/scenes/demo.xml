@@ -167,7 +167,7 @@
         <sphere radius="0.25" slices="20" stacks="20" />
       </primitive>
       <primitive id="pearTop">
-        <cylinder base="0.22" top="0.033" height="0.3" slices="10" stacks="2" />
+        <cylinder base="0.22" top="0.033" height="0.3" slices="30" stacks="2" />
       </primitive>
       <primitive id="pearThingy">
         <cylinder base="0.033" top="0.033" height="0.2" slices="10" stacks="1" />
