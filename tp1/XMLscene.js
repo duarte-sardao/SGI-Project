@@ -66,8 +66,7 @@ export class XMLscene extends CGFscene {
      */
     initLights() {
         var i = 0;
-        this.lightList = {};
-        this.lightVal = [];
+        this.lightVal = {};
         // Lights index.
 
         // Reads the lights from the scene graph.
@@ -109,8 +108,7 @@ export class XMLscene extends CGFscene {
 
                 this.lights[i].update();
 
-                this.lightList[key] = i;
-                this.lightVal.push(light[0]);
+                this.lightVal[key] = light[0];
 
                 i++;
             }
@@ -169,14 +167,17 @@ export class XMLscene extends CGFscene {
         this.pushMatrix();
         this.axis.display();
 
-        for (var i = 0; i < this.lights.length; i++) {
-            if(this.lightVal[i]) {
+        let i = 0;
+        for (var key in this.lightVal) {
+            if(this.lightVal[key]) {
                 this.lights[i].setVisible(true);
                 this.lights[i].enable();
             } else {
                 this.lights[i].setVisible(false);
                 this.lights[i].disable();
             }
+            this.lights[i].update();
+            i++;
         }
         // Draw axis
         this.setDefaultAppearance();
