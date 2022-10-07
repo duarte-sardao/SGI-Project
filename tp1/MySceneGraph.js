@@ -616,6 +616,13 @@ export class MySceneGraph {
         return null;
     }
 
+    /**
+     * Parse a transformation block
+     * @param {node being parsed} node
+     * @param {id of node} transformationID
+     * @param {if node is component, where transformationrefs are also taken into account} component
+     * @returns combined transformation matrix
+     */
     parseTransformation(node, transformationID, component) {
         var transfMatrix = mat4.create();
         var grandChildren = node.children;

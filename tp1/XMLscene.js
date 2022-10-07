@@ -76,7 +76,7 @@ export class XMLscene extends CGFscene {
 
             if (this.graph.lights.hasOwnProperty(key)) {
                 var light = this.graph.lights[key];
-                var attn_offset = 0;
+                var attn_offset = 0; //attenuation values position changes depending on wether its spot or omni light, compensate
 
                 this.lights[i].setPosition(light[2][0], light[2][1], light[2][2], light[2][3]);
                 this.lights[i].setAmbient(light[3][0], light[3][1], light[3][2], light[3][3]);
@@ -116,6 +116,9 @@ export class XMLscene extends CGFscene {
         this.lightNumb = i;
     }
 
+    /**
+     * Update a camera after swithcing on gui
+     */
     updateCamera() {
         this.camera = this.cameras[this.selectedCamera];
         this.interface.setActiveCamera(this.camera);

@@ -70,11 +70,13 @@ export class MySphere extends MyPrimitive {
                 this.vertices.push(...vert3); //2
                 this.vertices.push(...vert4); //3
 
-                var cp = this.crossProduct(vert1, vert2, vert3);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
+                //normals
+                let midpoint = [0,0,0];
+                let vec1 = this.normalize(this.subtractPoints(vert1, midpoint));
+                let vec2 = this.normalize(this.subtractPoints(vert2, midpoint));
+                let vec3 = this.normalize(this.subtractPoints(vert3, midpoint));
+                let vec4 = this.normalize(this.subtractPoints(vert4, midpoint));
+                this.normals.push(...vec1);this.normals.push(...vec2);this.normals.push(...vec3);this.normals.push(...vec4);
 
                 this.indices.push(accSlices+4*i, (accSlices+4*i+1), (accSlices+4*i+2));
                 this.indices.push( (accSlices+4*i+1),  (accSlices+4*i+3), (accSlices+4*i+2));

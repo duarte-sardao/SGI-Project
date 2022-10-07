@@ -24,6 +24,9 @@ export class MyInterface extends CGFinterface {
         return true;
     }
 
+    /**
+     * Setups gui after parsing is done (ie setup cameras and lights we got from parsing)
+     */
     postParsingSetup() {
         this.gui = new dat.GUI();
 

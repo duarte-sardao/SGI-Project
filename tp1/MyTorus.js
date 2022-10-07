@@ -40,24 +40,34 @@ export class MyTorus extends MyPrimitive {
 
         for(var j = 0; j < this.loops; j++) { //basically make a bunch of stacked cylinders
 
+            let cosLoop = Math.cos(angLoop);
+            let cosNLoop = Math.cos(nextLoop);
+            let sinLoop = Math.sin(angLoop);
+            let sinNLoop = Math.sin(nextLoop)
+
             for(var i = 0; i < this.slices; i++){
                 // All vertices have to be declared for a given face
                 // even if they are shared with others, as the normals 
                 // in each face will be different
 
-                var xcord = (this.outer+this.inner*Math.cos(angLoop))*Math.cos(angSlice);
-                var ycord = (this.outer+this.inner*Math.cos(angLoop))*Math.sin(angSlice);
+                let sinSlice = Math.sin(angSlice);
+                let sinNSlice = Math.sin(nextSlice);
+                let cosSlice = Math.cos(angSlice);
+                let cosNSlice = Math.cos(nextSlice);
+
+                var xcord = (this.outer+this.inner*cosLoop)*cosSlice;
+                var ycord = (this.outer+this.inner*cosLoop)*sinSlice;
                 var zcordLoop = this.inner*Math.sin(angLoop);
 
-                var xcordNextSlice = (this.outer+this.inner*Math.cos(angLoop))*Math.cos(nextSlice);
-                var ycordNextSlice = (this.outer+this.inner*Math.cos(angLoop))*Math.sin(nextSlice);
+                var xcordNextSlice = (this.outer+this.inner*cosLoop)*cosNSlice;
+                var ycordNextSlice = (this.outer+this.inner*cosLoop)*sinNSlice;
 
-                var xcordNextLoop = (this.outer+this.inner*Math.cos(nextLoop))*Math.cos(angSlice);
-                var ycordNextLoop = (this.outer+this.inner*Math.cos(nextLoop))*Math.sin(angSlice);
+                var xcordNextLoop = (this.outer+this.inner*cosNLoop)*cosSlice;
+                var ycordNextLoop = (this.outer+this.inner*cosNLoop)*sinSlice;
 
-                var xcordNextSliceLoop = (this.outer+this.inner*Math.cos(nextLoop))*Math.cos(nextSlice);
-                var ycordNextSliceLoop = (this.outer+this.inner*Math.cos(nextLoop))*Math.sin(nextSlice);
-                var zcordNextLoop = this.inner*Math.sin(nextLoop);
+                var xcordNextSliceLoop = (this.outer+this.inner*cosNLoop)*cosNSlice;
+                var ycordNextSliceLoop = (this.outer+this.inner*cosNLoop)*sinNSlice;
+                var zcordNextLoop = this.inner*sinNLoop;
                 
 
                 var vert1 = [xcord, ycord, zcordLoop]; 
@@ -70,11 +80,14 @@ export class MyTorus extends MyPrimitive {
                 this.vertices.push(...vert3); //2
                 this.vertices.push(...vert4); //3
 
-                var cp = this.crossProduct(vert1, vert2, vert3);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
-                this.normals.push(...cp);
+                var normal1 = [cosLoop*cosSlice, cosLoop*sinSlice, sinLoop];
+                var normal2 = [cosLoop*cosNSlice, cosLoop*sinNSlice, sinLoop];
+                var normal3 = [cosNLoop*cosSlice, cosNLoop*sinSlice, sinNLoop];
+                var normal4 = [cosNLoop*cosNSlice, cosNLoop*sinNSlice, sinNLoop];
+                this.normals.push(...normal1);
+                this.normals.push(...normal2);
+                this.normals.push(...normal3);
+                this.normals.push(...normal4);
 
                 this.indices.push(accSlices+4*i, (accSlices+4*i+1), (accSlices+4*i+2));
                 this.indices.push( (accSlices+4*i+1),  (accSlices+4*i+3), (accSlices+4*i+2));
