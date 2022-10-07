@@ -183,7 +183,7 @@ export class XMLscene extends CGFscene {
             this.lights[i].update();
             i++;
         }
-        // Draw axis
+        
         this.setDefaultAppearance();
 
         // Displays the scene (MySceneGraph function).

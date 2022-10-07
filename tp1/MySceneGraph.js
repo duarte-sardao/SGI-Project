@@ -1058,8 +1058,11 @@ export class MySceneGraph {
         var constant = this.reader.getFloat(node, 'constant');
         if (!(constant != null && !isNaN(constant)))
             return "unable to parse constant of the " + messageError;
-        if(constant != 0)
+        if(constant != 0) {
             notzero = true;
+            if(constant != 1)
+                return "invalid non-zero value for constant only 1.0 allowed of " + messageError
+        }
 
         // linear
         var linear = this.reader.getFloat(node, 'linear');
@@ -1070,6 +1073,8 @@ export class MySceneGraph {
                 return "more than one non zero value set for attenuation of the " + messageError;
             else
                 notzero = true;
+            if(linear != 1)
+                return "invalid non-zero value for linear only 1.0 allowed of " + messageError
         }
 
         // quadratic
@@ -1081,8 +1086,10 @@ export class MySceneGraph {
                 return "more than one non zero value set for attenuation of the " + messageError;
             else
                 notzero = true;
+            if(quadratic != 1)
+                return "invalid non-zero value for quadratic only 1.0 allowed of " + messageError
+    
         }
-
         attenuation.push(...[constant, linear, quadratic]);
 
         return attenuation;
