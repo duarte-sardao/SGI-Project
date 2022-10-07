@@ -58,7 +58,7 @@ export class XMLscene extends CGFscene {
             this.cameraList[camera[1]] = i;
             i++;
         }
-        this.camera = this.cameras[this.selectedCamera];
+        this.updateCamera();
         //this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
     /**
@@ -118,6 +118,7 @@ export class XMLscene extends CGFscene {
 
     updateCamera() {
         this.camera = this.cameras[this.selectedCamera];
+        this.interface.setActiveCamera(this.camera);
     }
 
     setDefaultAppearance() {

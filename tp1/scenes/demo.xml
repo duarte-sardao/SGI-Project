@@ -7,8 +7,12 @@
             <to x="0" y="-3" z="0" />
         </perspective>
         <ortho id="orthCam"  near="0.1" far="500" left="-10" right="10" top="11" bottom="-11" >
-            <from x="30" y="15  " z="30" />
-            <to x="0" y="-2" z="0" />
+            <from x="15" y="10" z="15" />
+            <to x="0" y="-3" z="0" />
+        </ortho>
+        <ortho id="topDownCam"  near="0.1" far="500" left="25" right="0" top="0" bottom="15" >
+            <from x="0" y="10" z="0" />
+            <to x="0.1" y="-5" z="0" />
         </ortho>
     </views>
 
