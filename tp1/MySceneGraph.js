@@ -991,13 +991,9 @@ export class MySceneGraph {
             component['children'] = childComps;
 
             this.components[componentID] = component;
-            //assume first is root
-            if(this.root == null)
-                this.root = componentID;
         }
 
-        this.onXMLMinorError("To do: Verify component parsing.");
-        return this.componentGraphCheck(this.root, [this.root]);
+        return this.componentGraphCheck(this.idRoot, [this.idRoot]);
     }
 
     /**
@@ -1180,7 +1176,7 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
-        this.displayNode(this.root, null, null);
+        this.displayNode(this.idRoot, null, null);
 
         //To test the parsing/creation of the primitives, call the display function directly
         //this.primitives['demoRectangle'].display();
