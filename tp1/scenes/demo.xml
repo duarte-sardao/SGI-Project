@@ -30,15 +30,15 @@
         </omni>
         <omni id="ovenLightOmni" enabled="1">
             <location x="11.5" y="3.5" z="1.5" w="1.0" />
-            <ambient r="1" g="0" b="0" a="0.1" />
+            <ambient r="0.1" g="0" b="0" a="0.1" />
             <diffuse r="1.0" g="0.1" b="0.1" a="1.0" />
             <specular r="1.0" g="0.1" b="0.1" a="1.0" />
             <attenuation constant="0" linear="0" quadratic="1" />  
         </omni>
-        <spot id="ovenLightSpot" enabled="1" angle="60" exponent="1">
-            <location x="11.5" y="3.5" z="1.5" w="1.0" />
-            <target x="11.5" y="10" z="1.5" w="1.0" />
-            <ambient r="0" g="0" b="0" a="0.1" />
+        <spot id="ovenLightSpot" enabled="1" angle="45" exponent="10">
+            <location x="11.5" y="1.5" z="1.5" w="1.0" />
+            <target x="0" y="10" z="0" w="1.0" />
+            <ambient r="0.3" g="0" b="0" a="0.1" />
             <diffuse r="1.0" g="0.1" b="0.1" a="1.0" />
             <specular r="1.0" g="0.1" b="0.1" a="1.0" />
         </spot>
@@ -67,8 +67,8 @@
         <material id="basicMaterial" shininess="10">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
-            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+            <specular r="0.3" g="0.3" b="0.3" a="1.0" />
         </material>
         <material id="redMaterial" shininess="120">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
@@ -80,7 +80,7 @@
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="1" g="1" b="1" a="1.0" />
             <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
-            <specular r="1.0" g="0.5" b="0.5" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
     </materials>
 
