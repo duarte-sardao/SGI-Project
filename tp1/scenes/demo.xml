@@ -24,9 +24,9 @@
     <lights>
         <omni id="demoLight" enabled="1">
             <location x="9.8" y="11.9" z="10" w="1.0" />
-            <ambient r="0.05" g="0.05" b="0.05" a="1.0" />
-            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <ambient r="0.025" g="0.025" b="0.05" a="0.1" />
+            <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
+            <specular r="0.50" g="0.50" b="0.75" a="0.1" />
         </omni>
         <omni id="ovenLightOmni" enabled="1">
             <location x="11.5" y="3.5" z="1.5" w="1.0" />
@@ -41,6 +41,21 @@
             <ambient r="0.3" g="0" b="0" a="0.1" />
             <diffuse r="1.0" g="0.1" b="0.1" a="1.0" />
             <specular r="1.0" g="0.1" b="0.1" a="1.0" />
+        </spot>
+        <omni id="candleLightOm" enabled="1">
+            <location x="9" y="4.5" z="8" w="1.0" />
+            <ambient r="1.0" g="0.6" b="0" a="0.1" />
+            <diffuse r="1.0" g="0.6" b="0" a="1.0" />
+            <specular r="1.0" g="0.6" b="0.1" a="1.0" />
+            <attenuation constant="0" linear="1" quadratic="0" />  
+        </omni>
+        <spot id="candleLight" enabled="1" angle="45" exponent="5">
+            <location x="9" y="5" z="8" w="1.0" />
+            <target x="0" y="-10" z="0" w="1.0" />
+            <ambient r="0.1" g="0.06" b="0" a="0.1" />
+            <diffuse r="1.0" g="0.6" b="0" a="1.0" />
+            <specular r="1.0" g="0.6" b="0.1" a="1.0" />
+            <attenuation constant="1" linear="0" quadratic="0" />  
         </spot>
     </lights>
 
@@ -187,8 +202,23 @@
         <torus inner="0.066" outer="0.7" slices="20" loops="20" />
       </primitive>
 
-      <primitive id="RecTest">
-        <rectangle x1="0" y1="0" x2="2" y2="2" />
+      <primitive id="cakeSides">
+        <cylinder base="1.1" top="1.1" height="0.68" slices="30" stacks="3" />
+      </primitive>
+      <primitive id="cakeCandle">
+        <cylinder base="0.05" top="0.05" height="0.5" slices="8" stacks="3" />
+      </primitive>
+      <primitive id="cakeTop">
+        <sphere radius="1.1" slices="20" stacks="20" />
+      </primitive>
+      <primitive id="candleTop">
+        <sphere radius="0.07" slices="8" stacks="4" />
+      </primitive>
+      <primitive id="cakeFrosting">
+        <torus inner="0.04" outer="0.14" slices="15" loops="15" />
+      </primitive>
+      <primitive id="cakeCherry">
+        <sphere radius="0.14" slices="8" stacks="8" />
       </primitive>
     </primitives>
 
@@ -208,8 +238,194 @@
               <componentref id="chair" />
               <componentref id="table" />
               <componentref id="bowl" />
+              <componentref id="cake :)" />
             </children>
         </component>
+
+      
+      <component id="cake :)">
+        <transformation>
+          <translate x="9" y="3" z="8" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="bowlCake" />
+          <componentref id="cakeObj" />
+        </children>
+      </component>
+      <component id="cakeObj">
+        <transformation>
+          <transformationref id="x90rot" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="cakeSides" />
+          <componentref id="cakeCandle" />
+          <componentref id="cakeTop" />
+          <componentref id="baubleGroup4" />
+          <componentref id="baubleGroup4Rot" />
+        </children>
+      </component>
+      <component id="cakeCandle">
+        <transformation>
+          <translate x="0" y="0" z="0.8" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="cakeCandle" />
+          <componentref id="candleEnd" />
+        </children>
+      </component>
+      <component id="candleEnd">
+        <transformation>
+          <translate x="0" y="0" z="0.6" />
+          <scale x="1" y="1" z="2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="candleTop" />
+        </children>
+      </component>
+      <component id="cakeTop">
+        <transformation>
+          <translate x="0" y="0" z="0.66" />
+          <scale x="1" y="1" z="0.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="cakeTop" />
+        </children>
+      </component>
+      <component id="baubleGroup4Rot">
+        <transformation>
+          <rotate axis="z" angle="45" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="baubleGroup4" />
+        </children>
+      </component>
+      <component id="baubleGroup4">
+        <transformation>
+          <rotate axis="x" angle="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="baubleGroup2" />
+          <componentref id="baubleGroup2Rot" />
+        </children>
+      </component>
+      <component id="baubleGroup2Rot">
+        <transformation>
+          <rotate axis="z" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="baubleGroup2" />
+        </children>
+      </component>
+      <component id="baubleGroup2">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cakeBauble" />
+          <componentref id="cakeBaubleRot" />
+        </children>
+      </component>
+      <component id="cakeBaubleRot">
+        <transformation>
+          <rotate axis="z" angle="180" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cakeBauble" />
+        </children>
+      </component>
+      <component id="cakeBauble">
+        <transformation>
+          <translate x="0" y="-0.8" z="0.83" />
+          <rotate axis="x" angle="10" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="cakeFrosting" />
+          <componentref id="cakeCherry" />
+        </children>
+      </component>
+      <component id="cakeCherry">
+        <transformation>
+          <translate x="0" y="0" z="0.07" />
+        </transformation>
+        <materials>
+            <material id="metallic" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="cakeCherry" />
+        </children>
+      </component>
+      <component id="bowlCake">
+        <transformation>
+          <transformationref id="x90rot" />
+          <scale x="1.4" y="1.4" z="0.4" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="bowlObj" />
+        </children>
+      </component>
+
+      <component id="bowlObj">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="bowl" />
+          <primitiveref id="bowl2" />
+        </children>
+      </component>
 
       <component id="bowl">
         <transformation>
@@ -221,8 +437,7 @@
         </materials>
         <texture id="none"/>
         <children>
-          <primitiveref id="bowl" />
-          <primitiveref id="bowl2" />
+          <componentref id="bowlObj" />
           <componentref id="orange1" />
           <componentref id="orange2" />
           <componentref id="orange3" />
