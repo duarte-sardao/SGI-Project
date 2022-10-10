@@ -169,11 +169,8 @@
       <primitive id="cabinSide">
         <rectangle x1="0" y1="0" x2="2" y2="2" />
       </primitive>
-      <primitive id="sinkLR">
-        <rectangle x1="0" y1="0" x2="1.66" y2="1.5" />
-      </primitive>
-      <primitive id="sinkFB">
-        <rectangle x1="0" y1="0" x2="1" y2="2" />
+      <primitive id="sinkBottom">
+        <rectangle x1="0" y1="0" x2="3" y2="2" />
       </primitive>
 
       <primitive id="trig">
@@ -659,12 +656,53 @@
         <children>
           <componentref id="sinkL" />
           <componentref id="sinkR" />
+          <componentref id="sinkF" />
+          <componentref id="sinkB" />
+          <componentref id="sinkBottom" />
+        </children>
+      </component>
+      <component id="sinkBottom">
+        <transformation>
+          <translate x="3" y="1" z="2" />
+          <transformationref id="x90rot"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="sinkBottom" />
+        </children>
+      </component>
+      <component id="sinkB">
+        <transformation>
+          <translate x="0" y="0" z="-1.17" />
+          <scale x="1" y="1" z="0.8" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="sinkF" />
+        </children>
+      </component>
+      <component id="sinkF">
+        <transformation>
+          <translate x="4.5" y="1.5" z="1.6" />
+          <scale x="1.7" y="0.75" z="0.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cube" />
         </children>
       </component>
       <component id="sinkR">
         <transformation>
-          <translate x="9" y="0" z="1.66" />
-          <rotate axis="y" angle="180"/>
+          <translate x="3" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -676,15 +714,26 @@
       </component>
       <component id="sinkL">
         <transformation>
-          <translate x="3.5" y="1" z="1.66" />
-          <rotate axis="y" angle="90"/>
+          <translate x="3" y="1.5" z="0.85" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <primitiveref id="sinkLR" />
+          <componentref id="sinkLR" />
+        </children>
+      </component>
+      <component id="sinkLR">
+        <transformation>
+          <scale x="0.2" y="0.75" z="0.60" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cube" />
         </children>
       </component>
 
