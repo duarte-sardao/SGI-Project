@@ -174,12 +174,13 @@ export class XMLscene extends CGFscene {
         let i = 0;
         for (var key in this.lightVal) {
             if(this.lightVal[key]) {
-                this.lights[i].setVisible(true);
+                //this.lights[i].setVisible(true);
                 this.lights[i].enable();
             } else {
-                this.lights[i].setVisible(false);
+                //this.lights[i].setVisible(false);
                 this.lights[i].disable();
             }
+            this.lights[i].setVisible(false);
             this.lights[i].update();
             i++;
         }
