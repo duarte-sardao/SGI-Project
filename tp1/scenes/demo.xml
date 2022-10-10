@@ -169,6 +169,12 @@
       <primitive id="cabinSide">
         <rectangle x1="0" y1="0" x2="2" y2="2" />
       </primitive>
+      <primitive id="sinkLR">
+        <rectangle x1="0" y1="0" x2="1.66" y2="1.5" />
+      </primitive>
+      <primitive id="sinkFB">
+        <rectangle x1="0" y1="0" x2="1" y2="2" />
+      </primitive>
 
       <primitive id="trig">
         <triangle x1="-2" y1="1" z1="0" x2="2" y2="1" z2="0" x3="0" y3 ="1" z3="-3.464" />
@@ -638,8 +644,49 @@
           <componentref id="frontCabinTrans" />
           <componentref id="leftCabinTrans" />
           <componentref id="drawers" />
+          <componentref id="sink" />
         </children>
       </component>  
+
+      <component id="sink">
+        <transformation>
+          <translate x="0" y="0" z="0"/>
+        </transformation>
+        <materials>
+            <material id="metallic" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="sinkL" />
+          <componentref id="sinkR" />
+        </children>
+      </component>
+      <component id="sinkR">
+        <transformation>
+          <translate x="9" y="0" z="1.66" />
+          <rotate axis="y" angle="180"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="sinkL" />
+        </children>
+      </component>
+      <component id="sinkL">
+        <transformation>
+          <translate x="3.5" y="1" z="1.66" />
+          <rotate axis="y" angle="90"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="sinkLR" />
+        </children>
+      </component>
 
       <component id="drawers">
         <transformation>
