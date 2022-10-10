@@ -79,23 +79,47 @@
     </textures>
 
     <materials>
-        <material id="basicMaterial" shininess="10">
+        <material id="basicMaterial" shininess="1">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
             <specular r="0.3" g="0.3" b="0.3" a="1.0" />
         </material>
-        <material id="redMaterial" shininess="120">
+        <material id="redMaterial" shininess="32">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="1.0" g="0.1" b="0.1" a="1.0" />
-            <diffuse r="0.8" g="0.3" b="0.3" a="1.0" />
-            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+            <diffuse r="0.5" g="0.0" b="0.0" a="1.0" />
+            <specular r="0.7" g="0.7" b="0.7" a="1.0" />
         </material>
-        <material id="metallic" shininess="120">
+        <material id="metallic" shininess="89">
+            <emission r="0.05" g="0.05" b="0.05" a="0.0" />
+            <ambient r="0.25" g="0.25" b="0.25" a="1.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+            <specular r="1" g="1" b="1" a="1.0" />
+        </material>
+        <material id="hotMetallic" shininess="89">
+            <emission r="0.5" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.25" g="0.25" b="0.25" a="1.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+            <specular r="1" g="1" b="1" a="1.0" />
+        </material>
+        <material id="cherryMat" shininess="120">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="1" g="1" b="1" a="1.0" />
-            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <ambient r="0.5" g="0.05" b="0.05" a="1.0" />
+            <diffuse r="0.8" g="0.3" b="0.3" a="1.0" />
+            <specular r="1.0" g="0.5" b="0.5" a="1.0" />
+        </material>
+        <material id="candleMat" shininess="120">
+            <emission r="1.0" g="0.6" b="0.1" a="1.0" />
+            <ambient r="0.1" g="0.06" b="0" a="0.1" />
+            <diffuse r="1.0" g="0.6" b="0" a="1.0" />
+            <specular r="1.0" g="0.6" b="0.1" a="1.0" />
+        </material>
+        <material id="gold" shininess="51.2">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.24725" g="0.1995" b="0.0745" a="1.0" />
+            <diffuse r="0.75164" g="0.60648" b="0.22648" a="1.0" />
+            <specular r="0.628281" g="0.555802" b="0.366065" a="1.0" />
         </material>
     </materials>
 
@@ -133,10 +157,16 @@
       <primitive id="floor">
         <rectangle x1="0" y1="0" x2="15" y2="15" />
       </primitive>
-      <primitive id="cabinLong">
+      <primitive id="cabinTop">
+        <rectangle x1="0" y1="0" x2="3" y2="2" />
+      </primitive>
+      <primitive id="cabinTopCut">
+        <rectangle x1="0" y1="0" x2="3" y2="0.33" />
+      </primitive>
+      <primitive id="cabinFront">
         <rectangle x1="0" y1="0" x2="9" y2="2" />
       </primitive>
-      <primitive id="cabinShort">
+      <primitive id="cabinSide">
         <rectangle x1="0" y1="0" x2="2" y2="2" />
       </primitive>
 
@@ -220,6 +250,10 @@
       <primitive id="cakeCherry">
         <sphere radius="0.14" slices="8" stacks="8" />
       </primitive>
+
+      <primitive id="handle">
+        <sphere radius="0.2" slices="8" stacks="8" />
+      </primitive>
     </primitives>
 
     <components>
@@ -291,7 +325,7 @@
           <scale x="1" y="1" z="2" />
         </transformation>
         <materials>
-            <material id="inherit" />
+            <material id="candleMat" />
         </materials>
         <texture id="none"/>
         <children>
@@ -392,9 +426,9 @@
           <translate x="0" y="0" z="0.07" />
         </transformation>
         <materials>
-            <material id="metallic" />
+            <material id="cherryMat" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="none"/>
         <children>
           <primitiveref id="cakeCherry" />
         </children>
@@ -599,11 +633,13 @@
         <texture id="cabinDef" length_s="2" length_t="2"/>
         <children>
           <componentref id="topCabinTrans" />
+          <componentref id="topCabinTrans2" />
+          <componentref id="topCabinTransShort" />
           <componentref id="frontCabinTrans" />
           <componentref id="leftCabinTrans" />
           <componentref id="drawers" />
         </children>
-      </component>
+      </component>  
 
       <component id="drawers">
         <transformation>
@@ -621,14 +657,14 @@
       </component>
       <component id="drawerPair3">
         <transformation>
-          <translate x="3" y="0" z="0"/>
+          <translate x="6" y="0" z="0"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="drawerPair2" />
+          <componentref id="drawerPair" />
         </children>
       </component>
       <component id="drawerPair2">
@@ -640,7 +676,7 @@
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="drawerPair" />
+          <componentref id="singleDrawer2" />
         </children>
       </component>
 
@@ -660,6 +696,18 @@
       <component id="singleDrawer1">
         <transformation>
           <translate x="2" y="1.4" z="2"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="drawerScaled" />
+          <componentref id="drawerHandle" />
+        </children>
+      </component>
+      <component id="drawerScaled">
+        <transformation>
           <scale x="1" y="0.30" z="0.1" />
         </transformation>
         <materials>
@@ -668,6 +716,18 @@
         <texture id="inherit"/>
         <children>
           <componentref id="cube" />
+        </children>
+      </component>
+      <component id="drawerHandle">
+        <transformation>
+          <translate x="0" y="0" z="0.22" />
+        </transformation>
+        <materials>
+            <material id="gold" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="handle" />
         </children>
       </component>
       <component id="singleDrawer2">
@@ -843,7 +903,7 @@
       </component>
       <component id="topOvenTrans">
         <materials>
-            <material id="inherit" />
+            <material id="hotMetallic" />
         </materials>
         <texture id="ovenTop" length_s="3" length_t="3" />
         <transformation>
@@ -1211,6 +1271,34 @@
           <primitiveref id="floor" />
         </children>
       </component>
+
+      <component id="topCabinTrans2">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <transformation>
+          <translate x="6" y="0" z="0" />
+        </transformation>
+        <children>
+          <componentref id="topCabinTrans" />
+        </children>
+      </component>
+
+      <component id="topCabinTransShort">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="cabinTop" length_s="3" length_t="2"/>
+        <transformation>
+          <translate x="3" y="2" z="2" />
+          <transformationref id="x90rot"/>
+        </transformation>
+        <children>
+          <primitiveref id="cabinTopCut" />
+        </children>
+      </component>
+
       <component id="topCabinTrans">
         <materials>
             <material id="inherit" />
@@ -1221,7 +1309,7 @@
           <transformationref id="x90rot"/>
         </transformation>
         <children>
-          <primitiveref id="cabinLong" />
+          <primitiveref id="cabinTop" />
         </children>
       </component>
 
@@ -1234,7 +1322,7 @@
           <translate x="0" y="0" z="2" />
         </transformation>
         <children>
-          <primitiveref id="cabinLong" />
+          <primitiveref id="cabinFront" />
         </children>
       </component>
 
@@ -1249,7 +1337,7 @@
           <transformationref id="y90rot"/>
         </transformation>
         <children>
-          <primitiveref id="cabinShort" />
+          <primitiveref id="cabinSide" />
         </children>
       </component>
 
