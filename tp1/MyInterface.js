@@ -32,8 +32,9 @@ export class MyInterface extends CGFinterface {
 
         // add a group of controls (and open/expand by defult)
         this.gui.add(this.scene, 'selectedCamera', this.scene.cameraList).name('Cameras').onChange(this.scene.updateCamera.bind(this.scene));
+        var folder = this.gui.addFolder('Lights');
         for(var key in this.scene.lightVal) {
-            this.gui.add(this.scene.lightVal, key).name(key);
+            folder.add(this.scene.lightVal, key).name(key);
         }
         //this.gui.add(this.scene)
 
