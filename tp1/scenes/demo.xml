@@ -22,9 +22,15 @@
     </ambient>
 
     <lights>
-        <omni id="demoLight" enabled="1">
+        <omni id="omniLight" enabled="1">
             <location x="9.8" y="11.9" z="10" w="1.0" />
             <ambient r="0.025" g="0.025" b="0.05" a="0.1" />
+            <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
+            <specular r="0.50" g="0.50" b="0.75" a="0.1" />
+        </omni>
+        <omni id="omniLightBright" enabled="0">
+            <location x="9.8" y="11.9" z="10" w="1.0" />
+            <ambient r="0.1" g="0.1" b="0.1" a="0.1" />
             <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
             <specular r="0.50" g="0.50" b="0.75" a="0.1" />
         </omni>
@@ -60,7 +66,7 @@
     </lights>
 
     <textures>
-        <texture id="demoTexture" file="scenes/images/unknown.jpg" />
+        <texture id="unknown" file="scenes/images/unknown.jpg" />
         <texture id="wallTexture" file="scenes/images/wall.jpg" />
         <texture id="floorTexture" file="scenes/images/floor.jpg" />
 
@@ -76,6 +82,9 @@
         <texture id="ovenDoor" file="scenes/images/ovenDoor.jpg" />
 
         <texture id="orange" file="scenes/images/orange.jpg" />
+        <texture id="pear" file="scenes/images/pear.jpg" />
+
+        <texture id="brown" file="scenes/images/brown.jpg" />
     </textures>
 
     <materials>
@@ -120,6 +129,12 @@
             <ambient r="0.24725" g="0.1995" b="0.0745" a="1.0" />
             <diffuse r="0.75164" g="0.60648" b="0.22648" a="1.0" />
             <specular r="0.628281" g="0.555802" b="0.366065" a="1.0" />
+        </material>
+        <material id="pearl" shininess="11.264">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.25" g="0.20725" b="0.20725" a="1.0" />
+            <diffuse r="1" g="0.829" b="0.829" a="1.0" />
+            <specular r="0.296648" g="0.296648" b="0.296648" a="1.0" />
         </material>
     </materials>
 
@@ -279,7 +294,7 @@
             <materials>
                 <material id="basicMaterial" />
             </materials>
-          <texture id="demoTexture" length_s="1" length_t="1" />
+          <texture id="unknown" length_s="1" length_t="1" />
             <children>
               <componentref id="walls" />
               <componentref id="cabin" />
@@ -312,7 +327,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="brown" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="cakeSides" />
           <componentref id="cakeCandle" />
@@ -328,7 +343,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="unknown" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="cakeCandle" />
           <componentref id="candleEnd" />
@@ -578,7 +593,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="pear" length_s="1" length_t="1"/>
         <children>
           <componentref id="pearbase" />
           <componentref id="peartop" />
@@ -591,7 +606,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="inherit"/>
         <children>
           <primitiveref id="orange" />
         </children>
@@ -604,7 +619,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="inherit"/>
         <children>
           <primitiveref id="pearTop" />
           <componentref id="pearend" />
@@ -617,7 +632,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="brown" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="pearThingy" />
         </children>
@@ -662,7 +677,7 @@
           <translate x="0" y="0" z="0"/>
         </transformation>
         <materials>
-            <material id="metallic" />
+            <material id="pearl" />
         </materials>
         <texture id="none"/>
         <children>
