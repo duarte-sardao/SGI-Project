@@ -284,6 +284,10 @@
       <primitive id="leverBase">
         <torus inner="0.05" outer="0.1" slices="20" loops="20" />
       </primitive>
+
+      <primitive id="testeTrig">
+        <triangle x1="0" y1="0" z1="0" x2="-0.5" y2="1" z2="0" x3="-1" y3 ="0" z3="0" />
+      </primitive>
     </primitives>
 
     <components>
@@ -303,8 +307,22 @@
               <componentref id="table" />
               <componentref id="bowl" />
               <componentref id="cake :)" />
+              <componentref id="trigTeste" />
             </children>
         </component>
+
+        <component id="trigTeste">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="testeTrig" />
+        </children>
+      </component>
 
       
       <component id="cake :)">
@@ -678,6 +696,8 @@
         </transformation>
         <materials>
             <material id="pearl" />
+            <material id="gold" />
+            <material id="candleMat" />
         </materials>
         <texture id="none"/>
         <children>
