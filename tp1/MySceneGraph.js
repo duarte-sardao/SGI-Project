@@ -237,7 +237,6 @@ export class MySceneGraph {
      */
     parseView(viewsNode) {
         //this.onXMLMinorError("To do: Parse views and create cameras.");
-        this.onXMLMinorError("To do: Confirm views and cameras work");
 
         var children = viewsNode.children;
 
@@ -503,7 +502,6 @@ export class MySceneGraph {
 
         //For each texture in textures block, check ID and file URL
         //this.onXMLMinorError("To do: Parse textures.");
-        this.onXMLMinorError("To do: Confirm textures parse.");
 
         this.textures  = {};
 
@@ -611,7 +609,6 @@ export class MySceneGraph {
             this.materials[materialID] = global;
         }
 
-        this.onXMLMinorError("Verify material parsing");
         this.log("Parsed materials");
         return null;
     }
@@ -715,7 +712,6 @@ export class MySceneGraph {
             this.transformations[transformationID] = transfMatrix;
         }
 
-        this.onXMLMinorError("To do: verify transformations");
         this.log("Parsed transformations");
         return null;
     }
@@ -871,7 +867,6 @@ export class MySceneGraph {
             this.primitives[primitiveId] = prim;
         }
 
-        console.warn("To do: Confirm primitive parsing");
         this.log("Parsed primitives");
         return null;
     }
