@@ -46,8 +46,8 @@ export class MyTriangle extends MyPrimitive {
 		var a = this.dist(0, 1);
 		var b = this.dist(1, 2);
 		var c = this.dist(0, 2);
-		var cosalpha = (Math.pow(a, 2) - Math.pow(b,2) + Math.pow(c, 2)) / (2*a*c);
-		var sinalpha = Math.sqrt(1-Math.pow(cosalpha, 2));
+		var cosalpha = (a*a- b*b + c*c) / (2*a*c);
+		var sinalpha = Math.sqrt(1-cosalpha*cosalpha);
 
 		var length_u = Math.max(this.x1, this.x2, this.x3) - Math.min(this.x1, this.x2, this.x3);
 		var length_v = Math.max(this.y1, this.y2, this.y3) - Math.min(this.y1, this.y2, this.y3);

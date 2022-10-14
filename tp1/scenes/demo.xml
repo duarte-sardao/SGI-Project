@@ -6,6 +6,10 @@
             <from x="15" y="10  " z="15" />
             <to x="0" y="-3" z="0" />
         </perspective>
+        <perspective id="seatedCam" near="0.1" far="500" angle="50">
+            <from x="1" y="5" z="10" />
+            <to x="10" y="2" z="0" />
+        </perspective>
         <ortho id="orthCam"  near="0.1" far="500" left="-10" right="10" top="11" bottom="-11" >
             <from x="15" y="10" z="15" />
             <to x="0" y="-3" z="0" />
@@ -13,6 +17,14 @@
         <ortho id="topDownCam"  near="0.1" far="500" left="25" right="0" top="0" bottom="15" >
             <from x="0" y="10" z="0" />
             <to x="0.1" y="-5" z="0" />
+        </ortho>
+        <ortho id="leftCam"  near="0.1" far="500" left="-5" right="7" top="5" bottom="-5" >
+            <from x="20" y="5" z="7" />
+            <to x="-10" y="5" z="7" />
+        </ortho>
+        <ortho id="frontCam"  near="0.1" far="500" left="-10" right="7" top="5" bottom="-5" >
+            <from x="9" y="5" z="15" />
+            <to x="9" y="5" z="-15" />
         </ortho>
     </views>
 
@@ -125,7 +137,7 @@
             <specular r="1.0" g="0.6" b="0.1" a="1.0" />
         </material>
         <material id="gold" shininess="51.2">
-            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <emission r="0.1" g="0.06" b="0.01" a="0.0" />
             <ambient r="0.24725" g="0.1995" b="0.0745" a="1.0" />
             <diffuse r="0.75164" g="0.60648" b="0.22648" a="1.0" />
             <specular r="0.628281" g="0.555802" b="0.366065" a="1.0" />
@@ -1501,7 +1513,6 @@
           <primitiveref id="wall" />
         </children>
       </component>
-
       <component id="floorTrans">
         <materials>
             <material id="inherit" />
