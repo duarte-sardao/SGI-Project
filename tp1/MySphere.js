@@ -33,6 +33,13 @@ export class MySphere extends MyPrimitive {
         var nextSlice = angSlice+alphaAng;
         var nextStack = angStack+tetaAng;
 
+        var textLatDiv = 1 / this.stacks;
+        var textLongDiv = 1 / this.slices;
+        var textS = 0;
+        var textSNext = textLatDiv;
+        var textT = 0;
+        var textTNext = textLongDiv;
+
         var accSlices = 0;
 
         for(var j = 0; j < this.stacks; j++) { //basically make a bunch of stacked cylinders
@@ -75,22 +82,37 @@ export class MySphere extends MyPrimitive {
                 let vec4 = this.normalize(this.subtractPoints(vert4, midpoint));
                 this.normals.push(...vec1);this.normals.push(...vec2);this.normals.push(...vec3);this.normals.push(...vec4);
 
+                //textures
+                if(i == this.slices-1){
+                    textT = 0;
+                    textTNext = textLongDiv;
+                }   
+                this.texCoords.push(textS, textT);
+                this.texCoords.push(textS, textTNext);
+                this.texCoords.push(textSNext, textT);
+                this.texCoords.push(textSNext, textTNext);
 
-                this.texCoords.push(0,1);
+
+                /*this.texCoords.push(0,1);
                 this.texCoords.push(0,0);
                 this.texCoords.push(1,0);
-                this.texCoords.push(1,1);
+                this.texCoords.push(1,1);*/
                 
                 this.indices.push(accSlices+4*i, (accSlices+4*i+1), (accSlices+4*i+2));
                 this.indices.push( (accSlices+4*i+1),  (accSlices+4*i+3), (accSlices+4*i+2));
                 
                 angSlice+=alphaAng;
                 nextSlice += alphaAng;
+
+                textT += textLongDiv;
+                textTNext += textLongDiv;
             }
 
             accSlices += 4*this.slices;
             angStack += tetaAng;
             nextStack += tetaAng;
+            textS += textLatDiv;
+            textSNext += textLatDiv;
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
