@@ -62,7 +62,6 @@ export class MyTriangle extends MyPrimitive {
 	}
 
 	dist(c1, c2) {
-
 		c1 *= 3;
 		c2 *= 3;
 		return Math.sqrt(
@@ -72,6 +71,10 @@ export class MyTriangle extends MyPrimitive {
 		);
 	}
 
+	/**
+	 * Not quadratic, overrides
+	 * @returns false
+	 */
 	isQuadratic() {
 		return false;
 	}

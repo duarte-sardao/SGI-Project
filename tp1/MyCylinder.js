@@ -75,7 +75,7 @@ export class MyCylinder extends MyPrimitive {
                 this.vertices.push(...vert4);
 
 
-                if(!ringComplete) { //only do it once, its the same for every stack
+                if(!ringComplete) { //only calculate it once, its the same for every stack, then add it every stack iteration
                     let nheight;
                     let nvert1;
                     let nvert2;

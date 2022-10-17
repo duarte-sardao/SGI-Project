@@ -993,8 +993,8 @@ export class MySceneGraph {
 
     /**
      * Explores component graph to ensure children correctly exist
-     * @param {*} id
-     * @param {*} visited
+     * @param {node id} id
+     * @param {array of visited nodes} visited
      */
     componentGraphCheck(id, visited) {
         var component = this.components[id];
@@ -1148,7 +1148,7 @@ export class MySceneGraph {
         return color;
     }
 
-    /*
+    /** 
      * Callback to be executed on any read error, showing an error on the console.
      * @param {string} message
      */
@@ -1186,9 +1186,9 @@ export class MySceneGraph {
 
     /**
      * Explores component graph to display
-     * @param {*} id
-     * @param {*} lastmat
-     * @param {*} lasttex
+     * @param {node id} id
+     * @param {material id of parent node} lastmat
+     * @param {texture object of parent node} lasttex
      */
     displayNode(id, lastmat, lasttex) {
     var component = this.components[id];

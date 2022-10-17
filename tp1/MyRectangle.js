@@ -94,7 +94,10 @@ export class MyRectangle extends MyPrimitive {
 		this.initGLBuffers();
 	}
 
-	
+	/**
+	 * Uses length_s and lenght_t so override
+	 * @returns false
+	 */
 	isQuadratic() {
 		return false;
 	}

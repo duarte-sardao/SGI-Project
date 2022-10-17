@@ -1,11 +1,11 @@
 # SGI 2022/2023 - TP1
 
-## Group: T0xG0y
+## Group: T02G07
 
-| Name             | Number    | E-Mail             |
-| ---------------- | --------- | ------------------ |
-| John Doe         | 201801010 | ...                |
-| Jane Doe         | 201801011 | ...                |
+| Name             | Number    | E-Mail               |
+| ---------------- | --------- | ------------------   |
+| Duarte Sardão    | 201905497 | up201905497@fe.up.pt |
+| Jane Doe         | 201801011 | ...                  |
 
 ----
 ## Project information
