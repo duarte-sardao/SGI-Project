@@ -24,7 +24,7 @@ export class MyTorus extends MyPrimitive {
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        //this.baseTexCoords = [];
+        this.texCoords = [];
 
         var angSlice = 0;
         var angLoop = 0;
