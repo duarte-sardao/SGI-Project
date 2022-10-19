@@ -617,10 +617,9 @@ export class MySceneGraph {
      * Parse a transformation block
      * @param {node being parsed} node
      * @param {id of node} transformationID
-     * @param {if node is component, where transformationrefs are also taken into account} component
      * @returns combined transformation matrix
      */
-    parseTransformation(node, transformationID, component) {
+    parseTransformation(node, transformationID) {
         var transfMatrix = mat4.create();
         var grandChildren = node.children;
 
@@ -666,14 +665,8 @@ export class MySceneGraph {
 
                     transfMatrix = mat4.rotate(transfMatrix, transfMatrix, angle*DEGREE_TO_RAD, axisVec);
                     break;
-                case 'transformationref':
-                    if(component) {
-                        var reference = this.reader.getString(grandChildren[j], 'id');
-                        var matrix = this.transformations[reference];
-                        if(matrix == null)
-                            return "unknown transformationref " + reference;
-                        var transfMatrix = mat4.multiply(transfMatrix, transfMatrix, matrix);
-                    }
+                default:
+                    return "invalid node " + grandChildren[j].nodeName + " in transformation block"
             }
         }
         return transfMatrix;
@@ -918,7 +911,16 @@ export class MySceneGraph {
                 return "Component missing definitions (transformation/materials/texture/children) " + componentID;
 
             // Transformations
-            var transfMatrix = this.parseTransformation(grandChildren[transformationIndex], "component " + componentID, true);
+            var transfMatrix;
+            var trans = grandChildren[transformationIndex];
+            if(trans.children.length == 1 && trans.children[0].nodeName == "transformationref") {
+                var reference = this.reader.getString(trans.children[0], 'id');
+                transfMatrix = this.transformations[reference];
+                if(transfMatrix == null)
+                    return "unknown transformationref " + reference;
+            } else {
+                transfMatrix = this.parseTransformation(grandChildren[transformationIndex], "component " + componentID, true);
+            }
             if(typeof transfMatrix == "string")
                 return transfMatrix;
             component["transformation"] = transfMatrix;

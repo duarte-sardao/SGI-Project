@@ -151,29 +151,22 @@
     </materials>
 
     <transformations>
-      <transformation id="y90rot">
-        <rotate axis="y" angle="90" />
-      </transformation>
-      <transformation id="y-90rot">
-        <rotate axis="y" angle="-90" />
-      </transformation>
-      <transformation id="y180rot">
-        <rotate axis="y" angle="180" />
-      </transformation>
-      <transformation id="x90rot">
-        <rotate axis="x" angle="-90" />
-      </transformation>
-      <transformation id="x-90rot">
-        <rotate axis="x" angle="90" />
-      </transformation>
-      <transformation id="x180rot">
-        <rotate axis="x" angle="180" />
-      </transformation>
       <transformation id="invert">
         <scale x="-1" y="-1" z="-1" />
       </transformation>
-      <transformation id="halfScale">
+      <transformation id="chairTransform">
+        <translate x="0" y="0" z="4" />
         <scale x="0.5" y="0.5" z="0.5" />
+      </transformation>
+      <transformation id="doorMove">
+          <rotate axis="x" angle="10" />
+          <translate x="0" y="1" z="0"/>
+      </transformation>
+      <transformation id="moveX1">
+        <translate x="1" y="0" z="0"/>
+      </transformation>
+      <transformation id="moveZ1">
+        <translate x="0" y="0" z="1"/>
       </transformation>
     </transformations>
 
@@ -305,7 +298,6 @@
     <components>
         <component id="sceneRoot">
           <transformation>
-            <translate x="0" y="0" z="0"/>
           </transformation>
             <materials>
                 <material id="basicMaterial" />
@@ -325,7 +317,6 @@
 
         <component id="trigTeste">
         <transformation>
-          <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -352,7 +343,7 @@
       </component>
       <component id="cakeObj">
         <transformation>
-          <transformationref id="x90rot" />
+          <rotate axis="x" angle="-90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -419,7 +410,6 @@
       </component>
       <component id="baubleGroup4">
         <transformation>
-          <rotate axis="x" angle="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -444,7 +434,6 @@
       </component>
       <component id="baubleGroup2">
         <transformation>
-          <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -495,7 +484,7 @@
       </component>
       <component id="bowlCake">
         <transformation>
-          <transformationref id="x90rot" />
+          <rotate axis="x" angle="-90" />
           <scale x="1.4" y="1.4" z="0.4" />
         </transformation>
         <materials>
@@ -509,7 +498,6 @@
 
       <component id="bowlObj">
         <transformation>
-          <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -524,7 +512,7 @@
       <component id="bowl">
         <transformation>
           <translate x="7" y="3" z="9" />
-          <transformationref id="x90rot" />
+          <rotate axis="x" angle="-90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -618,7 +606,6 @@
       </component>
       <component id="pear">
         <transformation>
-          <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -670,7 +657,6 @@
       
       <component id="walls">
         <transformation>
-          <translate x="0" y="0" z="0"/>
         </transformation>
         <materials>
             <material id="inherit" />
@@ -685,7 +671,7 @@
 
       <component id="cabin">
         <transformation>
-          <translate x="1" y="0" z="0"/>
+          <transformationref id="moveX1" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -704,7 +690,6 @@
 
       <component id="sink">
         <transformation>
-          <translate x="0" y="0" z="0"/>
         </transformation>
         <materials>
             <material id="pearl" />
@@ -724,7 +709,7 @@
       <component id="sinkBottom">
         <transformation>
           <translate x="3" y="1" z="2" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -816,7 +801,7 @@
       <component id="pipeVertical">
         <transformation>
           <translate x="4.5" y="3.2" z="0.1" />
-          <transformationref id="x-90rot"/>
+          <rotate axis="x" angle="90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -831,7 +816,7 @@
         <transformation>
           <scale x="1" y="1" z="0.85" />
           <translate x="4.5" y="2.93" z="1.1" />
-          <transformationref id="x180rot"/>
+          <rotate axis="x" angle="180" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -845,7 +830,7 @@
       <component id="pipeFluxo">
         <transformation>
           <translate x="4.5" y="3" z="0.8" />
-          <transformationref id="x-90rot"/>
+          <rotate axis="x" angle="90" />
           <scale x="0.75" y="0.75" z="0.5" />
         </transformation>
         <materials>
@@ -871,7 +856,7 @@
       <component id="leverPartBase">
         <transformation>
           <translate x="4.5" y="3.1" z="0.1" />
-          <transformationref id="x-90rot"/>
+          <rotate axis="x" angle="90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -884,7 +869,7 @@
       <component id="leverPartLock">
         <transformation>
           <translate x="4" y="3.1" z="0.1" />
-          <transformationref id="y90rot"/>
+          <rotate axis="y" angle="90" />
           <scale x="0.4" y="0.4" z="0.4" />
         </transformation>
         <materials>
@@ -938,7 +923,6 @@
 
       <component id="drawerPair">
         <transformation>
-          <translate x="0" y="0" z="0"/>
         </transformation>
         <materials>
             <material id="inherit" />
@@ -1001,7 +985,7 @@
 
       <component id="oven">
         <transformation>
-          <translate x="1" y="0" z="0"/>
+          <transformationref id="moveX1" />
         </transformation>
         <materials>
             <material id="metallic" />
@@ -1036,8 +1020,7 @@
 
       <component id="ovenDoor">
         <transformation>
-          <rotate axis="x" angle="10" />
-          <translate x="0" y="1" z="0"/>
+          <transformationref id="doorMove" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -1164,7 +1147,7 @@
         <texture id="ovenTop" length_s="3" length_t="3" />
         <transformation>
           <translate x="9" y="3" z="3" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="ovenSide" />
@@ -1203,7 +1186,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="12" y="0" z="3" />
-          <transformationref id="y90rot"/>
+          <rotate axis="y" angle="90" />
         </transformation>
         <children>
           <primitiveref id="ovenSide" />
@@ -1230,7 +1213,7 @@
         <texture id="oven" length_s="3" length_t="2" />
         <transformation>
           <translate x="9.5" y="0.5" z="3" />
-          <transformationref id="y90rot"/>
+          <rotate axis="y" angle="90" />
         </transformation>
         <children>
           <primitiveref id="ovenInner" />
@@ -1243,8 +1226,7 @@
         <texture id="oven" length_s="3" length_t="2" />
         <transformation>
           <translate x="11.5" y="0.5" z="0" />
-          <transformationref id="y180rot"/>
-          <rotate axis="y" angle="90" />
+          <rotate axis="y" angle="270" />
         </transformation>
         <children>
           <primitiveref id="ovenInner" />
@@ -1257,8 +1239,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="9" y="0" z="0" />
-          <transformationref id="y180rot"/>
-          <rotate axis="y" angle="90" />
+          <rotate axis="y" angle="270" />
         </transformation>
         <children>
           <primitiveref id="ovenSide" />
@@ -1267,7 +1248,7 @@
 
       <component id="chair">
         <transformation>
-          <translate x="0" y="0" z="4"/>
+          <transformationref id="chairTransform" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -1342,7 +1323,7 @@
 
       <component id="table">
         <transformation>
-          <translate x="0" y="0" z="1"/>
+          <transformationref id="moveZ1"/>
         </transformation>
         <materials>
             <material id="inherit" />
@@ -1380,7 +1361,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="6" y="3" z="9" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="tableTop" />
@@ -1394,7 +1375,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="6" y="2.7" z="5" />
-          <transformationref id="x-90rot"/>
+          <rotate axis="x" angle="90" />
         </transformation>
         <children>
           <primitiveref id="tableTop" />
@@ -1409,7 +1390,7 @@
         <transformation>
           <scale x="1.5" y="1" z="0.66667" />
           <translate x="-1" y="0" z="19.5" />
-          <transformationref id="y90rot"/>
+          <rotate axis="y" angle="90" />
         </transformation>
         <children>
           <componentref id="tableSidesLong" />
@@ -1437,7 +1418,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="0" y="0" z="-4" />
-          <transformationref id="y180rot" />
+          <rotate axis="y" angle="180" />
         </transformation>
         <children>
           <primitiveref id="tableSide" />
@@ -1507,7 +1488,7 @@
         <texture id="inherit"/>
         <transformation>
           <translate x="0" y="0" z="15" />
-          <transformationref id="y90rot" />
+          <rotate axis="y" angle="90" />
         </transformation>
         <children>
           <primitiveref id="wall" />
@@ -1520,7 +1501,7 @@
         <texture id="floorTexture" length_s="1" length_t="1"/>
         <transformation>
           <translate x="0" y="0" z="15" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="floor" />
@@ -1547,7 +1528,7 @@
         <texture id="cabinTop" length_s="3" length_t="2"/>
         <transformation>
           <translate x="3" y="2" z="2" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="cabinTopCut" />
@@ -1561,7 +1542,7 @@
         <texture id="cabinTop" length_s="3" length_t="2"/>
         <transformation>
           <translate x="0" y="2" z="2" />
-          <transformationref id="x90rot"/>
+          <rotate axis="x" angle="-90" />
         </transformation>
         <children>
           <primitiveref id="cabinTop" />
@@ -1587,9 +1568,7 @@
         </materials>
         <texture id="inherit" />
         <transformation>
-          <translate x="0" y="0" z="0" />
-          <transformationref id="y180rot"/>
-          <transformationref id="y90rot"/>
+          <rotate axis="y" angle="270" />
         </transformation>
         <children>
           <primitiveref id="cabinSide" />
@@ -1602,7 +1581,6 @@
         </materials>
         <texture id="none" />
         <transformation>
-          <transformationref id="halfScale" />
           <scale x="1.1" y="0.5" z="1" />
           <translate x="6" y="5" z="13" />
         </transformation>
@@ -1617,7 +1595,6 @@
         </materials>
         <texture id="inherit" />
         <transformation>
-          <transformationref id="halfScale" />
           <translate x="8" y="0" z="12.5" />
           <rotate axis="x" angle="-90" />
         </transformation>
@@ -1632,7 +1609,6 @@
         </materials>
         <texture id="inherit" />
         <transformation>
-          <transformationref id="halfScale" />
           <translate x="5" y="0" z="12.5" />
           <rotate axis="x" angle="-90" />
         </transformation>
@@ -1647,7 +1623,6 @@
         </materials>
         <texture id="inherit" />
         <transformation>
-          <transformationref id="halfScale" />
           <translate x="6.5" y="0" z="10.5" />
           <rotate axis="x" angle="-90" />
         </transformation>
@@ -1703,7 +1678,7 @@
         </materials>
         <texture id="inherit" />
         <transformation>
-          <translate x="0" y="0" z="1" />
+          <transformationref id="moveZ1"/>
         </transformation>
         <children>
           <primitiveref id="squareSide"/>
@@ -1718,7 +1693,7 @@
         <texture id="inherit" />
         <transformation>
           <translate x="0" y="0" z="-2" />
-          <transformationref id="y180rot" />
+          <rotate axis="y" angle="180" />
         </transformation>
         <children>
           <primitiveref id="squareSide"/>
