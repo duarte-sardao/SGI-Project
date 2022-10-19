@@ -86,7 +86,7 @@ export class XMLscene extends CGFscene {
                 if (light[1] == "spot") {
                     this.lights[i].setSpotCutOff(light[6]);
                     this.lights[i].setSpotExponent(light[7]);
-                    this.lights[i].setSpotDirection(light[8][0], light[8][1], light[8][2]);
+                    this.lights[i].setSpotDirection(light[8][0] - light[2][0], light[8][1] - light[2][1], light[8][2] - light[2][2]); //target - pos
                     attn_offset += 3;
                 }
 

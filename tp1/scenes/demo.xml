@@ -55,7 +55,7 @@
         </omni>
         <spot id="ovenLightSpot" enabled="1" angle="45" exponent="10">
             <location x="11.5" y="1.5" z="1.5" w="1.0" />
-            <target x="0" y="10" z="0" w="1.0" />
+            <target x="11.5" y="10" z="1.5" w="1.0" />
             <ambient r="0.3" g="0" b="0" a="0.1" />
             <diffuse r="1.0" g="0.1" b="0.1" a="1.0" />
             <specular r="1.0" g="0.1" b="0.1" a="1.0" />
@@ -69,7 +69,7 @@
         </omni>
         <spot id="candleLight" enabled="1" angle="45" exponent="5">
             <location x="9" y="5" z="8" w="1.0" />
-            <target x="0" y="-10" z="0" w="1.0" />
+            <target x="9" y="-10" z="8" w="1.0" />
             <ambient r="0.1" g="0.06" b="0" a="0.1" />
             <diffuse r="1.0" g="0.6" b="0" a="1.0" />
             <specular r="1.0" g="0.6" b="0.1" a="1.0" />
@@ -330,7 +330,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="unknown" length_s="1" length_t="1"/>
         <children>
           <primitiveref id="testeTrig" />
         </children>
