@@ -33,12 +33,12 @@ export class MySphere extends MyPrimitive {
         var nextSlice = angSlice+alphaAng;
         var nextStack = angStack+tetaAng;
 
-        var textLatDiv = 1 / this.stacks;
-        var textLongDiv = 1 / this.slices;
+        var textStackDiv = 1 / this.stacks;
+        var textSliceDiv = 1 / this.slices;
         var textS = 0;
-        var textSNext = textLatDiv;
+        var textSNext = textSliceDiv;
         var textT = 0;
-        var textTNext = textLongDiv;
+        var textTNext = textStackDiv;
 
         var accSlices = 0;
 
@@ -83,13 +83,9 @@ export class MySphere extends MyPrimitive {
                 this.normals.push(...vec1);this.normals.push(...vec2);this.normals.push(...vec3);this.normals.push(...vec4);
 
                 //textures
-                if(i == this.slices-1){
-                    textT = 0;
-                    textTNext = textLongDiv;
-                }   
                 this.texCoords.push(textS, textT);
-                this.texCoords.push(textS, textTNext);
                 this.texCoords.push(textSNext, textT);
+                this.texCoords.push(textS, textTNext);
                 this.texCoords.push(textSNext, textTNext);
 
 
@@ -104,15 +100,15 @@ export class MySphere extends MyPrimitive {
                 angSlice+=alphaAng;
                 nextSlice += alphaAng;
 
-                textT += textLongDiv;
-                textTNext += textLongDiv;
+                textS += textSliceDiv;
+                textSNext += textSliceDiv;
             }
 
             accSlices += 4*this.slices;
             angStack += tetaAng;
             nextStack += tetaAng;
-            textS += textLatDiv;
-            textSNext += textLatDiv;
+            textT += textStackDiv;
+            textTNext += textStackDiv;
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
