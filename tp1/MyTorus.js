@@ -35,8 +35,12 @@ export class MyTorus extends MyPrimitive {
 
         var accSlices = 0;
 
-        var xPos = 0.0;
-        var yPos = 0.0;
+        var textLoopDiv = 1 / this.loops;
+        var textSliceDiv = 1 / this.slices;
+        var textS = 0;
+        var textSNext = textSliceDiv;
+        var textT = 0;
+        var textTNext = textLoopDiv;
 
         for(var j = 0; j < this.loops; j++) { //basically make a bunch of stacked cylinders
 
@@ -89,16 +93,29 @@ export class MyTorus extends MyPrimitive {
                 this.normals.push(...normal3);
                 this.normals.push(...normal4);
 
+                //textures
+                this.texCoords.push(textS, textT);
+                this.texCoords.push(textSNext, textT);
+                this.texCoords.push(textS, textTNext);
+                this.texCoords.push(textSNext, textTNext);
+
+
                 this.indices.push(accSlices+4*i, (accSlices+4*i+1), (accSlices+4*i+2));
                 this.indices.push( (accSlices+4*i+1),  (accSlices+4*i+3), (accSlices+4*i+2));
                 
                 angSlice+=alphaAng;
                 nextSlice += alphaAng;
+
+                textS += textSliceDiv;
+                textSNext += textSliceDiv;
             }
 
             accSlices += 4*this.slices;
             angLoop += alphaAng;
             nextLoop += alphaAng;
+
+            textT += textLoopDiv;
+            textTNext += textLoopDiv;
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
