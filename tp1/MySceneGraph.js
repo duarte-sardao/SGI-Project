@@ -953,8 +953,13 @@ export class MySceneGraph {
                     return "unknown texture " + tid; 
                 var length_s = this.reader.getFloat(textnode, "length_s");
                 var length_t = this.reader.getFloat(textnode, "length_t");
-                if(length_s == null || length_t == null)
-                    return "no length defined for texture  on " + componentID;
+                if(length_s == null || length_t == null) {
+                    this.onXMLMinorError("No length defined for texture on component " + componentID + " defaulting to 1")
+                    if(length_s == null)
+                        length_s = 1
+                    if(length_t == null)
+                        length_t = 1
+                }
                 component["texture"] = [tid, length_s, length_t];
             } else {
                 var has_s = this.reader.hasAttribute(textnode, "length_s");
