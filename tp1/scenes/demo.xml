@@ -91,7 +91,7 @@
         <texture id="ovenFront" file="scenes/images/ovenfront.jpg" />
         <texture id="ovenTop" file="scenes/images/oventop.jpg" />
         <texture id="oven" file="scenes/images/oven.jpg" />
-        <texture id="ovenDoor" file="scenes/images/ovenDoor.jpg" />
+        <texture id="ovenDoor" file="scenes/images/ovendoor.jpg" />
 
         <texture id="orange" file="scenes/images/orange.jpg" />
         <texture id="pear" file="scenes/images/pear.jpg" />
