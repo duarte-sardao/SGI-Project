@@ -596,7 +596,7 @@ export class MySceneGraph {
                 var attributeIndex = nodeNames.indexOf(attributeNames[j]);
 
                 if (attributeIndex != -1) {
-                    var aux = this.parseColor(grandChildren[attributeIndex], attributeNames[j] + " for ID" + materialID);
+                    var aux = this.parseColor(grandChildren[attributeIndex], attributeNames[j] + " for ID " + materialID);
 
                     if (!Array.isArray(aux))
                         return aux;
@@ -957,6 +957,10 @@ export class MySceneGraph {
                     return "no length defined for texture  on " + componentID;
                 component["texture"] = [tid, length_s, length_t];
             } else {
+                var has_s = this.reader.hasAttribute(textnode, "length_s");
+                var has_t = this.reader.hasAttribute(textnode, "length_t");
+                if(has_s || has_t)
+                    this.onXMLMinorError("lengths defined for inherit or none")
                 component["texture"] = [tid];
             }
             // Children
