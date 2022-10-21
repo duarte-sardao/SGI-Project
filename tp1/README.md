@@ -10,8 +10,9 @@
 ----
 ## Project information
 
-- Everything well done(graph, transformations, textures, lights, cameras, materials, interface) and well structured
-- We also done a grid for rectangle normals for a better effect with lights effects
+- Everything in specifications done (graph, transformations, textures, lights, cameras, materials, interface)
+- Scene with varied elements to show the implementation of the specifications
+- We also did turned MyRectangle into a grid of rectangles, so lighting effects (specifically spotlights) would be clearly visible.
 - Scene
   - The scene is composed of a tiled area, with a counter with a sink, oven, a table with a bowl/plate with fruits and a plate with a cake and a triangular stool.
   - [Scene screenshots](https://git.fe.up.pt/sgi-meic/sgi-2022-2023/t02/sgi-t02-g07/-/tree/main/tp1/scenes/screenshots)
@@ -21,4 +22,4 @@
 ----
 ## Issues/Problems
 
-- Many grids are calculated on rectangle primitive, so it affect a little in performance, and that is a problem that will be solved on TP2 
+- The rectangle grids are particularly inneficient, as every pixel is repeated 4 times (except those on the outer edges and corners).
