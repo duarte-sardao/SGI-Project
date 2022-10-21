@@ -20,7 +20,7 @@
   - [Scene screenshots](https://git.fe.up.pt/sgi-meic/sgi-2022-2023/t02/sgi-t02-g07/-/tree/main/tp1/scenes/screenshots)
 
   ![Test](https://git.fe.up.pt/sgi-meic/sgi-2022-2023/t02/sgi-t02-g07/-/raw/main/tp1/scenes/screenshots/version2.1.png)
-  - [Scene](/tp1/scenes/demo.xml)
+  - [Scene](/tp1/scenes/kitchen.xml)
 
 -----
 

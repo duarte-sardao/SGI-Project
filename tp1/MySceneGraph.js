@@ -929,6 +929,8 @@ export class MySceneGraph {
             var mats = [];
             for(var j = 0; j < grandgrandChildren.length; j++) {
                 var node = grandgrandChildren[j];
+                if(node.nodeName != "material")
+                    this.onXMLMinorError("Wrong name for material node: " +  node.nodeName);
                 var matid = this.reader.getString(node, "id");
                 if(matid == null)
                     return "no ID defined for material reference";

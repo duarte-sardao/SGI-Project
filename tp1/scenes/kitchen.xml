@@ -130,6 +130,12 @@
             <diffuse r="0.8" g="0.3" b="0.3" a="1.0" />
             <specular r="1.0" g="0.5" b="0.5" a="1.0" />
         </material>
+        <material id="blueberryMat" shininess="120">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.05" g="0.05" b="0.5" a="1.0" />
+            <diffuse r="0.3" g="0.3" b="0.8" a="1.0" />
+            <specular r="0.5" g="0.5" b="1.0" a="1.0" />
+        </material>
         <material id="candleMat" shininess="120">
             <emission r="1.0" g="0.6" b="0.1" a="1.0" />
             <ambient r="0.1" g="0.06" b="0" a="0.1" />
@@ -359,6 +365,7 @@
         </transformation>
         <materials>
             <material id="candleMat" />
+            <material id="hotMetallic" />
         </materials>
         <texture id="none"/>
         <children>
@@ -372,6 +379,8 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="redMaterial" />
+            <mateiral id="gold" />
         </materials>
         <texture id="inherit"/>
         <children>
@@ -458,6 +467,8 @@
         </transformation>
         <materials>
             <material id="cherryMat" />
+            <material id="gold" />
+            <material id="blueberryMat" />
         </materials>
         <texture id="none"/>
         <children>
@@ -517,6 +528,7 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="redMaterial" />
         </materials>
         <texture id="orange" length_t="1" length_s="1"/>
         <children>
@@ -529,6 +541,7 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="cherryMat" />
         </materials>
         <texture id="orange" length_t="1" length_s="1"/>
         <children>
@@ -541,6 +554,7 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="redMaterial" />
         </materials>
         <texture id="orange" length_t="1" length_s="1"/>
         <children>
@@ -553,6 +567,7 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="gold" />
         </materials>
         <texture id="orange" length_t="1" length_s="1"/>
         <children>
@@ -643,6 +658,7 @@
         </transformation>
         <materials>
             <material id="inherit" />
+            <material id="gold"/>
         </materials>
         <texture id="wallTexture" length_s="1" length_t="1"/>
         <children>
@@ -1479,7 +1495,7 @@
       </component>
       <component id="floorTrans">
         <materials>
-            <material id="inherit" />
+            <material id="basicMaterial" />
         </materials>
         <texture id="floorTexture" length_s="1" length_t="1"/>
         <transformation>
