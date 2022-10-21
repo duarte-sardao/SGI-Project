@@ -49,10 +49,10 @@ export class MyRectangle extends MyPrimitive {
 				for(let k = 0; k < 4; k++)
 					this.normals.push(...[0,0,1]);
 
-				this.baseTexCoords.push(...[curX, -curY]);
-				this.baseTexCoords.push(...[nextX, -curY]);
-				this.baseTexCoords.push(...[curX, -nextY]);
-				this.baseTexCoords.push(...[nextX, -nextY]);
+					this.baseTexCoords.push(...[curX - this.x1, -curY + this.y1]);
+					this.baseTexCoords.push(...[nextX - this.x1, -curY + this.y1]);
+					this.baseTexCoords.push(...[curX - this.x1, -nextY + this.y1]);
+					this.baseTexCoords.push(...[nextX - this.x1, -nextY + this.y1]);
 
 
 				curY = nextY;
