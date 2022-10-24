@@ -883,7 +883,7 @@ export class MySceneGraph {
                 for(let u = 0; u < (degree_u+1); u++) {
                     var subarray = [];
                     for(let v = 0; v < (degree_v+1); v++) {
-                        var cpnode = grandgrandChildren[i+u+v];
+                        var cpnode = grandgrandChildren[u*(degree_v+1)+v];
 
                         if(cpnode.nodeName != "controlpoint")
                             this.onXMLMinorError("Wrong name for controlpoint");

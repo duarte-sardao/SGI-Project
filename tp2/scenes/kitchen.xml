@@ -178,7 +178,12 @@
 
     <primitives>
       <primitive id="wall">
-        <rectangle x1="0" y1="0" x2="15" y2="10" />
+        <patch degree_u="1" parts_u="50" degree_v="1" parts_v="50">
+          <controlpoint x="0" y="0" z="0" />
+          <controlpoint x="0" y="10" z="0" />
+          <controlpoint x="15" y="0" z="0" />
+          <controlpoint x="15" y="10" z="0" />
+        </patch>
       </primitive>
       <primitive id="floor">
         <rectangle x1="0" y1="0" x2="15" y2="15" />
@@ -380,7 +385,7 @@
         <materials>
             <material id="inherit" />
             <material id="redMaterial" />
-            <mateiral id="gold" />
+            <material id="gold" />
         </materials>
         <texture id="inherit"/>
         <children>
