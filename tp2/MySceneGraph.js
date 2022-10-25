@@ -5,6 +5,7 @@ import { MyCylinder } from "./MyCylinder.js";
 import { MySphere } from "./MySphere.js"
 import { MyTorus } from "./MyTorus.js"
 import { MyPatch } from "./MyPatch.js"
+import { color } from '../lib/dat.gui.module.min.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -190,6 +191,18 @@ export class MySceneGraph {
 
             //Parse primitives block
             if ((error = this.parsePrimitives(nodes[index])) != null)
+                return error;
+        }
+
+        // <primitives>
+        if ((index = nodeNames.indexOf("animations")) == -1)
+            return "tag <animations> missing";
+        else {
+            if (index != PRIMITIVES_INDEX)
+                this.onXMLMinorError("tag <animations> out of order");
+
+            //Parse primitives block
+            if ((error = this.parseAnimations(nodes[index])) != null)
                 return error;
         }
 
@@ -700,7 +713,7 @@ export class MySceneGraph {
                 return "ID must be unique for each transformation (conflict: ID = " + transformationID + ")";
 
             // Specifications for the current transformation.
-            var transfMatrix = this.parseTransformation(children[i], transformationID, false);
+            var transfMatrix = this.parseTransformation(children[i], transformationID);
             if(typeof transfMatrix == "string")
                 return transfMatrix;
             this.transformations[transformationID] = transfMatrix;
@@ -909,6 +922,45 @@ export class MySceneGraph {
     }
 
     /**
+     * Parses the <animations> block. 
+     * @param {animations block element} animNode
+     */
+    parseAnimations(animNode) {
+
+        let children = animNode.children;
+        for(let i = 0; i < children.length; i++) {
+            let anim = children[i];
+            if(anim.nodeName != "keyframeanim")
+                this.onXMLMinorError("Incorrect name for keyframeanim: " + anim.nodeName);
+            var animID = this.reader.getString(anim, 'id');
+            if (animID == null)
+                return "no ID defined for keyframeanim";
+            let keyframes = anim.children;
+            if(keyframes.length < 1)
+                return "keyframeanim must have atleast one keyframe"
+            
+            var animObj = [];
+            for(let j = 0; j < keyframes.length; j++) {
+                let keyframe = keyframes[j];
+                if(keyframe.nodeName != "keyframe")
+                    this.onXMLMinorError("Incorrect name for keyframe: " + keyframe.nodeName);
+                let instant = this.reader.getFloat(anim, 'instant');
+                if (!(instant != null && !isNaN(instant)))
+                    return "no instant defined for keyframe on " + animID;
+                var transfMatrix = this.parseTransformation(keyframe, animID + " animation");
+                if(typeof transfMatrix == "string")
+                    return transfMatrix;
+                var keyObj = [instant, transfMatrix];
+                animObj.push(keyObj);
+            }
+            this.animations[animID] = animObj;
+        }
+
+        this.log("Parsed animations");
+        return null;
+    }
+
+    /**
    * Parses the <components> block.
    * @param {components block element} componentsNode
    */
@@ -963,7 +1015,7 @@ export class MySceneGraph {
                 if(transfMatrix == null)
                     return "unknown transformationref " + reference;
             } else {
-                transfMatrix = this.parseTransformation(grandChildren[transformationIndex], "component " + componentID, true);
+                transfMatrix = this.parseTransformation(grandChildren[transformationIndex], "component " + componentID);
             }
             if(typeof transfMatrix == "string")
                 return transfMatrix;
@@ -1041,6 +1093,27 @@ export class MySceneGraph {
                 return "no children defined for component " + componentID;
             component['primitives'] = primmies;
             component['children'] = childComps;
+            //highlighted
+            var highlightedIndex = nodeNames.indexOf("highlighted");
+            if(highlightedIndex != -1) {
+                let highlight = grandChildren[highlightedIndex];
+                let color = this.parseColor(highlight, "highlighted on " + componentID)
+                var scale_h = this.reader.getFloat(highlight, 'scale_h');
+                if (!(scale_h != null && !isNaN(scale_h)))
+                    return "unable to parse scale of highlighted in " + componentID + " component";
+                component["highlight"] = [color, scale_h];
+            }
+            //animation
+            var animationIndex = nodeNames.indexOf("animation");
+            if(animationIndex != -1) {
+                var animId = this.reader.getString(grandChildren[animationIndex], 'id');
+                if (animId == null)
+                    return "unable to parse id of animation in " + componentID + " component";
+                let animation = this.animations[animId];
+                if(animation == null)
+                    return "unknown animation " + animId + " on component " + componentID;
+                component["animation"] = animation;
+            }
 
             this.components[componentID] = component;
         }

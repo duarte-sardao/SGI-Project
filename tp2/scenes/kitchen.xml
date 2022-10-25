@@ -302,6 +302,9 @@
       </primitive>
     </primitives>
 
+    <animations>
+    </animations>
+
     <components>
         <component id="sceneRoot">
           <transformation>
