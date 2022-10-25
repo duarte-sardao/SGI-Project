@@ -940,6 +940,7 @@ export class MySceneGraph {
                 return "keyframeanim must have atleast one keyframe"
             
             var animObj = [];
+            let lastInstant = -1;
             for(let j = 0; j < keyframes.length; j++) {
                 let keyframe = keyframes[j];
                 if(keyframe.nodeName != "keyframe")
@@ -947,6 +948,9 @@ export class MySceneGraph {
                 let instant = this.reader.getFloat(anim, 'instant');
                 if (!(instant != null && !isNaN(instant)))
                     return "no instant defined for keyframe on " + animID;
+                if(instant < lastInstant)
+                    return "wrong instant order for keyframe on " + animID;
+                lastInstant = instant;
                 var transfMatrix = this.parseTransformation(keyframe, animID + " animation");
                 if(typeof transfMatrix == "string")
                     return transfMatrix;
