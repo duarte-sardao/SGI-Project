@@ -309,6 +309,22 @@
         </patch>
       </primitive>
 
+      <primitive id="tentBend">
+        <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-1.5" y="0" z="1.5" />
+          <controlpoint x="0" y="3" z="1.5" />
+          <controlpoint x="1.5" y="0" z="1.5" />
+
+          <controlpoint x="-1.5" y="0" z="1.5" />
+          <controlpoint x="0" y="3" z="4.5" />
+          <controlpoint x="1.5" y="0" z="1.5" />
+
+          <controlpoint x="-1.5" y="0" z="1.5" />
+          <controlpoint x="0" y="0" z="4.5" />
+          <controlpoint x="1.5" y="0" z="1.5" />
+        </patch>
+      </primitive>
+
     </primitives>
 
     <animations>
@@ -330,8 +346,27 @@
               <componentref id="table" />
               <componentref id="bowl" />
               <componentref id="cake :)" />
+
+              <primitiveref id="tentBend" />
+              <primitiveref id="tent" />
+              <componentref id="tentRoted" />
+
             </children>
         </component>
+
+      <component id="tentRoted">
+        <transformation>
+          <translate x="0" y="-1.5" z="1.5" />
+          <rotate axis="x" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="tent" />
+        </children>
+      </component>
       
       <component id="cake :)">
         <transformation>
