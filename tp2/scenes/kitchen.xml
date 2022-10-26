@@ -288,18 +288,27 @@
       <primitive id="handle">
         <sphere radius="0.2" slices="8" stacks="8" />
       </primitive>
-
       <primitive id="pipePart">
         <cylinder base="0.1" top="0.1" height="1" slices="10" stacks="4" />
       </primitive>
-
       <primitive id="pipeTop">
         <sphere radius="0.1" slices="8" stacks="8" />
       </primitive>   
-
       <primitive id="leverBase">
         <torus inner="0.05" outer="0.1" slices="20" loops="20" />
       </primitive>
+
+      <primitive id="tent">
+        <patch degree_u="1" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-1.5" y="0" z="-1.5" />
+          <controlpoint x="0" y="3" z="-1.5" />
+          <controlpoint x="1.5" y="0" z="-1.5" />
+          <controlpoint x="-1.5" y="0" z="1.5" />
+          <controlpoint x="0" y="3" z="1.5" />
+          <controlpoint x="1.5" y="0" z="1.5" />
+        </patch>
+      </primitive>
+
     </primitives>
 
     <animations>
@@ -726,6 +735,32 @@
           <primitiveref id="sinkBottom" />
         </children>
       </component>
+      <component id="sinkSide">
+        <transformation>
+          <translate x="0" y="0.6" z="0" />
+          <scale x="1.1" y="0.15" z="0.14" />
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="tent" />
+        </children>
+      </component>
+      <component id="sinkSideWall">
+        <transformation>
+          <scale x="1.7" y="0.6" z="0.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
       <component id="sinkB">
         <transformation>
           <translate x="0" y="0" z="-1.17" />
@@ -742,14 +777,14 @@
       <component id="sinkF">
         <transformation>
           <translate x="4.5" y="1.5" z="1.6" />
-          <scale x="1.7" y="0.75" z="0.2" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="cube" />
+          <componentref id="sinkSide" />
+          <componentref id="sinkSideWall" />
         </children>
       </component>
       <component id="sinkR">
@@ -778,7 +813,7 @@
       </component>
       <component id="sinkLR">
         <transformation>
-          <scale x="0.2" y="0.75" z="0.60" />
+          <scale x="0.2" y="0.85" z="0.96" />
         </transformation>
         <materials>
             <material id="inherit" />
