@@ -300,16 +300,21 @@
 
       <primitive id="tent">
         <patch degree_u="1" parts_u="10" degree_v="2" parts_v="10">
-          <controlpoint x="-1.5" y="0" z="-1.5" />
-          <controlpoint x="0" y="3" z="-1.5" />
-          <controlpoint x="1.5" y="0" z="-1.5" />
-          <controlpoint x="-1.5" y="0" z="1.5" />
-          <controlpoint x="0" y="3" z="1.5" />
-          <controlpoint x="1.5" y="0" z="1.5" />
+          <controlpoint x="-0.21" y="0" z="-1.3" />
+          <controlpoint x="0" y="0.4" z="-1.3" />
+          <controlpoint x="0.21" y="0" z="-1.3" />
+
+          <controlpoint x="-0.21" y="0" z="1.3" />
+          <controlpoint x="0" y="0.4" z="1.3" />
+          <controlpoint x="0.21" y="0" z="1.3" />
         </patch>
       </primitive>
 
-      <primitive id="tentBend">
+      <primitive id="tentRect">
+        <rectangle x1="0" y1="0" x2="2.6" y2="1.5" />
+      </primitive>
+
+      <primitive id="tentBendDown">
         <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
           <controlpoint x="-1.5" y="0" z="1.5" />
           <controlpoint x="0" y="3" z="1.5" />
@@ -322,6 +327,22 @@
           <controlpoint x="-1.5" y="0" z="1.5" />
           <controlpoint x="0" y="0" z="4.5" />
           <controlpoint x="1.5" y="0" z="1.5" />
+        </patch>
+      </primitive>
+
+      <primitive id="tentBendSide">
+        <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-0.21" y="0" z="1.3" />
+          <controlpoint x="0" y="0.4" z="1.3" />
+          <controlpoint x="0.21" y="0" z="1.3" />
+
+          <controlpoint x="-0.21" y="0" z="1.72" />
+          <controlpoint x="0.0" y="0.4" z="1.51" />
+          <controlpoint x="0.21" y="0" z="1.3" />
+
+          <controlpoint x="0.21" y="0" z="1.72" />
+          <controlpoint x="0.21" y="0.4" z="1.51" />
+          <controlpoint x="0.21" y="0" z="1.3" />
         </patch>
       </primitive>
 
@@ -347,26 +368,8 @@
               <componentref id="bowl" />
               <componentref id="cake :)" />
 
-              <primitiveref id="tentBend" />
-              <primitiveref id="tent" />
-              <componentref id="tentRoted" />
-
             </children>
         </component>
-
-      <component id="tentRoted">
-        <transformation>
-          <translate x="0" y="-1.5" z="1.5" />
-          <rotate axis="x" angle="90" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit"/>
-        <children>
-          <primitiveref id="tent" />
-        </children>
-      </component>
       
       <component id="cake :)">
         <transformation>
@@ -750,11 +753,8 @@
         <texture id="none"/>
         <children>
           <componentref id="faucet" />
-          <componentref id="sinkL" />
-          <componentref id="sinkR" />
-          <componentref id="sinkF" />
-          <componentref id="sinkB" />
           <componentref id="sinkBottom" />
+          <componentref id="sinkTents" />
         </children>
       </component>
       <component id="sinkBottom">
@@ -770,10 +770,9 @@
           <primitiveref id="sinkBottom" />
         </children>
       </component>
-      <component id="sinkSide">
+      <component id="sinkTents">
         <transformation>
-          <translate x="0" y="0.6" z="0" />
-          <scale x="1.1" y="0.15" z="0.14" />
+          <translate x="4.5" y="2" z="1.6" />
           <rotate axis="y" angle="90" />
         </transformation>
         <materials>
@@ -781,84 +780,93 @@
         </materials>
         <texture id="inherit"/>
         <children>
+          <componentref id="sinkLongBit" />
+          <componentref id="sinkTentBack" />
+        </children>
+      </component>
+      <component id="sinkTentBack">
+        <transformation>
+          <translate x="1.5" y="0" z="0" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="sinkLongBit" />
+        </children>
+      </component>
+      <component id="sinkLongBit">
+        <transformation>
+          <translate x="1.5" y="0" z="0" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
           <primitiveref id="tent" />
+          <primitiveref id="tentBendSide" />
+          <componentref id="otherCorner" />
+          <componentref id="tentRectMove" />
+          <componentref id="tentSideBit" />
         </children>
       </component>
-      <component id="sinkSideWall">
+      <component id="tentRectMove">
         <transformation>
-          <scale x="1.7" y="0.6" z="0.2" />
+          <translate x="1.3" y="-1.5" z="-1.3" />
+          <rotate axis="y" angle="-90" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="cube" />
+          <primitiveref id="tentRect" />
         </children>
       </component>
-      <component id="sinkB">
+      <component id="otherCorner">
         <transformation>
-          <translate x="0" y="0" z="-1.17" />
-          <scale x="1" y="1" z="0.8" />
+          <translate x="0" y="0" z="1.5" />
+          <rotate axis="y" angle="90" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="sinkF" />
+          <primitiveref id="tentBendSide" />
         </children>
       </component>
-      <component id="sinkF">
+      <component id="tentRectMoveMore">
         <transformation>
-          <translate x="4.5" y="1.5" z="1.6" />
+          <translate x="1.5" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="sinkSide" />
-          <componentref id="sinkSideWall" />
+          <componentref id="tentRectMove" />
         </children>
       </component>
-      <component id="sinkR">
+      <component id="tentSideBit">
         <transformation>
-          <translate x="3" y="0" z="0" />
+          <translate x="0.75" y="0" z="1.5" />
+          <rotate axis="y" angle="90" />
+          <scale x="1" y="1" z="0.43" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="sinkL" />
+          <primitiveref id="tent" />
+          <componentref id="tentRectMoveMore" />
         </children>
       </component>
-      <component id="sinkL">
-        <transformation>
-          <translate x="3" y="1.5" z="0.85" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit"/>
-        <children>
-          <componentref id="sinkLR" />
-        </children>
-      </component>
-      <component id="sinkLR">
-        <transformation>
-          <scale x="0.2" y="0.85" z="0.96" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit"/>
-        <children>
-          <componentref id="cube" />
-        </children>
-      </component>
-
 
       <component id="faucet">
         <transformation>
