@@ -8,6 +8,7 @@ import { MyPatch } from "./MyPatch.js"
 import { color } from '../lib/dat.gui.module.min.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
+var startTime = 0;
 
 // Order of the groups in the XML document.
 var SCENE_INDEX = 0;
@@ -18,7 +19,8 @@ var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
 var PRIMITIVES_INDEX = 7;
-var COMPONENTS_INDEX = 8;
+var ANIMATIONS_INDEX = 8;
+var COMPONENTS_INDEX = 9;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -194,14 +196,14 @@ export class MySceneGraph {
                 return error;
         }
 
-        // <primitives>
+        // <animations>
         if ((index = nodeNames.indexOf("animations")) == -1)
             return "tag <animations> missing";
         else {
-            if (index != PRIMITIVES_INDEX)
+            if (index != ANIMATIONS_INDEX)
                 this.onXMLMinorError("tag <animations> out of order");
 
-            //Parse primitives block
+            //Parse animations block
             if ((error = this.parseAnimations(nodes[index])) != null)
                 return error;
         }
@@ -218,6 +220,7 @@ export class MySceneGraph {
                 return error;
         }
         this.log("all parsed");
+        startTime = new Date();
     }
 
     /**
@@ -927,6 +930,8 @@ export class MySceneGraph {
      */
     parseAnimations(animNode) {
 
+        this.animations = {};
+
         let children = animNode.children;
         for(let i = 0; i < children.length; i++) {
             let anim = children[i];
@@ -939,22 +944,22 @@ export class MySceneGraph {
             if(keyframes.length < 1)
                 return "keyframeanim must have atleast one keyframe"
             
-            var animObj = [];
+            var animObj = [1]; //start at keyframe 1
             let lastInstant = -1;
             for(let j = 0; j < keyframes.length; j++) {
                 let keyframe = keyframes[j];
                 if(keyframe.nodeName != "keyframe")
                     this.onXMLMinorError("Incorrect name for keyframe: " + keyframe.nodeName);
-                let instant = this.reader.getFloat(anim, 'instant');
+                let instant = this.reader.getFloat(keyframe, 'instant');
                 if (!(instant != null && !isNaN(instant)))
                     return "no instant defined for keyframe on " + animID;
                 if(instant < lastInstant)
                     return "wrong instant order for keyframe on " + animID;
                 lastInstant = instant;
-                var transfMatrix = this.parseTransformation(keyframe, animID + " animation");
-                if(typeof transfMatrix == "string")
-                    return transfMatrix;
-                var keyObj = [instant, transfMatrix];
+                var keyframeobj = this.parseKeyframe(keyframe, animID);
+                if(typeof keyframeobj == "string")
+                    return keyframeobj;
+                var keyObj = [instant, keyframeobj];
                 animObj.push(keyObj);
             }
             this.animations[animID] = animObj;
@@ -962,6 +967,65 @@ export class MySceneGraph {
 
         this.log("Parsed animations");
         return null;
+    }
+
+    /**
+   * Parses the keyframe transformations
+   * @param {keyframe block element} keyframe
+   * @param {string} animID associated animation ID
+   */
+    parseKeyframe(keyframe, animID) {
+        var keyframeobj = {};
+        //set defaults
+        keyframeobj['trans'] = [0,0,0];
+        keyframeobj['xrot'] = 0;
+        keyframeobj['yrot'] = 0;
+        keyframeobj['zrot'] = 0;
+        keyframeobj['scale'] = [1,1,1];
+        let expectedNodes = ['translation', 'rotation', 'rotation', 'rotation', 'scale'];
+        let expectedRotations = [null, 'z', 'y', 'x', null];
+        let unnacounted = [0, 1, 2, 3, 4]
+        for(let i = 0; i < keyframe.children.length; i++) {
+            let node = keyframe.children[i];
+            let pos = expectedNodes.indexOf(node.nodeName);
+            if(pos == -1)
+                this.onXMLMinorError("Wrong node " + node.nodeName + " on keyframe for animation " + animID);
+            else if(pos != i)
+                this.onXMLMinorError("Wrong node order " + node.nodeName + " on keyframe for animation " + animID);
+            expectedNodes[pos] = null; //for repeated rotation
+            if(node.nodeName == "translation") {
+                var aux = this.parseCoordinates3D(node, "translation for keyframe on animation " + animID);
+                if (!Array.isArray(aux))
+                    return aux;
+                keyframeobj['trans'] = aux;
+                unnacounted.splice(unnacounted.indexOf(0), 1);
+            } else if(node.nodeName == "rotation") {
+                var axis = this.reader.getString(node, 'axis');
+                var index = expectedRotations.indexOf(axis)
+                if (index == -1)
+                    return "Unknown axis for rotation for keyframe on animation " + animID;
+                else if(axis != expectedRotations[index])
+                    this.onXMLMinorError("Wrong node order " + axis + "-rotation on keyframe for animation " + animID);
+                var angle = this.reader.getFloat(node, 'angle');
+                if (!(angle != null && !isNaN(angle)))
+                    return "unable to parse angle of " + axis + "-rotation on keyframe for animation " + animID;
+                keyframeobj[axis+'rot'] = angle;
+                unnacounted.splice(unnacounted.indexOf(index), 1);
+            } else if(node.nodeName == "scale") {
+                var aux = this.parseCoordinates3D(node, "translation for keyframe on animation " + animID, 's');
+                if (!Array.isArray(aux))
+                    return aux;
+                keyframeobj['scale'] = aux;
+                unnacounted.splice(unnacounted.indexOf(5), 1);
+            }
+        }
+        for(let i = 0; i < unnacounted.length; i++) {
+            let val = unnacounted[i];
+            let couldntFind = expectedNodes[val];
+            if(expectedRotations[val] != null)
+                couldntFind = expectedRotations[val] + "-" + couldntFind;
+            this.onXMLMinorError("Used default value for " + couldntFind + " because wasnt defined for keyframe on " + animID);
+        }
     }
 
     /**
@@ -1117,6 +1181,7 @@ export class MySceneGraph {
                 if(animation == null)
                     return "unknown animation " + animId + " on component " + componentID;
                 component["animation"] = animation;
+                component["lastAnimation"] = mat4.create();
             }
 
             this.components[componentID] = component;
@@ -1151,21 +1216,21 @@ export class MySceneGraph {
      * @param {block element} node
      * @param {message to be displayed in case of error} messageError
      */
-    parseCoordinates3D(node, messageError) {
+    parseCoordinates3D(node, messageError, prefix = '') {
         var position = [];
 
         // x
-        var x = this.reader.getFloat(node, 'x');
+        var x = this.reader.getFloat(node, prefix+'x');
         if (!(x != null && !isNaN(x)))
             return "unable to parse x-coordinate of the " + messageError;
 
         // y
-        var y = this.reader.getFloat(node, 'y');
+        var y = this.reader.getFloat(node, prefix+'y');
         if (!(y != null && !isNaN(y)))
             return "unable to parse y-coordinate of the " + messageError;
 
         // z
-        var z = this.reader.getFloat(node, 'z');
+        var z = this.reader.getFloat(node, prefix+'z');
         if (!(z != null && !isNaN(z)))
             return "unable to parse z-coordinate of the " + messageError;
 
@@ -1325,13 +1390,36 @@ export class MySceneGraph {
      * @param {texture object of parent node} lasttex
      */
     displayNode(id, lastmat, lasttex) {
+    var draw = true;
     var component = this.components[id];
     var children = component['children'];
     var primitives = component['primitives'];
     var transfMatrix = component['transformation'];
+    var animation = component['animation'];
+    var lastAnimation = component['lastAnimation'];
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix);
+    if(false && lastAnimation != null) {
+        this.scene.multMatrix(lastAnimation);
+    }
+    if(false && animation != null && animation[0] < animation.length) {
+        let index = animation[0];
+        let curTime = new Date();
+        let seconds = (curTime - startTime) / 1000;
+        let anim = animation[index];
+        if(index == 0 && anim[0] > seconds) {
+            draw = false;
+        } else if(anim[0] < seconds) {
+            animation[0] += 1;
+            mat4.multiply(component['lastAnimation'], lastAnimation, animation[1]);
+        } else {
+            var scalar = 1;
+            let curTrans;
+            mat4.multiplyScalar(curTrans, anim[1], scalar);
+            this.scene.multMatrix(curTrans);
+        }
+    }
     
     //appearance
     let appearance = new CGFappearance(this.scene);
@@ -1360,11 +1448,13 @@ export class MySceneGraph {
     appearance.apply();
 
     //draw
-    for(var i = 0; i < primitives.length; i++) {
-        //primitives[i].enableNormalViz();
-        if(!primitives[i].isQuadratic())
-            primitives[i].setLength(component["s"], component["t"]);
-        primitives[i].display();
+    if(draw) {
+        for(var i = 0; i < primitives.length; i++) {
+            //primitives[i].enableNormalViz();
+            if(!primitives[i].isQuadratic())
+                primitives[i].setLength(component["s"], component["t"]);
+            primitives[i].display();
+        }
     }
 
     //keep exploring
