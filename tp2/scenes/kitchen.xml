@@ -310,24 +310,48 @@
         </patch>
       </primitive>
 
-      <primitive id="tentRect">
-        <rectangle x1="0" y1="0" x2="2.6" y2="1.5" />
+      <primitive id="tentTable">
+        <patch degree_u="1" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-0.15" y="0" z="-3" />
+          <controlpoint x="0" y="0.4" z="-3" />
+          <controlpoint x="0.15" y="0" z="-3" />
+
+          <controlpoint x="-0.15" y="0" z="3" />
+          <controlpoint x="0" y="0.4" z="3" />
+          <controlpoint x="0.15" y="0" z="3" />
+        </patch>
       </primitive>
 
-      <primitive id="tentBendDown">
-        <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
-          <controlpoint x="-1.5" y="0" z="1.5" />
-          <controlpoint x="0" y="3" z="1.5" />
-          <controlpoint x="1.5" y="0" z="1.5" />
+      <primitive id="tentTableShort">
+        <patch degree_u="1" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-0.15" y="0" z="-2" />
+          <controlpoint x="0" y="0.4" z="-2" />
+          <controlpoint x="0.15" y="0" z="-2" />
 
-          <controlpoint x="-1.5" y="0" z="1.5" />
-          <controlpoint x="0" y="3" z="4.5" />
-          <controlpoint x="1.5" y="0" z="1.5" />
-
-          <controlpoint x="-1.5" y="0" z="1.5" />
-          <controlpoint x="0" y="0" z="4.5" />
-          <controlpoint x="1.5" y="0" z="1.5" />
+          <controlpoint x="-0.15" y="0" z="2" />
+          <controlpoint x="0" y="0.4" z="2" />
+          <controlpoint x="0.15" y="0" z="2" />
         </patch>
+      </primitive>
+
+      <primitive id="tentTableCorner">
+        <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-0.15" y="0" z="3" />
+          <controlpoint x="0" y="0.4" z="3" />
+          <controlpoint x="0.15" y="0" z="3" />
+
+          <controlpoint x="-0.15" y="0" z="3" />
+          <controlpoint x="0" y="0.4" z="3.4" />
+          <controlpoint x="0.15" y="0" z="3" />
+
+          <controlpoint x="-0.15" y="0" z="3" />
+          <controlpoint x="0" y="0" z="3.4" />
+          <controlpoint x="0.15" y="0" z="3" />
+        </patch>
+      </primitive>
+
+      <primitive id="tentRect">
+        <rectangle x1="0" y1="0" x2="2.6" y2="1.5" />
       </primitive>
 
       <primitive id="tentBendSide">
@@ -378,7 +402,7 @@
           <rotation axis="x" angle="-30" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-        <keyframe instant="15.35">
+        <keyframe instant="15.4">
           <translation x="0" y="0" z="0" />
           <rotation axis="z" angle="0" />
           <rotation axis="y" angle="0" />
@@ -404,7 +428,6 @@
               <componentref id="table" />
               <componentref id="bowl" />
               <componentref id="cake :)" />
-              
             </children>
         </component>
       
@@ -1456,8 +1479,8 @@
           <componentref id="tableTopTrans" />
           <componentref id="tableUnder" />
           <componentref id="tableLegs" />
-          <componentref id="tableSidesLong" />
-          <componentref id="tableSidesShort" />
+          <componentref id="tableLongSides" />
+          <componentref id="tableShortSides" />
         </children>
       </component>
 
@@ -1474,6 +1497,106 @@
           <componentref id="tableSecondLeg" />
           <componentref id="tableThirdLeg" />
           <componentref id="tableFourthLeg" />
+        </children>
+      </component>
+
+      <component id="tableLongSides">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="9" y="2.85" z="9" />
+        </transformation>
+        <children>
+          <componentref id="tableLongSide" />
+          <componentref id="tableLongSideRot" />
+        </children>
+      </component>
+  
+      <component id="tableShortSides">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="12" y="2.85" z="7" />
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <children>
+          <componentref id="tableShortSide" />
+          <componentref id="tableShortSideRot" />
+        </children>
+      </component>
+
+      <component id="tableLongSideRot">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="0" y="0" z="-4" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <children>
+          <componentref id="tableLongSide" />
+        </children>
+      </component>
+
+      <component id="tableShortSideRot">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <translate x="0" y="0" z="-6" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <children>
+          <componentref id="tableShortSide" />
+        </children>
+      </component>
+
+      <component id="tableShortSide">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <rotate axis="x" angle="90" />
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <children>
+          <primitiveref id="tentTableShort" />
+        </children>
+      </component>
+
+      <component id="tableLongSide">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <rotate axis="x" angle="90" />
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <children>
+          <primitiveref id="tentTable" />
+          <primitiveref id="tentTableCorner" />
+          <componentref id="tableOtherCorner" />
+        </children>
+      </component>
+
+      <component id="tableOtherCorner">
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <transformation>
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <children>
+          <primitiveref id="tentTableCorner" />
         </children>
       </component>
 
@@ -1502,49 +1625,6 @@
         </transformation>
         <children>
           <primitiveref id="tableTop" />
-        </children>
-      </component>
-
-      <component id="tableSidesShort">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit" />
-        <transformation>
-          <scale x="1.5" y="1" z="0.66667" />
-          <translate x="-1" y="0" z="19.5" />
-          <rotate axis="y" angle="90" />
-        </transformation>
-        <children>
-          <componentref id="tableSidesLong" />
-        </children>
-      </component>
-
-      <component id="tableSidesLong">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit" />
-        <transformation>
-          <translate x="9" y="2.7" z="9" />
-        </transformation>
-        <children>
-          <primitiveref id="tableSide" />
-          <componentref id="tSideLongRev" />
-        </children>
-      </component>
-
-      <component id="tSideLongRev">
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit" />
-        <transformation>
-          <translate x="0" y="0" z="-4" />
-          <rotate axis="y" angle="180" />
-        </transformation>
-        <children>
-          <primitiveref id="tableSide" />
         </children>
       </component>
 
