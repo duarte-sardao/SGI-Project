@@ -1431,7 +1431,7 @@ export class MySceneGraph {
     var finalAnimation = component['finalAnimation'];
     this.scene.pushMatrix();
     //transform
-    this.scene.multMatrix(transfMatrix); //inherited * component transform
+    this.scene.multMatrix(transfMatrix); //component transform
     if(finalAnimation == null) { //only check for animations if we arent at the end of one
         if(animation != null) {  //if component has animation run it
             let index = animation[0]; //get index of current keyframe
