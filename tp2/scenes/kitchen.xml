@@ -154,6 +154,12 @@
             <diffuse r="1" g="0.829" b="0.829" a="1.0" />
             <specular r="0.296648" g="0.296648" b="0.296648" a="1.0" />
         </material>
+        <material id="water" shininess="32">
+            <emission r="0.0" g="0.03" b="0.03" a="0.0" />
+            <ambient r="0" g="0.06" b="0.06" a="1.0" />
+            <diffuse r="0.2" g="0.30" b="0.50" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+        </material>
     </materials>
 
     <transformations>
@@ -410,6 +416,93 @@
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
       </keyframeanim>
+
+      <keyframeanim id="waterPour">        
+        <keyframe instant="4">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="0" sy="0" sz="1" />
+        </keyframe>
+        <keyframe instant="4.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="10">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="10.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="0" sy="0" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
+      <keyframeanim id="waterFill">        
+        <keyframe instant="4.1">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="10.5">
+          <translation x="0" y="0" z="0.95" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
+    <keyframeanim id="leverAnim">
+        <keyframe instant="0">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>    
+        <keyframe instant="4">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="4.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="90" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="10">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="90" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="10.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
     </animations>
 
     <components>
@@ -828,6 +921,21 @@
         <texture id="inherit"/>
         <children>
           <primitiveref id="sinkBottom" />
+          <componentref id="waterBottom" />
+        </children>
+      </component>
+      <component id="waterBottom">
+        <animation id="waterFill" />
+        <transformation>
+          <translate x="0" y="0.3" z="0" />
+          <scale x="1" y="0.7" z="1" />
+        </transformation>
+        <materials>
+            <material id="water" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="sinkBottom" />
         </children>
       </component>
       <component id="sinkTents">
@@ -972,11 +1080,24 @@
           <primitiveref id="pipeTop" />
         </children>
       </component>
+      <component id="pipeWater">
+        <animation id="waterPour" />
+        <transformation>
+          <scale x="0.8" y="0.8" z="6" />
+        </transformation>
+        <materials>
+            <material id="water" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="pipePart" />
+        </children>
+      </component>
       <component id="pipeFluxo">
         <transformation>
           <translate x="4.5" y="3" z="0.8" />
           <rotate axis="x" angle="90" />
-          <scale x="0.75" y="0.75" z="0.5" />
+          <scale x="0.8" y="0.8" z="0.33" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -984,10 +1105,13 @@
         <texture id="inherit"/>
         <children>
           <primitiveref id="pipePart" />
+          <componentref id="pipeWater" />
         </children>
       </component>
       <component id="leverSink">
+        <animation id="leverAnim" />
         <transformation>
+          <translate x="4.5" y="3.1" z="0.1" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -1000,7 +1124,6 @@
       </component>
       <component id="leverPartBase">
         <transformation>
-          <translate x="4.5" y="3.1" z="0.1" />
           <rotate axis="x" angle="90" />
         </transformation>
         <materials>
@@ -1013,7 +1136,7 @@
       </component>
       <component id="leverPartLock">
         <transformation>
-          <translate x="4" y="3.1" z="0.1" />
+          <translate x="-0.5" y="0" z="0" />
           <rotate axis="y" angle="90" />
           <scale x="0.4" y="0.4" z="0.4" />
         </transformation>
