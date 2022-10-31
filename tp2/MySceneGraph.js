@@ -5,6 +5,7 @@ import { MyCylinder } from "./MyCylinder.js";
 import { MySphere } from "./MySphere.js"
 import { MyTorus } from "./MyTorus.js"
 import { MyPatch } from "./MyPatch.js"
+import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js"
 import { color } from '../lib/dat.gui.module.min.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
@@ -944,7 +945,7 @@ export class MySceneGraph {
             if(keyframes.length < 1)
                 return "keyframeanim must have atleast one keyframe"
             
-            var animObj = [1]; //start at keyframe 1
+            var keyframeList = [];
             let lastInstant = -1;
             for(let j = 0; j < keyframes.length; j++) {
                 let keyframe = keyframes[j];
@@ -960,9 +961,9 @@ export class MySceneGraph {
                 if(typeof keyframeobj == "string")
                     return keyframeobj;
                 var keyObj = [instant, keyframeobj];
-                animObj.push(keyObj);
+                keyframeList.push(keyObj);
             }
-            this.animations[animID] = animObj;
+            this.animations[animID] = new MyKeyframeAnimation(this.scene, keyframeList);
         }
 
         this.log("Parsed animations");
@@ -1373,42 +1374,6 @@ export class MySceneGraph {
     }
 
     /**
-     * Get animation matrix from an object and a scalar
-     * @param {keyframe object} keyObj object defining keyframe transformations
-     * @param {keyframe object} prevkeyObj object defining keyframe transformations of the last keyframe
-     * @param {float} scalar value to scale the transformations by 0-1
-     */
-    animMatrix(keyObj, prevkeyObj, scalar) {
-        var transfMatrix = mat4.create();
-        var translate = [];
-        var scale = [];
-        for(let i = 0; i < 3; i++) { //from the last keyframe, add the transformation that moves it towards the next, scaled by percentage time completion (scalar)
-            translate[i] = prevkeyObj['trans'][i]+(keyObj['trans'][i] - prevkeyObj['trans'][i])*scalar;
-            scale[i] = prevkeyObj['scale'][i]+(keyObj['scale'][i] - prevkeyObj['scale'][i])*scalar;
-        }
-        transfMatrix = mat4.translate(transfMatrix, transfMatrix, translate);
-        transfMatrix = mat4.rotateX(transfMatrix, transfMatrix, (prevkeyObj['xrot']+(keyObj['xrot']-prevkeyObj['xrot'])*scalar)*DEGREE_TO_RAD);
-        transfMatrix = mat4.rotateY(transfMatrix, transfMatrix, (prevkeyObj['yrot']+(keyObj['yrot']-prevkeyObj['yrot'])*scalar)*DEGREE_TO_RAD);
-        transfMatrix = mat4.rotateZ(transfMatrix, transfMatrix, (prevkeyObj['zrot']+(keyObj['zrot']-prevkeyObj['zrot'])*scalar)*DEGREE_TO_RAD);
-        transfMatrix = mat4.scale(transfMatrix, transfMatrix, scale);
-        return transfMatrix;
-    }
-
-    /**
-     * Calculates the matrix for the final animation which remains static at the end
-     * @param {animation object} keyObj 
-     */
-    finalAnimMatrix(keyObj) {
-        var auxobj = {}
-        auxobj['trans'] = [0,0,0];
-        auxobj['xrot'] = 0;
-        auxobj['yrot'] = 0;
-        auxobj['zrot'] = 0;
-        auxobj['scale'] = [0,0,0]; //dont want to modify matrix, all values set to 0
-        return this.animMatrix(keyObj, auxobj, 1);
-    }
-
-    /**
      * Displays the scene, processing each node, starting in the root node.
      */
     displayScene() {
@@ -1428,41 +1393,14 @@ export class MySceneGraph {
     var primitives = component['primitives'];
     var transfMatrix = component['transformation'];
     var animation = component['animation'];
-    var finalAnimation = component['finalAnimation'];
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix); //component transform
-    if(finalAnimation == null) { //only check for animations if we arent at the end of one
-        if(animation != null) {  //if component has animation run it
-            let index = animation[0]; //get index of current keyframe
-            let curTime = new Date();
-            let seconds = (curTime - startTime) / 1000; //calculate seconds since parsing over
-            let keyframe = animation[index]; //get current keyframe
-            if(index == 1 && keyframe[0] > seconds) { //keyframe[0] == keyframe instant, if were at the first keyframe and havent reached its instant, dont draw anything
-                draw = false;
-            } else { //otherwise we can calculate
-                let curTrans = null; //matrix to transform
-                if(keyframe[0] < seconds) { //check if seconds > instants
-                    index++; //increment to next keyframe
-                    animation[0] = index; //save it
-                    if(index >= animation.length) { //is the final keyframe over?
-                        curTrans = this.finalAnimMatrix(keyframe[1]) //use its transform matrix for this frame
-                        component['finalAnimation'] = curTrans; //and save it so calculations are avoided in the next one
-                    }
-                    else //not the final keyframe
-                        keyframe = animation[index]; //update keyframe based on new index
-                }
-                if(curTrans == null) { //if yet to be defined (not final ekyframe)
-                    let prev = animation[index-1]; //get last keyframe
-                    var scalar = (seconds-prev[0]) / (keyframe[0]-prev[0]); //calculate scalar (0-1 float based on how close a keyframe is to reaching its final instant)
-                    //this.log(scalar);
-                    curTrans = this.animMatrix(keyframe[1], prev[1], scalar); //calculate matrix based on the two keyframes and its scalar
-                }
-                this.scene.multMatrix(curTrans); //draw transform from animation
-            }
-        }
-    } else { //otherwise we ended an animation, just use the final stored matrix
-        this.scene.multMatrix(finalAnimation);
+    if(animation != null) {
+        let curTime = new Date();
+        let seconds = (curTime - startTime) / 1000; //seconds since parsing ended
+        draw = animation.update(seconds)
+        animation.apply();
     }
     
     //appearance
