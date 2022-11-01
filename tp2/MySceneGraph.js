@@ -6,7 +6,6 @@ import { MySphere } from "./MySphere.js"
 import { MyTorus } from "./MyTorus.js"
 import { MyPatch } from "./MyPatch.js"
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js"
-import { color } from '../lib/dat.gui.module.min.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 var startTime = 0;

@@ -97,6 +97,9 @@
         <texture id="pear" file="scenes/images/pear.jpg" />
 
         <texture id="brown" file="scenes/images/brown.jpg" />
+
+        <texture id="raw" file="scenes/images/chickenraw.jpg" />
+        <texture id="cooked" file="scenes/images/chickencooked.jpg" />
     </textures>
 
     <materials>
@@ -356,6 +359,32 @@
         </patch>
       </primitive>
 
+      <primitive id="chickenBody">
+        <patch degree_u="2" parts_u="10" degree_v="2" parts_v="10">
+          <controlpoint x="-0.66" y="0" z="-1" />
+          <controlpoint x="0" y="0" z="-1.5" />
+          <controlpoint x="0.66" y="0" z="-1" />
+
+          <controlpoint x="-1" y="0" z="0" />
+          <controlpoint x="0" y="3.5" z="0" />
+          <controlpoint x="1" y="0" z="0" />
+
+          <controlpoint x="-1" y="0" z="0" />
+          <controlpoint x="0" y="0" z="3" />
+          <controlpoint x="1" y="0" z="0" />
+        </patch>
+      </primitive>
+
+      <primitive id="chickenDrum">
+        <sphere radius="0.5" slices="8" stacks="8" />
+      </primitive>
+      <primitive id="chickenBone">
+        <cylinder base="0.2" top="0.2" height="1" slices="8" stacks="1" />
+      </primitive>
+      <primitive id="chickenBoneEnd">
+        <sphere radius="0.2" slices="8" stacks="8" />
+      </primitive>
+
       <primitive id="tentRect">
         <rectangle x1="0" y1="0" x2="2.6" y2="1.5" />
       </primitive>
@@ -415,6 +444,20 @@
           <rotation axis="x" angle="-10" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
+        <keyframe instant="30">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="-10" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="31">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="30" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
       </keyframeanim>
 
       <keyframeanim id="waterPour">        
@@ -465,7 +508,7 @@
         </keyframe>
       </keyframeanim>
 
-    <keyframeanim id="leverAnim">
+      <keyframeanim id="leverAnim">
         <keyframe instant="0">
           <translation x="0" y="0" z="0" />
           <rotation axis="z" angle="0" />
@@ -503,6 +546,68 @@
         </keyframe>
       </keyframeanim>
 
+      <keyframeanim id="chickenMove">
+          <keyframe instant="0">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+          <keyframe instant="10">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="11">
+          <translation x="0" y="0" z="6" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="13">
+          <translation x="4" y="-1.45" z="6" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="15">
+          <translation x="4" y="-1.45" z="0.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="20">
+          <translation x="4" y="-1.45" z="0.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="20.1">
+          <translation x="4" y="-1.45" z="0.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="0" sy="0" sz="0" />
+        </keyframe>
+      </keyframeanim>
+
+      <keyframeanim id="cookedAppear">
+        <keyframe instant="20">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
     </animations>
 
     <components>
@@ -521,8 +626,133 @@
               <componentref id="table" />
               <componentref id="bowl" />
               <componentref id="cake :)" />
+              <componentref id="chickenRaw"/>
+              <componentref id="chickenCooked" />
             </children>
         </component>
+
+
+      <component id="chickenCooked">
+        <animation id="cookedAppear" />
+        <transformation>
+          <translate x="11.5" y="0.6" z="1.6" />
+          <scale x="0.70" y="0.70" z="0.70" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="cooked"/>
+        <children>
+          <componentref id="chicken" />
+        </children>
+      </component>
+      <component id="chickenRaw">
+        <animation id="chickenMove" />
+        <transformation>
+          <translate x="8.5" y="2.05" z="1.1" />
+          <scale x="0.70" y="0.70" z="0.70" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="raw"/>
+        <children>
+          <componentref id="chicken" />
+        </children>
+      </component>
+      <component id="chicken">
+        <transformation>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="chickenBody" />
+          <componentref id="chickenDrum1" />
+          <componentref id="chickenDrum2" />
+          <componentref id="chickenPlate" />
+        </children>
+      </component>
+      <component id="chickenPlate">
+        <transformation>
+          <translate x="0" y="-0.1" z="0.1" />
+          <scale x="1.1" y="0.3" z="1.6" />
+          <rotate axis="x" angle="-90" />
+        </transformation>
+        <materials>
+            <material id="pearl" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="bowlObj" />
+        </children>
+      </component>
+      <component id="chickenDrum2">
+        <transformation>
+          <translate x="1" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="chickenDrum1" />
+        </children>
+      </component>
+      <component id="chickenDrum1">
+        <transformation>
+          <translate x="-0.5" y="0.4" z="-0.66" />
+          <scale x="0.66" y="0.66" z="1" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="chickenDrum" />
+          <componentref id="chickenBone" />
+        </children>
+      </component>
+      <component id="chickenBone">
+        <transformation>
+          <translate x="0" y="0" z="-0.75" />
+        </transformation>
+        <materials>
+            <material id="pearl" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="chickenBone" />
+          <componentref id="chickenBoneEnd1" />
+          <componentref id="chickenBoneEnd2" />
+        </children>
+      </component>
+      <component id="chickenBoneEnd2">
+        <transformation>
+          <translate x="0.3" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="chickenBoneEnd1" />
+        </children>
+      </component>
+      <component id="chickenBoneEnd1">
+        <transformation>
+          <translate x="-0.15" y="0" z="0" />
+          <scale x="1.3" y="1.3" z="0.6" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="chickenBoneEnd" />
+        </children>
+      </component>
       
       <component id="cake :)">
         <transformation>
