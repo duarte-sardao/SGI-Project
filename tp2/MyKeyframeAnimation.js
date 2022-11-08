@@ -56,7 +56,7 @@ export class MyKeyframeAnimation extends MyAnimation{
                 this.index++; //increment to next keyframe
                 if(this.index >= this.keyframes.length) { //is the final keyframe over?
                     curTrans = this.finalAnimMatrix(keyframe[1]); //use its transform matrix for this frame
-                    this.finalAnimation = curTrans; //and save it so calculations are avoided in the next one
+                    this.finalAnimation = true; //and save we got it so we stop calculations
                 }
                 else //not the final keyframe
                     keyframe = this.keyframes[this.index]; //update keyframe based on new index

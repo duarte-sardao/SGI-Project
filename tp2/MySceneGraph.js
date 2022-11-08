@@ -1,4 +1,4 @@
-import { CGFappearance, CGFtexture, CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFtexture, CGFXMLreader, CGFshader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyCylinder } from "./MyCylinder.js";
@@ -1165,12 +1165,23 @@ export class MySceneGraph {
             //highlighted
             var highlightedIndex = nodeNames.indexOf("highlighted");
             if(highlightedIndex != -1) {
-                let highlight = grandChildren[highlightedIndex];
-                let color = this.parseColor(highlight, "highlighted on " + componentID)
-                var scale_h = this.reader.getFloat(highlight, 'scale_h');
-                if (!(scale_h != null && !isNaN(scale_h)))
-                    return "unable to parse scale of highlighted in " + componentID + " component";
-                component["highlight"] = [color, scale_h];
+                if(primmies.length == 0) {
+                    this.onXMLMinorError("highlight set for " + componentID + " but no child primitives");
+                } else {
+                    let highlight = grandChildren[highlightedIndex];
+                    let color = this.parseColor(highlight, "highlighted on " + componentID, true);
+                    var scale_h = this.reader.getFloat(highlight, 'scale_h');
+                    if (!(scale_h != null && !isNaN(scale_h)))
+                        return "unable to parse scale of highlighted in " + componentID + " component";
+                    
+                    let shader = new CGFshader(this.scene.gl, "shaders/pulsar.vert", "shaders/pulsar.frag");
+                    shader.setUniformsValues({ normScale: scale_h });
+                    shader.setUniformsValues({ r: color[0] });
+                    shader.setUniformsValues({ g: color[1] });
+                    shader.setUniformsValues({ b: color[2] });
+                    
+                    component["shader"] = shader;
+                }
             }
             //animation
             var animationIndex = nodeNames.indexOf("animation");
@@ -1318,8 +1329,9 @@ export class MySceneGraph {
      * Parse the color components from a node
      * @param {block element} node
      * @param {message to be displayed in case of error} messageError
+     * @param {boolean} skipA wether to skip component a
      */
-    parseColor(node, messageError) {
+    parseColor(node, messageError, skipA = false) {
         var color = [];
 
         // R
@@ -1338,9 +1350,11 @@ export class MySceneGraph {
             return "unable to parse B component of the " + messageError;
 
         // A
+        if(!skipA) {
         var a = this.reader.getFloat(node, 'a');
         if (!(a != null && !isNaN(a) && a >= 0 && a <= 1))
             return "unable to parse A component of the " + messageError;
+        }
 
         color.push(...[r, g, b, a]);
 
@@ -1392,6 +1406,7 @@ export class MySceneGraph {
     var primitives = component['primitives'];
     var transfMatrix = component['transformation'];
     var animation = component['animation'];
+    var shader = component['shader'];
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix); //component transform
@@ -1400,6 +1415,10 @@ export class MySceneGraph {
         let seconds = (curTime - startTime) / 1000; //seconds since parsing ended
         draw = animation.update(seconds)
         animation.apply();
+    }
+    if(!draw) {
+        this.scene.popMatrix();
+        return null;
     }
     
     //appearance
@@ -1428,19 +1447,25 @@ export class MySceneGraph {
     appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
     appearance.apply();
 
-    //draw
-    if(draw) {
-        for(var i = 0; i < primitives.length; i++) {
-            //primitives[i].enableNormalViz();
-            if(!primitives[i].isQuadratic())
-                primitives[i].setLength(component["s"], component["t"]);
-            primitives[i].display();
-        }
+    if(shader != null) {
+        let t = new Date();
+        shader.setUniformsValues({ timeFactor: t / 1000 % 100 });
+        this.scene.setActiveShader(shader);
+    }
 
-        //keep exploring
-        for(var i = 0; i < children.length; i++) {
-            this.displayNode(children[i], matid, tex);
-        }
+    for(var i = 0; i < primitives.length; i++) {
+        //primitives[i].enableNormalViz();
+        if(!primitives[i].isQuadratic())
+            primitives[i].setLength(component["s"], component["t"]);
+        primitives[i].display();
+    }
+
+    if(shader != null)
+        this.scene.setActiveShader(this.scene.defaultShader);
+
+    //keep exploring
+    for(var i = 0; i < children.length; i++) {
+        this.displayNode(children[i], matid, tex);
     }
 
     this.scene.popMatrix();
