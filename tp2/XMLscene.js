@@ -117,6 +117,17 @@ export class XMLscene extends CGFscene {
     }
 
     /**
+     * Initializes the shader object to use to enable/disable in UI
+     */
+    initShaders() {
+        this.shaderVal = {};
+
+        for (var component in this.graph.shaderComponents) {
+                this.shaderVal[this.graph.shaderComponents[component]] = true;
+        }
+    }
+
+    /**
      * Update a camera after swithcing on gui
      */
     updateCamera() {
@@ -143,6 +154,8 @@ export class XMLscene extends CGFscene {
         this.initCameras();
 
         this.initLights();
+
+        this.initShaders();
 
         this.interface.postParsingSetup();
 

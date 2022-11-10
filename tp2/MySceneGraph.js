@@ -1037,6 +1037,7 @@ export class MySceneGraph {
         var children = componentsNode.children;
 
         this.components = {};
+        this.shaderComponents = [];
 
         var grandChildren = [];
         var grandgrandChildren = [];
@@ -1181,6 +1182,7 @@ export class MySceneGraph {
                     shader.setUniformsValues({ b: color[2] });
                     
                     component["shader"] = shader;
+                    this.shaderComponents.push(componentID);
                 }
             }
             //animation
@@ -1447,7 +1449,7 @@ export class MySceneGraph {
     appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
     appearance.apply();
 
-    if(shader != null) {
+    if(shader != null && this.scene.shaderVal[id]) {
         let t = new Date();
         shader.setUniformsValues({ timeFactor: t / 1000 % 100 });
         this.scene.setActiveShader(shader);
@@ -1460,7 +1462,7 @@ export class MySceneGraph {
         primitives[i].display();
     }
 
-    if(shader != null)
+    if(shader != null && this.scene.shaderVal[id])
         this.scene.setActiveShader(this.scene.defaultShader);
 
     //keep exploring
