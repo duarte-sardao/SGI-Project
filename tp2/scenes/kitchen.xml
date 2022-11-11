@@ -404,6 +404,30 @@
           <controlpoint x="0.21" y="0" z="1.3" />
         </patch>
       </primitive>
+      
+      <primitive id="barrelSide">
+        <patch degree_u="3" parts_u="10" degree_v="3" parts_v="10">
+          <controlpoint x="-0.5" y="0" z="0" />
+          <controlpoint x="-0.5" y="0.5" z="0" />
+          <controlpoint x="-0.5" y="1" z="0" />
+          <controlpoint x="-0.5" y="1.5" z="0" />
+
+          <controlpoint x="-0.5" y="0" z="0.5" />
+          <controlpoint x="-0.5" y="0.5" z="1" />
+          <controlpoint x="-0.5" y="1" z="1" />
+          <controlpoint x="-0.5" y="1.5" z="0.5" />
+
+          <controlpoint x="0.5" y="0" z="0.5" />
+          <controlpoint x="0.5" y="0.5" z="1" />
+          <controlpoint x="0.5" y="1" z="1" />
+          <controlpoint x="0.5" y="1.5" z="0.5" />
+
+          <controlpoint x="0.5" y="0" z="0" />
+          <controlpoint x="0.5" y="0.5" z="0" />
+          <controlpoint x="0.5" y="1" z="0" />
+          <controlpoint x="0.5" y="1.5" z="0"   />
+        </patch>
+      </primitive>
 
     </primitives>
 
@@ -627,9 +651,37 @@
               <componentref id="bowl" />
               <componentref id="cake :)" />
               <componentref id="chickenRaw"/>
-              <componentref id="chickenCooked" />
+              <componentref id="barrelTest" />
             </children>
         </component>
+
+      <component id="barrelTest">
+        <transformation>
+          <translate x="3" y="3" z="2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="barrelSide" />
+          <componentref id="barrelInvertSide" />
+        </children>
+      </component>
+
+       <component id="barrelInvertSide">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="barrelSide" />
+        </children>
+      </component>
 
 
       <component id="chickenCooked">
