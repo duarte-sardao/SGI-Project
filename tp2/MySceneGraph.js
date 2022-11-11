@@ -8,7 +8,6 @@ import { MyPatch } from "./MyPatch.js"
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js"
 
 var DEGREE_TO_RAD = Math.PI / 180;
-var startTime = 0;
 
 // Order of the groups in the XML document.
 var SCENE_INDEX = 0;
@@ -220,7 +219,7 @@ export class MySceneGraph {
                 return error;
         }
         this.log("all parsed");
-        startTime = new Date();
+        this.startTime = new Date();
     }
 
     /**
@@ -1037,6 +1036,7 @@ export class MySceneGraph {
         var children = componentsNode.children;
 
         this.components = {};
+        this.shaders = {};
         this.shaderComponents = [];
 
         var grandChildren = [];
@@ -1181,7 +1181,7 @@ export class MySceneGraph {
                     shader.setUniformsValues({ g: color[1] });
                     shader.setUniformsValues({ b: color[2] });
                     
-                    component["shader"] = shader;
+                    this.shaders[componentID] = shader;
                     this.shaderComponents.push(componentID);
                 }
             }
@@ -1194,7 +1194,7 @@ export class MySceneGraph {
                 let animation = this.animations[animId];
                 if(animation == null)
                     return "unknown animation " + animId + " on component " + componentID;
-                component["animation"] = animation;
+                component["animation"] = animId;
             }
 
             this.components[componentID] = component;
@@ -1392,7 +1392,30 @@ export class MySceneGraph {
      * Displays the scene, processing each node, starting in the root node.
      */
     displayScene() {
+        if(this.startTime == null)
+            return;
+        let curTime = new Date();
+        let seconds = (curTime - this.startTime) / 1000;
+        
+        this.updateAnimations(seconds);
+        this.updateShaders(seconds);
         this.displayNode(this.idRoot, null, null);
+    }
+
+    updateAnimations(t) {
+        for(let key in this.animations) {
+            let anim = this.animations[key];
+            anim.update(t);
+        }
+    }
+
+    updateShaders(t) {
+        for(let key in this.shaders) {
+            if(!this.scene.shaderVal[key])
+                continue;
+            let shader = this.shaders[key];
+            shader.setUniformsValues({ timeFactor: t });
+        }
     }
 
     /**
@@ -1402,25 +1425,22 @@ export class MySceneGraph {
      * @param {texture object of parent node} lasttex
      */
     displayNode(id, lastmat, lasttex) {
-    var draw = true;
     var component = this.components[id];
     var children = component['children'];
     var primitives = component['primitives'];
     var transfMatrix = component['transformation'];
-    var animation = component['animation'];
-    var shader = component['shader'];
+    var animation = this.animations[component['animation']];
+    var shader = this.shaders[id];
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix); //component transform
     if(animation != null) {
-        let curTime = new Date();
-        let seconds = (curTime - startTime) / 1000; //seconds since parsing ended
-        draw = animation.update(seconds)
+        let draw = animation.doDraw();
+        if(!draw) {
+            this.scene.popMatrix();
+            return null;
+        }
         animation.apply();
-    }
-    if(!draw) {
-        this.scene.popMatrix();
-        return null;
     }
     
     //appearance
@@ -1450,8 +1470,6 @@ export class MySceneGraph {
     appearance.apply();
 
     if(shader != null && this.scene.shaderVal[id]) {
-        let t = new Date();
-        shader.setUniformsValues({ timeFactor: t / 1000 % 100 });
         this.scene.setActiveShader(shader);
     }
 

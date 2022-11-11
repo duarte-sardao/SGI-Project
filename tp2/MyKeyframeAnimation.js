@@ -5,6 +5,7 @@ export class MyKeyframeAnimation extends MyAnimation{
         super(scene);
         this.index = 0;
         this.keyframes = keyframes;
+        this.draw = false;
     }
 
     /**
@@ -46,10 +47,11 @@ export class MyKeyframeAnimation extends MyAnimation{
 
     update(t) {
         if(this.finalAnimation != null) //dont need updating if its over
-            return true;
+            return;
         let keyframe = this.keyframes[this.index]; //get current keyframe
         if(this.index == 0 && keyframe[0] > t) { //keyframe[0] == keyframe instant, if were at the first keyframe and havent reached its instant, dont draw anything
-            return false;
+            this.draw = false;
+            return;
         } else { //otherwise we can calculate
             let curTrans = null; //matrix to transform
             if(keyframe[0] < t) { //check if seconds > instants
@@ -68,6 +70,10 @@ export class MyKeyframeAnimation extends MyAnimation{
             }
             this.matrix = curTrans;
         }
-        return true;
+        this.draw = true;
     };
+
+    doDraw() {
+        return this.draw;
+    }
 }
