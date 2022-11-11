@@ -37,7 +37,7 @@ export class XMLscene extends CGFscene {
         this.gl.depthFunc(this.gl.LEQUAL);
 
         this.axis = new CGFaxis(this);
-        this.setUpdatePeriod(100);
+        this.setUpdatePeriod(10);
     }
 
     /**
@@ -160,6 +160,23 @@ export class XMLscene extends CGFscene {
         this.interface.postParsingSetup();
 
         this.sceneInited = true;
+
+        this.startTime = null;
+    }
+
+    update(t) {
+        if(!this.sceneInited)
+            return;
+
+        if (this.startTime == null) {
+            this.startTime = t;
+            return;
+        }
+
+        let seconds = (t - this.startTime) / 1000;
+        
+        this.graph.updateAnimations(seconds);
+        this.graph.updateShaders(seconds);
     }
 
     /**

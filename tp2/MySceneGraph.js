@@ -1392,13 +1392,6 @@ export class MySceneGraph {
      * Displays the scene, processing each node, starting in the root node.
      */
     displayScene() {
-        if(this.startTime == null)
-            return;
-        let curTime = new Date();
-        let seconds = (curTime - this.startTime) / 1000;
-        
-        this.updateAnimations(seconds);
-        this.updateShaders(seconds);
         this.displayNode(this.idRoot, null, null);
     }
 
