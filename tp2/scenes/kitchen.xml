@@ -1390,7 +1390,7 @@
         </children>
       </component>
       <component id="waterBottom">
-        <highlighted r="0.2" g="0.2" b="1" scale_h="1" />
+        <highlighted r="0.2" g="0.2" b="1" scale_h="1.2" />
         <animation id="waterFill" />
         <transformation>
           <translate x="0" y="0.3" z="0" />

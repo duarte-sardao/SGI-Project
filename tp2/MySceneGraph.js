@@ -82,6 +82,7 @@ export class MySceneGraph {
      */
     parseXMLFile(rootElement) {
         this.matoffset = 0;
+        this.lastoffset = 0;
 
         if (rootElement.nodeName != "sxs")
             return "root tag <sxs> missing";
@@ -1093,6 +1094,7 @@ export class MySceneGraph {
             // Materials
             grandgrandChildren = grandChildren[materialsIndex].children;
             var mats = [];
+            var firstMat = null;
             for(var j = 0; j < grandgrandChildren.length; j++) {
                 var node = grandgrandChildren[j];
                 if(node.nodeName != "material")
@@ -1104,6 +1106,8 @@ export class MySceneGraph {
                     var mat = this.materials[matid];
                     if(mat == null)
                         return "unknown material " + matid;
+                    if(firstMat == null)
+                        firstMat = mat;
                 }
                 mats.push(matid);
             }
@@ -1180,6 +1184,10 @@ export class MySceneGraph {
                     shader.setUniformsValues({ r: color[0] });
                     shader.setUniformsValues({ g: color[1] });
                     shader.setUniformsValues({ b: color[2] });
+                    let col = this.normalizeVec(firstMat[3]);
+                    shader.setUniformsValues({ mat_r: col[0] });
+                    shader.setUniformsValues({ mat_g: col[1] });
+                    shader.setUniformsValues({ mat_b: col[2] });
                     
                     this.shaders[componentID] = shader;
                     this.shaderComponents.push(componentID);
@@ -1393,6 +1401,7 @@ export class MySceneGraph {
      */
     displayScene() {
         this.displayNode(this.idRoot, null, null);
+        this.lastoffset = this.matoffset;
     }
 
     updateAnimations(t) {
@@ -1409,6 +1418,11 @@ export class MySceneGraph {
             let shader = this.shaders[key];
             shader.setUniformsValues({ timeFactor: t });
         }
+    }
+
+    normalizeVec(a) {
+        let length = Math.sqrt((a[0] * a[0]) + (a[1] * a[1]) + (a[2] * a[2]));
+        return [a[0] / length, a[1] / length, a[2] / length,]
     }
 
     /**
@@ -1463,6 +1477,12 @@ export class MySceneGraph {
     appearance.apply();
 
     if(shader != null && this.scene.shaderVal[id]) {
+        if(this.lastoffset != this.matoffset) { //update mat
+            let col = this.normalizeVec(mat[3]);
+            shader.setUniformsValues({ mat_r: col[0] });
+            shader.setUniformsValues({ mat_g: col[1] });
+            shader.setUniformsValues({ mat_b: col[2] });
+        }
         this.scene.setActiveShader(shader);
     }
 
