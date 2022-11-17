@@ -682,6 +682,7 @@
               <componentref id="bowl" />
               <componentref id="cake :)" />
               <componentref id="chickenRaw"/>
+              <componentref id="chickenCooked" />
               <componentref id="waterGlass" />
               <componentref id="ovenButton" />
             </children>
