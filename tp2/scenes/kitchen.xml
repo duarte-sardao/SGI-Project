@@ -408,26 +408,57 @@
       <primitive id="barrelSide">
         <patch degree_u="3" parts_u="10" degree_v="3" parts_v="10">
           <controlpoint x="-0.5" y="0" z="0" />
-          <controlpoint x="-0.5" y="0.5" z="0" />
-          <controlpoint x="-0.5" y="1" z="0" />
-          <controlpoint x="-0.5" y="1.5" z="0" />
+          <controlpoint x="-0.8.5" y="0.8" z="0" />
+          <controlpoint x="-0.8.5" y="1" z="0" />
+          <controlpoint x="-0.5" y="1.8" z="0" />
 
-          <controlpoint x="-0.5" y="0" z="0.5" />
-          <controlpoint x="-0.5" y="0.5" z="1" />
-          <controlpoint x="-0.5" y="1" z="1" />
-          <controlpoint x="-0.5" y="1.5" z="0.5" />
+          <controlpoint x="-0.5" y="0" z="0.7" />
+          <controlpoint x="-0.8.5" y="0.8" z="1.1" />
+          <controlpoint x="-0.8.5" y="1" z="1.1" />
+          <controlpoint x="-0.5" y="1.8" z="0.7" />
 
-          <controlpoint x="0.5" y="0" z="0.5" />
-          <controlpoint x="0.5" y="0.5" z="1" />
-          <controlpoint x="0.5" y="1" z="1" />
-          <controlpoint x="0.5" y="1.5" z="0.5" />
+          <controlpoint x="0.5" y="0" z="0.7" />
+          <controlpoint x="0.8.5" y="0.8" z="1.1" />
+          <controlpoint x="0.8.5" y="1" z="1.1" />
+          <controlpoint x="0.5" y="1.8" z="0.7" />
 
           <controlpoint x="0.5" y="0" z="0" />
-          <controlpoint x="0.5" y="0.5" z="0" />
-          <controlpoint x="0.5" y="1" z="0" />
-          <controlpoint x="0.5" y="1.5" z="0"   />
+          <controlpoint x="0.8.5" y="0.8" z="0" />
+          <controlpoint x="0.8.5" y="1" z="0" />
+          <controlpoint x="0.5" y="1.8" z="0"   />
         </patch>
       </primitive>
+
+      <primitive id="semiCircle">
+        <patch degree_u="1" parts_u="20" degree_v="3" parts_v="20">
+          <controlpoint x="0" y="0" z="0" />
+          <controlpoint x="0" y="0.5" z="0" />
+          <controlpoint x="0" y="1" z="0" />
+          <controlpoint x="0" y="1.5" z="0" />
+
+          <controlpoint x="0" y="0" z="0" />
+          <controlpoint x="0.917" y="0.083" z="0" />
+          <controlpoint x="0.917" y="1.417" z="0" />
+          <controlpoint x="0" y="1.5" z="0" />
+        </patch>
+      </primitive>
+
+       <primitive id="semiCircleInvert">
+        <patch degree_u="1" parts_u="20" degree_v="3" parts_v="20">
+          
+          <controlpoint x="0" y="0" z="0" />
+          <controlpoint x="-0.917" y="0.083" z="0" />
+          <controlpoint x="-0.917" y="1.417" z="0" />
+          <controlpoint x="0" y="1.5" z="0" />
+          
+          <controlpoint x="0" y="0" z="0" />
+          <controlpoint x="0" y="0.5" z="0" />
+          <controlpoint x="0" y="1" z="0" />
+          <controlpoint x="0" y="1.5" z="0" />
+        </patch>
+      </primitive>
+     
+
 
     </primitives>
 
@@ -651,13 +682,42 @@
               <componentref id="bowl" />
               <componentref id="cake :)" />
               <componentref id="chickenRaw"/>
-              <componentref id="barrelTest" />
+              <componentref id="waterGlass" />
+              <componentref id="ovenButton" />
             </children>
         </component>
 
-      <component id="barrelTest">
+      <component id="ovenButton">
         <transformation>
-          <translate x="3" y="3" z="2" />
+          <translate x="10.3" y="2.82" z="2.8" />
+          <scale x="0.2" y="0.2" z="0.2" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="barrel" />
+        </children>
+      </component> 
+
+      <component id="waterGlass">
+        <transformation>
+          <translate x="3" y="2" z="1" />
+          <scale x="0.5" y="0.5" z="0.5" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="barrel" />
+        </children>
+      </component>
+
+      <component id="barrel">
+        <transformation>
+          <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -666,8 +726,11 @@
         <children>
           <primitiveref id="barrelSide" />
           <componentref id="barrelInvertSide" />
+          <componentref id="circleTop" />
+          <componentref id="circleBottom" />
         </children>
       </component>
+
 
        <component id="barrelInvertSide">
         <transformation>
@@ -680,6 +743,38 @@
         <texture id="inherit"/>
         <children>
           <primitiveref id="barrelSide" />
+        </children>
+      </component>
+
+      <component id="circleTop">
+        <transformation>
+          <translate x="0" y="1.8" z="0.55" />
+          <rotate axis="x" angle="-90" />
+          <scale x="0.73" y="0.73" z="0.73" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="semiCircle" />
+          <primitiveref id="semiCircleInvert" />
+        </children>
+      </component>
+
+      <component id="circleBottom">
+        <transformation>
+          <translate x="0" y="0" z="-0.53" />
+          <rotate axis="x" angle="90" />
+          <scale x="0.73" y="0.73" z="0.73" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="semiCircle" />
+          <primitiveref id="semiCircleInvert" />
         </children>
       </component>
 
