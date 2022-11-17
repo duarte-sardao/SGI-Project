@@ -100,6 +100,9 @@
 
         <texture id="raw" file="scenes/images/chickenraw.jpg" />
         <texture id="cooked" file="scenes/images/chickencooked.jpg" />
+
+        <texture id="honey" file="scenes/images/mel.png" />
+        <texture id="honeyTop" file="scenes/images/melTop.png" />
     </textures>
 
     <materials>
@@ -515,6 +518,75 @@
         </keyframe>
       </keyframeanim>
 
+      <keyframeanim id="buttonAnim1">        
+        <keyframe instant="0">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="15.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="16">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="-270" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="31">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
+      <keyframeanim id="buttonAnim2">        
+        <keyframe instant="0">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="15.5">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="16">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="-180" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="31">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="-180" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="31.3">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
       <keyframeanim id="waterPour">        
         <keyframe instant="4">
           <translation x="0" y="0" z="0" />
@@ -683,36 +755,50 @@
               <componentref id="cake :)" />
               <componentref id="chickenRaw"/>
               <componentref id="chickenCooked" />
-              <componentref id="waterGlass" />
-              <componentref id="ovenButton" />
+              <componentref id="honeyJar" />
             </children>
         </component>
 
-      <component id="ovenButton">
+      <component id="honeyJar">
         <transformation>
-          <translate x="10.3" y="2.82" z="2.8" />
-          <scale x="0.2" y="0.2" z="0.2" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="inherit"/>
-        <children>
-          <componentref id="barrel" />
-        </children>
-      </component> 
-
-      <component id="waterGlass">
-        <transformation>
-          <translate x="3" y="2" z="1" />
+          <translate x="11" y="3" z="7" />
           <scale x="0.5" y="0.5" z="0.5" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
+        <texture id="honey"/>
+        <children>
+          <componentref id="barrelHoney" />
+        </children>
+      </component>
+
+      <component id="barrelHoney">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
         <texture id="inherit"/>
         <children>
-          <componentref id="barrel" />
+          <primitiveref id="barrelSide" />
+          <componentref id="barrelInvertSide" />
+          <componentref id="circles" />
+        </children>
+      </component>
+
+      <component id="circles">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="honeyTop"/>
+        <children>
+          <componentref id="circleTop" />
+          <componentref id="circleBottom" />
         </children>
       </component>
 
@@ -1650,8 +1736,58 @@
           <componentref id="ovenFront1" />
           <componentref id="ovenFront2" />
           <componentref id="ovenDoorTrans" />
+          <componentref id="ovenButton1" />
+          <componentref id="ovenButton2" />
         </children>
       </component>
+
+      <component id="ovenButton2">
+        <animation id="buttonAnim2" />
+        <transformation>
+          <translate x="11" y="2.7" z="2.8" />
+          <scale x="0.2" y="0.2" z="0.2" />
+          <rotate axis="x" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="barrel" />
+          <componentref id="buttonTrig" />
+        </children>
+      </component> 
+
+      <component id="ovenButton1">
+        <animation id="buttonAnim1" />
+        <transformation>
+          <translate x="10" y="2.7" z="2.8" />
+          <scale x="0.2" y="0.2" z="0.2" />
+          <rotate axis="x" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <componentref id="barrel" />
+          <componentref id="buttonTrig" />
+        </children>
+      </component> 
+
+      <component id="buttonTrig">
+        <transformation>
+          <translate x="0" y="0.81" z="0" />
+          <scale x="0.1" y="1" z="0.15" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="ovenDoor"/>
+        <children>
+          <primitiveref id="trig" />
+        </children>
+      </component> 
 
       <component id="ovenDoorTrans">
         <animation id="doorAnim" />
