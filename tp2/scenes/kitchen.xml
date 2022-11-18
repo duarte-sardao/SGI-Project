@@ -103,6 +103,9 @@
 
         <texture id="honey" file="scenes/images/mel.png" />
         <texture id="honeyTop" file="scenes/images/melTop.png" />
+
+        <texture id="salt" file="scenes/images/salt.png" />
+        <texture id="saltTop" file="scenes/images/saltTop.png" />
     </textures>
 
     <materials>
@@ -735,6 +738,65 @@
         </keyframe>
       </keyframeanim>
 
+      <keyframeanim id="saltUse">
+        <keyframe instant="0">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="2">
+          <translation x="14" y="4" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="2.3">
+          <translation x="12" y="6" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="2.4">
+          <translation x="14" y="4" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="2.7">
+          <translation x="12" y="6" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="2.8">
+          <translation x="14" y="4" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="3.1">
+          <translation x="12" y="6" z="0" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="5.1">
+          <translation x="0" y="0" z="0" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+      </keyframeanim>
+
     </animations>
 
     <components>
@@ -756,6 +818,7 @@
               <componentref id="chickenRaw"/>
               <componentref id="chickenCooked" />
               <componentref id="honeyJar" />
+              <componentref id="saltShaker" />
             </children>
         </component>
 
@@ -796,6 +859,50 @@
             <material id="inherit" />
         </materials>
         <texture id="honeyTop"/>
+        <children>
+          <componentref id="circleTop" />
+          <componentref id="circleBottom" />
+        </children>
+      </component>
+
+      <component id="saltShaker">
+        <animation id="saltUse" />
+        <transformation>
+          <translate x="3" y="2" z="1" />
+          <scale x="0.3" y="0.3" z="0.3" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="salt" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="barrelSalt" />
+        </children>
+      </component>
+
+      <component id="barrelSalt">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="barrelSide" />
+          <componentref id="barrelInvertSide" />
+          <componentref id="circlesSalt" />
+        </children>
+      </component>
+
+      <component id="circlesSalt">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="saltTop" length_t="1" length_s="1"/>
         <children>
           <componentref id="circleTop" />
           <componentref id="circleBottom" />
