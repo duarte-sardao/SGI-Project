@@ -1404,6 +1404,10 @@ export class MySceneGraph {
         this.firstRun = false;
     }
 
+    /**
+     * Updates animations by float
+     * @param {float} t time
+     */
     updateAnimations(t) {
         for(let key in this.animations) {
             let anim = this.animations[key];
@@ -1411,6 +1415,10 @@ export class MySceneGraph {
         }
     }
 
+    /**
+     * Updates shaders by time
+     * @param {float} t time 
+     */
     updateShaders(t) {
         for(let key in this.shaders) {
             if(!this.scene.shaderVal[key])
@@ -1420,6 +1428,11 @@ export class MySceneGraph {
         }
     }
 
+    /**
+     * Normalizes a vector
+     * @param {Array} a Vector array
+     * @returns Normalized vector
+     */
     normalizeVec(a) {
         let length = Math.sqrt((a[0] * a[0]) + (a[1] * a[1]) + (a[2] * a[2]));
         return [a[0] / length, a[1] / length, a[2] / length,]
@@ -1480,7 +1493,7 @@ export class MySceneGraph {
     appearance.apply();
 
     if(shader != null && this.scene.shaderVal[id]) {
-        if(!shaderInit || this.lastoffset != this.matoffset) { //update mat
+        if(!shaderInit || this.lastoffset != this.matoffset) { //update mat on change or start
             let col = this.normalizeVec(mat[2]);
             shader.setUniformsValues({ mat_r: col[0] });
             shader.setUniformsValues({ mat_g: col[1] });
