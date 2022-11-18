@@ -74,6 +74,7 @@ export class MySceneGraph {
 
         // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
         this.scene.onGraphLoaded();
+        this.firstRun = true;
     }
 
     /**
@@ -1184,12 +1185,14 @@ export class MySceneGraph {
                     shader.setUniformsValues({ r: color[0] });
                     shader.setUniformsValues({ g: color[1] });
                     shader.setUniformsValues({ b: color[2] });
-                    let col = this.normalizeVec(firstMat[3]);
+                    let col = this.normalizeVec(firstMat[2]);
                     shader.setUniformsValues({ mat_r: col[0] });
                     shader.setUniformsValues({ mat_g: col[1] });
                     shader.setUniformsValues({ mat_b: col[2] });
+                    shader.setUniformsValues({ hasTexture: false });
                     
                     this.shaders[componentID] = shader;
+                    component['shaderInit'] = false;
                     this.shaderComponents.push(componentID);
                 }
             }
@@ -1402,6 +1405,7 @@ export class MySceneGraph {
     displayScene() {
         this.displayNode(this.idRoot, null, null);
         this.lastoffset = this.matoffset;
+        this.firstRun = false;
     }
 
     updateAnimations(t) {
@@ -1438,6 +1442,9 @@ export class MySceneGraph {
     var transfMatrix = component['transformation'];
     var animation = this.animations[component['animation']];
     var shader = this.shaders[id];
+    var shaderInit = component['shaderInit'];
+
+
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix); //component transform
@@ -1478,10 +1485,16 @@ export class MySceneGraph {
 
     if(shader != null && this.scene.shaderVal[id]) {
         if(this.lastoffset != this.matoffset) { //update mat
-            let col = this.normalizeVec(mat[3]);
+            let col = this.normalizeVec(mat[2]);
             shader.setUniformsValues({ mat_r: col[0] });
             shader.setUniformsValues({ mat_g: col[1] });
             shader.setUniformsValues({ mat_b: col[2] });
+        }
+        if(!shaderInit) {
+            if(tex!="none") {
+                shader.setUniformsValues({ hasTexture: true });
+            }
+            component['shaderInit'] = true;
         }
         this.scene.setActiveShader(shader);
     }

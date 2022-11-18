@@ -103,6 +103,8 @@
 
         <texture id="honey" file="scenes/images/mel.png" />
         <texture id="honeyTop" file="scenes/images/melTop.png" />
+
+        <texture id="waterTex" file="scenes/images/water.jpg" />
     </textures>
 
     <materials>
@@ -767,7 +769,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="honey"/>
+        <texture id="honey" length_s = "1" length_t="1"/>
         <children>
           <componentref id="barrelHoney" />
         </children>
@@ -795,7 +797,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="honeyTop"/>
+        <texture id="honeyTop" length_s = "1" length_t="1"/>
         <children>
           <componentref id="circleTop" />
           <componentref id="circleBottom" />
@@ -1398,8 +1400,9 @@
         </transformation>
         <materials>
             <material id="water" />
+            <material id="cherryMat" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="waterTex" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="sinkBottom" />
         </children>
@@ -1553,8 +1556,9 @@
         </transformation>
         <materials>
             <material id="water" />
+            <material id="cherryMat" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="waterTex" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="pipePart" />
         </children>
@@ -1783,7 +1787,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="ovenDoor"/>
+        <texture id="ovenDoor" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="trig" />
         </children>
