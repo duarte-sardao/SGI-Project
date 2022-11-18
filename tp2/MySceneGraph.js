@@ -1095,7 +1095,6 @@ export class MySceneGraph {
             // Materials
             grandgrandChildren = grandChildren[materialsIndex].children;
             var mats = [];
-            var firstMat = null;
             for(var j = 0; j < grandgrandChildren.length; j++) {
                 var node = grandgrandChildren[j];
                 if(node.nodeName != "material")
@@ -1107,8 +1106,6 @@ export class MySceneGraph {
                     var mat = this.materials[matid];
                     if(mat == null)
                         return "unknown material " + matid;
-                    if(firstMat == null)
-                        firstMat = mat;
                 }
                 mats.push(matid);
             }
@@ -1185,10 +1182,9 @@ export class MySceneGraph {
                     shader.setUniformsValues({ r: color[0] });
                     shader.setUniformsValues({ g: color[1] });
                     shader.setUniformsValues({ b: color[2] });
-                    let col = this.normalizeVec(firstMat[2]);
-                    shader.setUniformsValues({ mat_r: col[0] });
-                    shader.setUniformsValues({ mat_g: col[1] });
-                    shader.setUniformsValues({ mat_b: col[2] });
+                    shader.setUniformsValues({ mat_r: 0 });
+                    shader.setUniformsValues({ mat_g: 0 });
+                    shader.setUniformsValues({ mat_b: 0 });
                     shader.setUniformsValues({ hasTexture: false });
                     
                     this.shaders[componentID] = shader;
@@ -1484,7 +1480,7 @@ export class MySceneGraph {
     appearance.apply();
 
     if(shader != null && this.scene.shaderVal[id]) {
-        if(this.lastoffset != this.matoffset) { //update mat
+        if(!shaderInit || this.lastoffset != this.matoffset) { //update mat
             let col = this.normalizeVec(mat[2]);
             shader.setUniformsValues({ mat_r: col[0] });
             shader.setUniformsValues({ mat_g: col[1] });
