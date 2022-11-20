@@ -104,8 +104,9 @@
         <texture id="honey" file="scenes/images/mel.png" />
         <texture id="honeyTop" file="scenes/images/melTop.png" />
 
-        <texture id="salt" file="scenes/images/salt.png" />
-        <texture id="saltTop" file="scenes/images/saltTop.png" />
+        <texture id="salt" file="scenes/images/sal.png" />
+        <texture id="saltTop" file="scenes/images/salTop.png" />
+        <texture id="saltBack" file="scenes/images/salBack.png" />
     </textures>
 
     <materials>
@@ -464,7 +465,9 @@
         </patch>
       </primitive>
      
-
+      <primitive id="temperShelfBoard">
+        <rectangle x1="0" y1="0" x2="2" y2="0.5" />
+      </primitive>
 
     </primitives>
 
@@ -746,49 +749,112 @@
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-        <keyframe instant="2">
-          <translation x="14" y="4" z="0" />
+        <keyframe instant="0.5">
+          <translation x="0" y="-2.2" z="5.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="1">
+          <translation x="13" y="-2.2" z="5.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="1.5">
+          <translation x="13" y="1.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="2.3">
-          <translation x="12" y="6" z="0" />
+         <keyframe instant="1.8">
+          <translation x="14" y="0.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="2.4">
-          <translation x="14" y="4" z="0" />
+        <keyframe instant="2.3">
+          <translation x="11" y="3.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="2.7">
-          <translation x="12" y="6" z="0" />
+        <keyframe instant="2.5">
+          <translation x="14" y="0.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="2.8">
-          <translation x="14" y="4" z="0" />
+        <keyframe instant="3">
+          <translation x="11" y="3.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="3.1">
-          <translation x="12" y="6" z="0" />
+         <keyframe instant="3.3">
+          <translation x="14" y="0.5" z="2" />
           <rotation axis="z" angle="-120" />
           <rotation axis="y" angle="0" />
           <rotation axis="x" angle="0" />
           <scale sx="1" sy="1" sz="1" />
         </keyframe>
-         <keyframe instant="5.1">
+         <keyframe instant="3.3">
+          <translation x="14" y="0.5" z="2" />
+          <rotation axis="z" angle="-120" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+         <keyframe instant="3.5">
+          <translation x="14.5" y="0.5" z="2" />
+          <rotation axis="z" angle="-90" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="3.7">
+          <translation x="15" y="0.5" z="2" />
+          <rotation axis="z" angle="-60" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="3.9">
+          <translation x="15.5" y="0.5" z="2" />
+          <rotation axis="z" angle="-30" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="4.1">
+          <translation x="16" y="0.5" z="2" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="4.6">
+          <translation x="13" y="-2.2" z="5.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="5.1">
+          <translation x="0" y="-2.2" z="5.5" />
+          <rotation axis="z" angle="0" />
+          <rotation axis="y" angle="0" />
+          <rotation axis="x" angle="0" />
+          <scale sx="1" sy="1" sz="1" />
+        </keyframe>
+        <keyframe instant="5.6">
           <translation x="0" y="0" z="0" />
           <rotation axis="z" angle="0" />
           <rotation axis="y" angle="0" />
@@ -819,8 +885,143 @@
               <componentref id="chickenCooked" />
               <componentref id="honeyJar" />
               <componentref id="saltShaker" />
+              <componentref id="temperShelf" />
             </children>
         </component>
+
+      <component id="temperShelf">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="wood"/>
+        <children>
+          <componentref id="shelfBoard" />
+          <componentref id="rightBoard" />
+          <componentref id="leftBoard" />
+        </children>
+      </component>
+
+      <component id="rightBoard">
+        <transformation>
+          <translate x="4.375" y="2.5" z="0" />
+          <scale x="1" y="0.25" z="1" />
+          <rotate axis="z" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="shelfBoard" />
+        </children>
+      </component>
+
+       <component id="leftBoard">
+        <transformation>
+          <translate x="6.375" y="2.5" z="0" />
+          <scale x="1" y="0.25" z="1" />
+          <rotate axis="z" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="shelfBoard" />
+        </children>
+      </component>
+
+      <component id="shelfBoard">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <componentref id="topShelfBoard" />
+          <componentref id="rightShelfBoard" />
+          <componentref id="leftShelfBoard" />
+          <componentref id="frontShelfBoard" />
+          <componentref id="bottomShelfBoard" />
+        </children>
+      </component>
+
+      <component id="topShelfBoard">
+        <transformation>
+          <translate x="1.5" y="3" z="0.5" />
+          <rotate axis="x" angle="-90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="temperShelfBoard" />
+        </children>
+      </component>
+
+      <component id="rightShelfBoard">
+        <transformation>
+          <translate x="3.5" y="2.875" z="0.5" />
+          <scale x="0.25" y="0.25" z="0.25"/>
+          <rotate axis="y" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="temperShelfBoard" />
+        </children>
+      </component>
+
+      <component id="leftShelfBoard">
+        <transformation>
+          <translate x="1.5" y="2.875" z="0" />
+          <scale x="0.25" y="0.25" z="0.25"/>
+          <rotate axis="y" angle="-90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="temperShelfBoard" />
+        </children>
+      </component>
+
+      <component id="frontShelfBoard">
+        <transformation>
+          <translate x="1.5" y="2.875" z="0.5" />
+          <scale x="1" y="0.25" z="0.25"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="temperShelfBoard" />
+        </children>
+      </component>
+
+      <component id="bottomShelfBoard">
+        <transformation>
+          <translate x="1.5" y="2.875" z="0" />
+          <rotate axis="x" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit"/>
+        <children>
+          <primitiveref id="temperShelfBoard" />
+        </children>
+      </component>
 
       <component id="honeyJar">
         <transformation>
@@ -868,7 +1069,7 @@
       <component id="saltShaker">
         <animation id="saltUse" />
         <transformation>
-          <translate x="3" y="2" z="1" />
+          <translate x="3" y="3" z="0.25" />
           <scale x="0.3" y="0.3" z="0.3" />
         </transformation>
         <materials>
@@ -877,6 +1078,8 @@
         <texture id="salt" length_s="1" length_t="1"/>
         <children>
           <componentref id="barrelSalt" />
+          <componentref id="barrelSaltInv" />
+          <componentref id="circlesSalt" />
         </children>
       </component>
 
@@ -885,13 +1088,25 @@
           <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
-            <material id="inherit" />
+            <material id="basicMaterial" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="inherit" />
         <children>
           <primitiveref id="barrelSide" />
-          <componentref id="barrelInvertSide" />
-          <componentref id="circlesSalt" />
+        </children>
+      </component>
+
+       <component id="barrelSaltInv">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="basicMaterial" />
+        </materials>
+        <texture id="saltBack" length_s="1" length_t="1"/>
+        <children>
+          <primitiveref id="barrelSide" />
         </children>
       </component>
 
@@ -900,7 +1115,7 @@
           <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
-            <material id="inherit" />
+            <material id="metallic" />
         </materials>
         <texture id="saltTop" length_t="1" length_s="1"/>
         <children>
