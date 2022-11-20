@@ -74,6 +74,7 @@ export class MySceneGraph {
 
         // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
         this.scene.onGraphLoaded();
+        this.firstRun = true;
     }
 
     /**
@@ -1094,7 +1095,6 @@ export class MySceneGraph {
             // Materials
             grandgrandChildren = grandChildren[materialsIndex].children;
             var mats = [];
-            var firstMat = null;
             for(var j = 0; j < grandgrandChildren.length; j++) {
                 var node = grandgrandChildren[j];
                 if(node.nodeName != "material")
@@ -1106,8 +1106,6 @@ export class MySceneGraph {
                     var mat = this.materials[matid];
                     if(mat == null)
                         return "unknown material " + matid;
-                    if(firstMat == null)
-                        firstMat = mat;
                 }
                 mats.push(matid);
             }
@@ -1184,12 +1182,13 @@ export class MySceneGraph {
                     shader.setUniformsValues({ r: color[0] });
                     shader.setUniformsValues({ g: color[1] });
                     shader.setUniformsValues({ b: color[2] });
-                    let col = this.normalizeVec(firstMat[3]);
-                    shader.setUniformsValues({ mat_r: col[0] });
-                    shader.setUniformsValues({ mat_g: col[1] });
-                    shader.setUniformsValues({ mat_b: col[2] });
+                    shader.setUniformsValues({ mat_r: 0 });
+                    shader.setUniformsValues({ mat_g: 0 });
+                    shader.setUniformsValues({ mat_b: 0 });
+                    shader.setUniformsValues({ hasTexture: false });
                     
                     this.shaders[componentID] = shader;
+                    component['shaderInit'] = false;
                     this.shaderComponents.push(componentID);
                 }
             }
@@ -1402,8 +1401,13 @@ export class MySceneGraph {
     displayScene() {
         this.displayNode(this.idRoot, null, null);
         this.lastoffset = this.matoffset;
+        this.firstRun = false;
     }
 
+    /**
+     * Updates animations by float
+     * @param {float} t time
+     */
     updateAnimations(t) {
         for(let key in this.animations) {
             let anim = this.animations[key];
@@ -1411,6 +1415,10 @@ export class MySceneGraph {
         }
     }
 
+    /**
+     * Updates shaders by time
+     * @param {float} t time 
+     */
     updateShaders(t) {
         for(let key in this.shaders) {
             if(!this.scene.shaderVal[key])
@@ -1420,6 +1428,11 @@ export class MySceneGraph {
         }
     }
 
+    /**
+     * Normalizes a vector
+     * @param {Array} a Vector array
+     * @returns Normalized vector
+     */
     normalizeVec(a) {
         let length = Math.sqrt((a[0] * a[0]) + (a[1] * a[1]) + (a[2] * a[2]));
         return [a[0] / length, a[1] / length, a[2] / length,]
@@ -1438,6 +1451,9 @@ export class MySceneGraph {
     var transfMatrix = component['transformation'];
     var animation = this.animations[component['animation']];
     var shader = this.shaders[id];
+    var shaderInit = component['shaderInit'];
+
+
     this.scene.pushMatrix();
     //transform
     this.scene.multMatrix(transfMatrix); //component transform
@@ -1477,11 +1493,17 @@ export class MySceneGraph {
     appearance.apply();
 
     if(shader != null && this.scene.shaderVal[id]) {
-        if(this.lastoffset != this.matoffset) { //update mat
-            let col = this.normalizeVec(mat[3]);
+        if(!shaderInit || this.lastoffset != this.matoffset) { //update mat on change or start
+            let col = this.normalizeVec(mat[2]);
             shader.setUniformsValues({ mat_r: col[0] });
             shader.setUniformsValues({ mat_g: col[1] });
             shader.setUniformsValues({ mat_b: col[2] });
+        }
+        if(!shaderInit) {
+            if(tex!="none") {
+                shader.setUniformsValues({ hasTexture: true });
+            }
+            component['shaderInit'] = true;
         }
         this.scene.setActiveShader(shader);
     }

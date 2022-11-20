@@ -107,6 +107,8 @@
         <texture id="salt" file="scenes/images/sal.png" />
         <texture id="saltTop" file="scenes/images/salTop.png" />
         <texture id="saltBack" file="scenes/images/salBack.png" />
+        
+        <texture id="waterTex" file="scenes/images/water.jpg" />
     </textures>
 
     <materials>
@@ -462,6 +464,26 @@
           <controlpoint x="0" y="0.5" z="0" />
           <controlpoint x="0" y="1" z="0" />
           <controlpoint x="0" y="1.5" z="0" />
+        </patch>
+      </primitive>
+
+      <primitive id="smoke">
+        <patch degree_u="2" parts_u="20" degree_v="3" parts_v="20">
+          
+          <controlpoint x="-2" y="-2" z="1" />
+          <controlpoint x="-2" y="-2" z="-1" />
+          <controlpoint x="-2" y="1" z="5" />
+          <controlpoint x="-2" y="2" z="-1" />
+          
+          <controlpoint x="0" y="-2" z="0" />
+          <controlpoint x="0" y="-1" z="-1" />
+          <controlpoint x="0" y="1" z="1.5" />
+          <controlpoint x="0" y="2" z="0" />
+
+          <controlpoint x="2" y="-2" z="-1" />
+          <controlpoint x="2" y="-1" z="-2" />
+          <controlpoint x="2" y="1" z="-5" />
+          <controlpoint x="2" y="2" z="1" />
         </patch>
       </primitive>
      
@@ -1031,7 +1053,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="honey"/>
+        <texture id="honey" length_s = "1" length_t="1"/>
         <children>
           <componentref id="barrelHoney" />
         </children>
@@ -1059,7 +1081,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="honeyTop"/>
+        <texture id="honeyTop" length_s = "1" length_t="1"/>
         <children>
           <componentref id="circleTop" />
           <componentref id="circleBottom" />
@@ -1188,6 +1210,20 @@
       </component>
 
 
+      <component id="smoke">
+        <highlighted r="0.2" g="0.2" b="0.2" scale_h="1.5" />
+        <transformation>
+          <translate x="0" y="1.5" z="0" />
+          <scale x="0.4" y="0.8" z="0.5" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="smoke" />
+        </children>
+      </component>
       <component id="chickenCooked">
         <animation id="cookedAppear" />
         <transformation>
@@ -1200,6 +1236,7 @@
         <texture id="cooked" length_s="1" length_t="1"/>
         <children>
           <componentref id="chicken" />
+          <componentref id="smoke" />
         </children>
       </component>
       <component id="chickenRaw">
@@ -1353,7 +1390,7 @@
         </children>
       </component>
       <component id="candleEnd">
-        <highlighted r="1" g="0.2" b="0.2" scale_h="1.3" />
+        <highlighted r="1" g="0.2" b="0.2" scale_h="1.05" />
         <transformation>
           <translate x="0" y="0" z="0.6" />
           <scale x="1" y="1" z="2" />
@@ -1712,7 +1749,7 @@
         </children>
       </component>
       <component id="waterBottom">
-        <highlighted r="0.2" g="0.2" b="1" scale_h="1.2" />
+        <highlighted r="0.2" g="0.2" b="1" scale_h="1.1" />
         <animation id="waterFill" />
         <transformation>
           <translate x="0" y="0.3" z="0" />
@@ -1720,8 +1757,9 @@
         </transformation>
         <materials>
             <material id="water" />
+            <material id="cherryMat" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="waterTex" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="sinkBottom" />
         </children>
@@ -1875,8 +1913,9 @@
         </transformation>
         <materials>
             <material id="water" />
+            <material id="cherryMat" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="waterTex" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="pipePart" />
         </children>
@@ -2105,7 +2144,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="ovenDoor"/>
+        <texture id="ovenDoor" length_s = "1" length_t="1"/>
         <children>
           <primitiveref id="trig" />
         </children>
