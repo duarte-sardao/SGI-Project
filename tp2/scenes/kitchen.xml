@@ -918,7 +918,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="wood"/>
+        <texture id="wood" length_s="1" length_t="1"/>
         <children>
           <componentref id="shelfBoard" />
           <componentref id="rightBoard" />
