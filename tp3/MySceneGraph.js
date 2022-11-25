@@ -1063,7 +1063,7 @@ export class MySceneGraph {
         if (piece_height == null)
             return "no piece height defined for board";
         var mats = [];
-        var matsNeed = ["spot1_mat", "spot2_mat", "pos1_mat", "pos2_mat"];
+        var matsNeed = ["pos1_mat", "pos2_mat"];
         for(let i = 0; i < matsNeed.length; i++) {
             var matid = this.reader.getString(boardNode, matsNeed[i]);
             if(matid == null)
@@ -1073,23 +1073,7 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        var children = boardNode.children;
-        var trans = children[0];
-        if(trans.nodeName != "transformation") {
-            this.onXMLMinorError("Wrong name for transformation on board");
-        }
-        var transfMatrix;
-        if(trans.children.length == 1 && trans.children[0].nodeName == "transformationref") {
-            var reference = this.reader.getString(trans.children[0], 'id');
-            transfMatrix = this.transformations[reference];
-            if(transfMatrix == null)
-                return "unknown transformationref " + reference;
-        } else {
-            transfMatrix = this.parseTransformation(trans, "board");
-        }
-        if(typeof transfMatrix == "string")
-            return transfMatrix;
-        this.board = new MyBoard(this.scene, this, size, spot_size, piece_radius, piece_height, mats, transfMatrix);
+        this.board = new MyBoard(this.scene, this, size, spot_size, piece_radius, piece_height, mats);
     }
 
 
@@ -1207,21 +1191,22 @@ export class MySceneGraph {
             var childComps = [];
             for(var j = 0; j < grandgrandChildren.length; j++) {
                 var node = grandgrandChildren[j];
-                if(node.nodeName != "componentref" && node.nodeName != "primitiveref")
+                if(node.nodeName != "componentref" && node.nodeName != "primitiveref" && node.nodeName != "board")
                     return "unknown node type for component children " + componentID;
-                var cid = this.reader.getString(node, "id");
-                if(cid == null)
-                    return "id not defined for component child " + componentID;
+                if(node.nodeName != "board") {
+                    var cid = this.reader.getString(node, "id");
+                    if(cid == null)
+                        return "id not defined for component child " + componentID;
+                }
                 if(node.nodeName == "componentref") {
                     childComps.push(cid);
-                } else {
+                } else if(node.nodeName == "primitiveref") {
                     var primitive = this.primitives[cid];
                     if(primitive == null)
                         return "Unknown primitive " + cid;
-                    //let clone = Object.assign(Object.create(Object.getPrototypeOf(primitive)), primitive); //we clone the primitive, so one can be used several times
-                    //we could do it without cloning, but we would have to update texcoords everytime, using more space might be preferably to the performance downside
-                    //after speaking with prof, we went with updating texcoords everytime
                     primmies.push(primitive);
+                } else {
+                    component['hasBoard'] = true;
                 }
             }
             if(primmies.length == 0 && childComps.length == 0)
@@ -1584,6 +1569,10 @@ export class MySceneGraph {
 
     if(shader != null && this.scene.shaderVal[id])
         this.scene.setActiveShader(this.scene.defaultShader);
+
+    if(component['hasBoard']) {
+        this.board.display();
+    }
 
     //keep exploring
     for(var i = 0; i < children.length; i++) {
