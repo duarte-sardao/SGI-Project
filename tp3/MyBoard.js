@@ -1,4 +1,4 @@
-import { MyRectangle } from "./MyRectangle.js"
+import { MyPiece } from "./MyPiece.js"
 
 export class MyBoard{
     constructor(scene, graph, size, spot_size, piece_radius, piece_height, mats) {
@@ -9,17 +9,29 @@ export class MyBoard{
         this.spots = [];
         this.pieces1 = [];
         this.pieces2 = [];
-        for(let i = 0; i < size; i++) {
-            var subspots = [];
-            for(let j = 0; j < size; j++) {
-                let id = i.toString() + "_" + j.toString();
-                let rect = new MyRectangle(this.scene, id, 0, spot_size, 0, spot_size)
-                //spot obj
-                //subspots[j] = new Spot(scene, id, patch);
+
+        let spawnpiece = false;
+        let skiplines = false;
+        let piecesSpawn = 0;
+        for(let y = 0; y < size; y++){
+            if(!skiplines && y == (size / 2)-1)
+                skiplines = true;
+            if(skiplines && y == (size / 2)+1) {
+                piecesSpawn = 1;
+                skiplines = false;
             }
-            this.spots[i] = subspots;
+            for(let x = 0; x < size; x++) {
+                if(!skiplines && spawnpiece) {
+                    var piece = new MyPiece(this.scene, this, piece_radius, piece_height, mats[piecesSpawn], x, -y);
+                    if(piecesSpawn < 1)
+                        this.pieces1.push(piece);
+                    else
+                        this.pieces2.push(piece);
+                }
+                spawnpiece = !spawnpiece;
+            }
+            spawnpiece = !spawnpiece;
         }
-        //add pieces
     }
 
     updateAnimations(t) {
@@ -27,11 +39,12 @@ export class MyBoard{
     }
 
     display() {
-        return;
-        //spots
+        for(let i = 0; i < this.pieces1.length; i++) {
+            this.pieces1[i].display();
+        }
 
-        //pieces1
-
-        //pieces2
+        for(let i = 0; i < this.pieces2.length; i++) {
+            this.pieces2[i].display();
+        }
     }
 }
