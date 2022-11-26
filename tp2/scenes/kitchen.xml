@@ -1110,7 +1110,7 @@
           <translate x="0" y="0" z="0" />
         </transformation>
         <materials>
-            <material id="basicMaterial" />
+            <material id="inherit" />
         </materials>
         <texture id="inherit" />
         <children>
@@ -1124,9 +1124,9 @@
           <rotate axis="y" angle="180" />
         </transformation>
         <materials>
-            <material id="basicMaterial" />
+            <material id="inherit" />
         </materials>
-        <texture id="saltBack" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <primitiveref id="barrelSide" />
         </children>

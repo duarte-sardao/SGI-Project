@@ -24,8 +24,15 @@
 
 -----
 
-### [TP2 - ...](tp2)
-- (items briefly describing main strong points)
+### [TP2 - Nurbs, Animation, Shaders](tp2)
+- Features well implemented: NURBS, animations and shaders
+- Scene with varied elements to show the implementation of the specifications
+- Variable use of NURBS to create criative objects like the chicken and the sink/table corners 
+- Scene
+  - In addition to what had in TP1, the scene also have a raw chicken on a plate and a shelf with a salt shaker. With animation, we temper the raw chicken with salt, after that we open the oven door, put the chicken inside, turn on the oven and, after the temporizer's time is over, the door open showing a cooked chicken with some smoke effect. At the same time, the faucet is open filling the sink with water and the cake candle shinies. 
+  - [Todas as screenshots da TP2](tp2/scenes/screenshots)
+  - [Scene](tp2/scenes/kitchen.xml)
+  ![Version Final](tp2/scenes/screenshots/version_final_part1.gif)
 
 ----
 
