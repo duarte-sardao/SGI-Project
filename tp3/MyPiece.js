@@ -1,4 +1,5 @@
 import { MyCylinder } from "./MyCylinder.js"
+import { MyPatch } from "./MyPatch.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
@@ -9,14 +10,26 @@ export class MyPiece {
         this.position = mat4.create();
         this.position = mat4.translate(this.position, this.position, [x_offset, y_offset, 0]);
 
-        this.appearance = new CGFappearance(this.scene);
-        this.appearance.setShininess(mat[0]);
-        this.appearance.setEmission(mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
-        this.appearance.setAmbient(mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
-        this.appearance.setDiffuse(mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-        this.appearance.setSpecular(mat[4][0], mat[4][1], mat[4][2], mat[4][3]);
+        let semi1 = 
+        [[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius,  0, piece_height, 1 ]],
+        [[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, 0, piece_height, 5 ],[ piece_radius,  0, piece_height, 5 ],[ piece_radius,  0, piece_height, 1 ]]]
 
+        let semi2 = 
+        [[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, 0, piece_height, 5 ],[ piece_radius,  0, piece_height, 5 ],[ piece_radius,  0, piece_height, 1 ]]
+        ,[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, -piece_radius*1.314, piece_height, 1 ],[ piece_radius, -piece_radius*1.314, piece_height, 1 ],[ piece_radius,  0, piece_height, 1 ]]]
 
+        let semi3 = 
+        [[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, 0, 0, 5 ],[ piece_radius,  0, 0, 5 ],[ piece_radius,  0, 0, 1 ]],
+        [[ -piece_radius, 0, 0, 1 ],[ -piece_radius, piece_radius*1.314, 0, 1 ],[ piece_radius, piece_radius*1.314, 0, 1 ],[ piece_radius,  0, 0, 1 ]]]
+
+        let semi4 = 
+        [[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, -piece_radius*1.314, 0, 1 ],[ piece_radius, -piece_radius*1.314, 0, 1 ],[ piece_radius,  0, 0, 1 ]]
+        ,[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, 0, 0, 5 ],[ piece_radius,  0, 0, 5 ],[ piece_radius,  0, 0, 1 ]]]
+
+        this.semicircle1 = new MyPatch(this.scene, 1, 6, 3, 6, semi1);
+        this.semicircle2 = new MyPatch(this.scene, 1, 6, 3, 6, semi2);
+        this.semicircle3 = new MyPatch(this.scene, 1, 6, 3, 6, semi3);
+        this.semicircle4 = new MyPatch(this.scene, 1, 6, 3, 6, semi4);
     }
 
     updateAnimations(t) {
@@ -26,9 +39,12 @@ export class MyPiece {
     display() {
         this.scene.pushMatrix();
         this.scene.multMatrix(this.position);
-        this.appearance.apply();
 
-        this.cylinder.display();
+        this.cylinder.display();    
+        this.semicircle1.display();
+        this.semicircle2.display();
+        this.semicircle3.display();
+        this.semicircle4.display();
 
         this.scene.popMatrix();
         return;
