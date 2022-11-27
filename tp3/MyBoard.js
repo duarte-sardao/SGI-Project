@@ -29,8 +29,8 @@ export class MyBoard{
                 let position = mat4.create();
                 position = mat4.translate(position, position, [x, -y, 0]);
                 if(!skiplines && spawnpiece) {
-                    var piece = new MyPiece(this.scene, this, piece_radius, piece_height, position);
                     let id = String(piecesSpawn) + "_" + String(curPiece);
+                    var piece = new MyPiece(this.scene, this, id, piece_radius, piece_height, position);
                     curPiece++;
                     if(piecesSpawn < 2)
                         this.pieces1[id] = piece;
@@ -62,6 +62,8 @@ export class MyBoard{
         this.app2.setAmbient(mats[1][2][0], mats[1][2][1], mats[1][2][2], mats[1][2][3]);
         this.app2.setDiffuse(mats[1][3][0], mats[1][3][1], mats[1][3][2], mats[1][3][3]);
         this.app2.setSpecular(mats[1][4][0], mats[1][4][1], mats[1][4][2], mats[1][4][3]);
+
+        this.scene.setPickEnabled(true);
     }
 
     updateAnimations(t) {
@@ -87,28 +89,25 @@ export class MyBoard{
 	}
 
     display() {
-        this.scene.setPickEnabled(true);
         this.logPicking();
 
         this.app1.apply();
         for(const piece in this.pieces1) {
-            this.scene.registerForPick(piece, this.pieces1[piece]);
             this.pieces1[piece].display();
         }
 
         this.app2.apply();
         for(const piece in this.pieces2) {
-            this.scene.registerForPick(piece, this.pieces2[piece]);
             this.pieces2[piece].display();
         }
 
         for(const spot in this.spots) {
             this.scene.pushMatrix();
             this.scene.multMatrix(this.spots[spot]['pos']);
+            this.scene.registerForPick(spot, this.spots[spot]['rect']);
             this.spots[spot]['rect'].display();
             this.scene.popMatrix();
         }
 
-        //this.scene.setPickEnabled(false);
     }
 }
