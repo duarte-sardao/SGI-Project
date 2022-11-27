@@ -1,5 +1,6 @@
 import { CGFappearance } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
+import { MyRectangle } from "./MyRectangle.js"
 
 export class MyBoard{
     constructor(scene, graph, size, spot_size, piece_radius, piece_height, mats) {
@@ -8,26 +9,40 @@ export class MyBoard{
         this.size = size;
         this.mats = mats;
         this.spots = [];
-        this.pieces1 = [];
-        this.pieces2 = [];
+        this.pieces1 = {};
+        this.pieces2 = {};
+        this.spots = {};
 
         let spawnpiece = false;
         let skiplines = false;
-        let piecesSpawn = 0;
+        let piecesSpawn = 1;
+        let curPiece = 1;
         for(let y = 0; y < size; y++){
             if(!skiplines && y == (size / 2)-1)
                 skiplines = true;
             if(skiplines && y == (size / 2)+1) {
-                piecesSpawn = 1;
+                piecesSpawn = 2;
                 skiplines = false;
+                curPiece = 1;
             }
             for(let x = 0; x < size; x++) {
+                let position = mat4.create();
+                position = mat4.translate(position, position, [x, -y, 0]);
                 if(!skiplines && spawnpiece) {
-                    var piece = new MyPiece(this.scene, this, piece_radius, piece_height, mats[piecesSpawn], x, -y);
-                    if(piecesSpawn < 1)
-                        this.pieces1.push(piece);
+                    var piece = new MyPiece(this.scene, this, piece_radius, piece_height, position);
+                    let id = String(piecesSpawn) + "_" + String(curPiece);
+                    curPiece++;
+                    if(piecesSpawn < 2)
+                        this.pieces1[id] = piece;
                     else
-                        this.pieces2.push(piece);
+                        this.pieces2[id] = piece;
+                }
+                if(spawnpiece) {
+                    let quadId = String(x) + "_" + String(y);
+                    let spotRect = new MyRectangle(this.scene, "", -spot_size/2, spot_size/2, - spot_size/2, spot_size/2);
+                    let spotObj = {}
+                    spotObj['rect'] = spotRect; spotObj['pos'] = position;
+                    this.spots[quadId] = spotObj;
                 }
                 spawnpiece = !spawnpiece;
             }
@@ -53,15 +68,47 @@ export class MyBoard{
 
     }
 
+    logPicking()
+	{
+		if (this.scene.pickMode == false) {
+			// results can only be retrieved when picking mode is false
+			if (this.scene.pickResults != null && this.scene.pickResults.length > 0) {
+				for (var i=0; i< this.scene.pickResults.length; i++) {
+					var obj = this.scene.pickResults[i][0];
+					if (obj)
+					{
+						var customId = this.scene.pickResults[i][1];				
+						console.log("Picked object: " + obj + ", with pick id " + customId);
+					}
+				}
+				this.scene.pickResults.splice(0,this.scene.pickResults.length);
+			}		
+		}
+	}
+
     display() {
+        this.scene.setPickEnabled(true);
+        this.logPicking();
+
         this.app1.apply();
-        for(let i = 0; i < this.pieces1.length; i++) {
-            this.pieces1[i].display();
+        for(const piece in this.pieces1) {
+            this.scene.registerForPick(piece, this.pieces1[piece]);
+            this.pieces1[piece].display();
         }
 
         this.app2.apply();
-        for(let i = 0; i < this.pieces2.length; i++) {
-            this.pieces2[i].display();
+        for(const piece in this.pieces2) {
+            this.scene.registerForPick(piece, this.pieces2[piece]);
+            this.pieces2[piece].display();
         }
+
+        for(const spot in this.spots) {
+            this.scene.pushMatrix();
+            this.scene.multMatrix(this.spots[spot]['pos']);
+            this.spots[spot]['rect'].display();
+            this.scene.popMatrix();
+        }
+
+        //this.scene.setPickEnabled(false);
     }
 }
