@@ -31,6 +31,12 @@ export class MyPiece {
         this.semicircle3 = new MyPatch(this.scene, 1, 6, 3, 6, semi3);
         this.semicircle4 = new MyPatch(this.scene, 1, 6, 3, 6, semi4);
 
+        this.king = false;
+
+    }
+
+    isKing() {
+        return this.king;
     }
 
     updateAnimations(t) {

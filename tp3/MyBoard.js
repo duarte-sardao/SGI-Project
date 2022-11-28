@@ -12,6 +12,7 @@ export class MyBoard{
         this.pieces1 = {};
         this.pieces2 = {};
         this.spots = {};
+        this.pieceInSpots = {};
 
         let spawnpiece = false;
         let skiplines = false;
@@ -28,20 +29,23 @@ export class MyBoard{
             for(let x = 0; x < size; x++) {
                 let position = mat4.create();
                 position = mat4.translate(position, position, [x, -y, 0]);
-                if(!skiplines && spawnpiece) {
-                    let id = "piece_" + String(piecesSpawn) + "_" + String(curPiece);
-                    var piece = new MyPiece(this.scene, this, id, piece_radius, piece_height, position);
-                    curPiece++;
-                    if(piecesSpawn < 2)
-                        this.pieces1[id] = piece;
-                    else
-                        this.pieces2[id] = piece;
-                }
                 if(spawnpiece) {
                     let quadId = "spot_" + String(x) + "_" + String(y);
                     let spotRect = new MyRectangle(this.scene, "", -spot_size/2, spot_size/2, - spot_size/2, spot_size/2);
                     let spotObj = {}
                     spotObj['rect'] = spotRect; spotObj['pos'] = position;
+                    spotObj['piece'] = "empty"
+                    if(!skiplines) {
+                        let id = "piece_" + String(piecesSpawn) + "_" + String(curPiece);
+                        var piece = new MyPiece(this.scene, this, id, piece_radius, piece_height, position);
+                        curPiece++;
+                        if(piecesSpawn < 2)
+                            this.pieces1[id] = piece;
+                        else
+                            this.pieces2[id] = piece;
+                        spotObj['piece'] = id;
+                        this.pieceInSpots[id] = quadId;
+                    }
                     this.spots[quadId] = spotObj;
                 }
                 spawnpiece = !spawnpiece;
@@ -120,9 +124,40 @@ export class MyBoard{
         this.selected = null;
         let valid = false;
 
+        const spotArr = spot.split('_');
+        const orgSpotArr = this.pieceInSpots[piece].split('_');
+        const pieceArr = piece.split('_');
+
+        const diff_x = int(spotArr[1]) - int(orgSpotArr[1]);
+        const diff_y = int(spotArr[2]) - int(orgSpotArr[2]);
+
+        if(Math.abs(diff_x) == 1 && this.spots[spot]['piece'] == "empty") {
+            if(diff_y == 1)
+                valid = true;
+            else {
+                if(pieceArr[1] == '1')
+                    valid = this.pieces1[piece].isKing();
+                else if(pieceArr[1] == '2') {
+                    valid = this.pieces2[piece].isKing();
+                }
+            }
+        }
+        else if(Math.abs(diff_x) == 2 && Math.abs(diff_y) == 2) {
+            const mid_x = orgSpotArr[1] + diff_x;
+            const mid_y = orgSpotArr[2] + diff_y;
+            let mid_id = "spot_" + mid_x + "_" + mid_y;
+            let mid_obj = this.spots[mid_id]['piece'].split('_');
+            if(mid_obj[0] == "piece" && mid_obj[1] != pieceArr[1]) {
+                valid = true;
+                //capture mid_obj
+            }
+        }
+
         if(valid) {
             let move = piece + "!" + spot;
             this.moveList.push(move);
+            this.spots[spot]['piece'] = piece;
+            this.pieceInSpots[piece] = spot;
         }
     }
 
