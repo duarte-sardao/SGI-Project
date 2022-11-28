@@ -29,7 +29,7 @@ export class MyBoard{
                 let position = mat4.create();
                 position = mat4.translate(position, position, [x, -y, 0]);
                 if(!skiplines && spawnpiece) {
-                    let id = String(piecesSpawn) + "_" + String(curPiece);
+                    let id = "piece_" + String(piecesSpawn) + "_" + String(curPiece);
                     var piece = new MyPiece(this.scene, this, id, piece_radius, piece_height, position);
                     curPiece++;
                     if(piecesSpawn < 2)
@@ -38,7 +38,7 @@ export class MyBoard{
                         this.pieces2[id] = piece;
                 }
                 if(spawnpiece) {
-                    let quadId = String(x) + "_" + String(y);
+                    let quadId = "spot_" + String(x) + "_" + String(y);
                     let spotRect = new MyRectangle(this.scene, "", -spot_size/2, spot_size/2, - spot_size/2, spot_size/2);
                     let spotObj = {}
                     spotObj['rect'] = spotRect; spotObj['pos'] = position;
@@ -56,6 +56,13 @@ export class MyBoard{
         this.app1.setDiffuse(mats[0][3][0], mats[0][3][1], mats[0][3][2], mats[0][3][3]);
         this.app1.setSpecular(mats[0][4][0], mats[0][4][1], mats[0][4][2], mats[0][4][3]);
 
+        this.app1_high = new CGFappearance(this.scene);
+        this.app1_high.setShininess(mats[0][0]);
+        this.app1_high.setEmission(0.45, 0.3, 0.1, 1);
+        this.app1_high.setAmbient(mats[0][2][0], mats[0][2][1], mats[0][2][2], mats[0][2][3]);
+        this.app1_high.setDiffuse(mats[0][3][0], mats[0][3][1], mats[0][3][2], mats[0][3][3]);
+        this.app1_high.setSpecular(mats[0][4][0], mats[0][4][1], mats[0][4][2], mats[0][4][3]);
+
         this.app2 = new CGFappearance(this.scene);
         this.app2.setShininess(mats[1][0]);
         this.app2.setEmission(mats[1][1][0], mats[1][1][1], mats[1][1][2], mats[1][1][3]);
@@ -63,7 +70,22 @@ export class MyBoard{
         this.app2.setDiffuse(mats[1][3][0], mats[1][3][1], mats[1][3][2], mats[1][3][3]);
         this.app2.setSpecular(mats[1][4][0], mats[1][4][1], mats[1][4][2], mats[1][4][3]);
 
+        this.app2_high = new CGFappearance(this.scene);
+        this.app2_high.setShininess(mats[1][0]);
+        this.app2_high.setEmission(0.45, 0.3, 0.1, 1);
+        this.app2_high.setAmbient(mats[1][2][0], mats[1][2][1], mats[1][2][2], mats[1][2][3]);
+        this.app2_high.setDiffuse(mats[1][3][0], mats[1][3][1], mats[1][3][2], mats[1][3][3]);
+        this.app2_high.setSpecular(mats[1][4][0], mats[1][4][1], mats[1][4][2], mats[1][4][3]);
+
         this.scene.setPickEnabled(true);
+
+        this.turn = 1;
+        this.selected = "piece_1_10"
+
+        this.moveUp = mat4.create();
+        this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height]);
+
+        this.moveList = []
     }
 
     updateAnimations(t) {
@@ -79,8 +101,14 @@ export class MyBoard{
 					var obj = this.scene.pickResults[i][0];
 					if (obj)
 					{
-						var customId = this.scene.pickResults[i][1];				
-						console.log("Picked object: " + obj + ", with pick id " + customId);
+						var customId = this.scene.pickResults[i][1];
+                        const words = customId.split('_');
+                        if(words[0] == "piece" && this.turn == int(words[1])) {
+                            this.selected = customId;
+                        }
+                        if(words[0] == "spot" && this.selected != null) {
+                            this.doMove(this.selected, customId);
+                        }
 					}
 				}
 				this.scene.pickResults.splice(0,this.scene.pickResults.length);
@@ -88,17 +116,45 @@ export class MyBoard{
 		}
 	}
 
+    doMove(piece, spot) {
+        this.selected = null;
+        let valid = false;
+
+        if(valid) {
+            let move = piece + "!" + spot;
+            this.moveList.push(move);
+        }
+    }
+
     display() {
         this.logPicking();
 
         this.app1.apply();
         for(const piece in this.pieces1) {
+            if(piece == this.selected) {
+                this.app1_high.apply();
+                this.scene.pushMatrix();
+                this.scene.multMatrix(this.moveUp);
+            }
             this.pieces1[piece].display();
+            if(piece == this.selected) {
+                this.app1.apply();
+                this.scene.popMatrix();
+            }
         }
 
         this.app2.apply();
         for(const piece in this.pieces2) {
+            if(piece == this.selected) {
+                this.app2_high.apply();
+                this.scene.pushMatrix();
+                this.scene.multMatrix(this.moveUp);
+            }
             this.pieces2[piece].display();
+            if(piece == this.selected) {
+                this.app2.apply();
+                this.scene.popMatrix();
+            }
         }
 
         for(const spot in this.spots) {
