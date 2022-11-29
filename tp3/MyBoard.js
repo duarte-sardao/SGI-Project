@@ -85,6 +85,7 @@ export class MyBoard{
 
         this.turn = 1;
         this.selected = "piece_1_10"
+        this.pieces1["piece_1_11"].makeKing();
 
         this.moveUp = mat4.create();
         this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height]);
@@ -158,6 +159,15 @@ export class MyBoard{
             this.moveList.push(move);
             this.spots[spot]['piece'] = piece;
             this.pieceInSpots[piece] = spot;
+            if(this.turn == 1) {
+                this.turn == 2;
+                if(spotArr[2] == this.size-1)
+                    this.pieces1[piece].makeKing();
+            } else if(this.turn == 2) {
+                this.turn == 1;
+                if(spotArr[2] == 0)
+                    this.pieces2[piece].makeKing();
+            }
         }
     }
 
