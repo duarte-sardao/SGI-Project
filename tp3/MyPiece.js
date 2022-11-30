@@ -1,5 +1,6 @@
 import { MyCylinder } from "./MyCylinder.js"
 import { MyPatch } from "./MyPatch.js"
+import { MyArcAnimation } from "./MyArcAnimation.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
@@ -10,6 +11,7 @@ export class MyPiece {
         this.cylinderKing = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height*2, 10, 1);
         this.position = position;
         this.id = id;
+        this.piece_height = piece_height;
 
         let semi1 = 
         [[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius,  0, piece_height, 1 ]],
@@ -55,7 +57,16 @@ export class MyPiece {
     }
 
     updateAnimations(t) {
+        if(this.animation != null) {
+            this.animation.update(t);
+            this.position = this.animation.getMatrix();
+            if(this.animation.getDone())
+                this.animation = null;
+        }
+    }
 
+    move(target) {
+        this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
     }
 
     display() {

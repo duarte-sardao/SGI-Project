@@ -94,7 +94,12 @@ export class MyBoard{
     }
 
     updateAnimations(t) {
-
+        for(const piece in this.pieces1) {
+            this.pieces1[piece].updateAnimations(t);
+        }
+        for(const piece in this.pieces2) {
+            this.pieces2[piece].updateAnimations(t);
+        }
     }
 
     logPicking()
@@ -163,10 +168,12 @@ export class MyBoard{
                 this.turn == 2;
                 if(spotArr[2] == this.size-1)
                     this.pieces1[piece].makeKing();
+                this.pieces1[piece].move(this.spots[spot]['pos']);
             } else if(this.turn == 2) {
                 this.turn == 1;
                 if(spotArr[2] == 0)
                     this.pieces2[piece].makeKing();
+                this.pieces2[piece].move(this.spots[spot]['pos']);
             }
         }
     }
