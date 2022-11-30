@@ -1,7 +1,7 @@
 import { MyAnimation } from "./MyAnimation.js"
 
 export class MyArcAnimation extends MyAnimation{
-    constructor(scene, origin, target, length, arc_peak, arc_height) {
+    constructor(scene, origin, target, length, arc_peak, arc_height, delay = 0) {
         super(scene);
         this.origin = origin;
         this.target = target;
@@ -10,6 +10,7 @@ export class MyArcAnimation extends MyAnimation{
         this.arc_height = arc_height;
         this.matrix = this.origin;
         this.done = false;
+        this.delay = delay;
     }
 
     getMatrix() {
@@ -26,7 +27,10 @@ export class MyArcAnimation extends MyAnimation{
             this.end = this.start + this.length;
             this.end_length = this.end - this.arc_peak;
         }
-        let prog = (t - this.start) / this.length;
+        let timeSince = t - this.start;
+        if(timeSince < delay)
+            return;
+        let prog = timeSince / this.length;
 
         let orgscaled = mat4.create();
         orgscaled = mat4.multiplyScalar(orgscaled, this.origin, prog);
@@ -36,7 +40,7 @@ export class MyArcAnimation extends MyAnimation{
 
         let arc;
         if(t < this.arc_peak)
-            arc = (t - this.start) / this.arc_peak;
+            arc = timeSince / this.arc_peak;
         else
             arc = (this.end - t) / this.end_length;
 

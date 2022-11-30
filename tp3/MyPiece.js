@@ -4,7 +4,7 @@ import { MyArcAnimation } from "./MyArcAnimation.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
-    constructor(scene, board, id, piece_radius, piece_height, position) {
+    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat) {
         this.scene = scene;
         this.board = board;
         this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 10, 1);
@@ -12,6 +12,8 @@ export class MyPiece {
         this.position = position;
         this.id = id;
         this.piece_height = piece_height;
+        this.mat = mat;
+        this.selectmat = selectmat;
 
         let semi1 = 
         [[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius,  0, piece_height, 1 ]],
@@ -44,6 +46,9 @@ export class MyPiece {
         this.semicircle3 = new MyPatch(this.scene, 1, 6, 3, 6, semi3);
         this.semicircle4 = new MyPatch(this.scene, 1, 6, 3, 6, semi4);
 
+        this.moveUp = mat4.create();
+        this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height]);
+
         this.king = false;
 
     }
@@ -69,8 +74,14 @@ export class MyPiece {
         this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
     }
 
-    display() {
+    display(selected) {
         this.scene.pushMatrix();
+        if(selected) {
+            this.selectmat.apply()
+            this.scene.multMatrix(this.moveUp)
+        }
+        else
+            this.mat.apply()
         this.scene.multMatrix(this.position);
 
         this.scene.registerForPick(this.id, this.semicircle1);
