@@ -82,10 +82,14 @@ export class MyBoard{
         this.scene.setPickEnabled(true);
 
         this.turn = 1;
-        this.selected = "piece_1_10"
-        this.pieces["piece_1_11"].makeKing();
+        //this.selected = "piece_1_10"
+        //this.pieces["piece_1_11"].makeKing();
 
-        this.moveList = []
+        this.moveList = [];
+        /**this.doMove("piece_1_10", "spot_4_3");
+        this.doMove("piece_2_3", "spot_5_4");
+        this.doMove("piece_1_9", "spot_2_3");
+        this.doMove("piece_2_3", "spot_3_2");**/
     }
 
     updateAnimations(t) {
@@ -127,19 +131,19 @@ export class MyBoard{
         const orgSpotArr = this.pieceInSpots[piece].split('_');
         const pieceArr = piece.split('_');
 
-        const diff_x = int(spotArr[1]) - int(orgSpotArr[1]);
-        const diff_y = int(spotArr[2]) - int(orgSpotArr[2]);
+        const diff_x = parseInt(spotArr[1]) - parseInt(orgSpotArr[1]);
+        const diff_y = parseInt(spotArr[2]) - parseInt(orgSpotArr[2]);
 
         if(Math.abs(diff_x) == 1 && this.spots[spot]['piece'] == "empty") {
-            if(diff_y == 1)
+            if((diff_y == 1 && this.turn == 1) || (diff_y == -1 && this.turn == 2))
                 valid = true;
-            else {
+            else if(Math.abs(diff_y) == 1) {
                 valid = this.pieces[piece].isKing();
             }
         }
         else if(Math.abs(diff_x) == 2 && Math.abs(diff_y) == 2) {
-            const mid_x = orgSpotArr[1] + diff_x;
-            const mid_y = orgSpotArr[2] + diff_y;
+            const mid_x = parseInt(orgSpotArr[1]) + diff_x/2;
+            const mid_y = parseInt(orgSpotArr[2]) + diff_y/2;
             let mid_id = "spot_" + mid_x + "_" + mid_y;
             let mid_obj = this.spots[mid_id]['piece'].split('_');
             if(mid_obj[0] == "piece" && mid_obj[1] != pieceArr[1]) {
@@ -154,16 +158,15 @@ export class MyBoard{
             this.spots[spot]['piece'] = piece;
             this.pieceInSpots[piece] = spot;
             if(this.turn == 1) {
-                this.turn == 2;
+                this.turn = 2;
                 if(spotArr[2] == this.size-1)
                     this.pieces[piece].makeKing();
             } else if(this.turn == 2) {
-                this.turn == 1;
+                this.turn = 1;
                 if(spotArr[2] == 0)
                     this.pieces[piece].makeKing();
             }
             this.pieces[piece].move(this.spots[spot]['pos']);
-            this.selected = null;
         }
     }
 
@@ -181,6 +184,5 @@ export class MyBoard{
             this.spots[spot]['rect'].display();
             this.scene.popMatrix();
         }
-
     }
 }
