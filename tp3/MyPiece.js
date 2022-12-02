@@ -4,7 +4,7 @@ import { MyArcAnimation } from "./MyArcAnimation.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
-    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat) {
+    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player) {
         this.scene = scene;
         this.board = board;
         this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 10, 1);
@@ -14,6 +14,7 @@ export class MyPiece {
         this.piece_height = piece_height;
         this.mat = mat;
         this.selectmat = selectmat;
+        this.player = player;
 
         let semi1 = 
         [[[ -piece_radius, 0, piece_height, 1 ],[ -piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius, piece_radius*1.314, piece_height, 1 ],[ piece_radius,  0, piece_height, 1 ]],
@@ -53,6 +54,10 @@ export class MyPiece {
 
     }
 
+    getPlayer() {
+        return this.player;
+    }
+
     isKing() {
         return this.king;
     }
@@ -71,32 +76,35 @@ export class MyPiece {
     }
 
     move(target) {
-        this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
+        this.animation = new MyArcAnimation(this.scene, this.position, target, 2, 1, this.piece_height*10);
     }
 
     display(selected) {
         this.scene.pushMatrix();
         if(selected) {
             this.selectmat.apply()
-            this.scene.multMatrix(this.moveUp)
+            //this.scene.multMatrix(this.moveUp)
         }
         else
             this.mat.apply()
         this.scene.multMatrix(this.position);
 
-        this.scene.registerForPick(this.id, this.semicircle1);
-        this.scene.registerForPick(this.id, this.semicircle2);
         this.scene.registerForPick(this.id, this.semicircle3);
         this.scene.registerForPick(this.id, this.semicircle4);
-        this.scene.registerForPick(this.id, this.cylinder);
         if(!this.king) {
             this.cylinder.display();    
             this.semicircle1.display();
             this.semicircle2.display();
+            this.scene.registerForPick(this.id, this.semicircle1);
+            this.scene.registerForPick(this.id, this.semicircle2);
+            this.scene.registerForPick(this.id, this.cylinder);
         } else {
             this.cylinderKing.display();    
             this.semicircle1King.display();
             this.semicircle2King.display();
+            this.scene.registerForPick(this.id, this.semicircle1King);
+            this.scene.registerForPick(this.id, this.semicircle2King);
+            this.scene.registerForPick(this.id, this.cylinderKing);
         }
         this.semicircle3.display();
         this.semicircle4.display();

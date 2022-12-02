@@ -8,10 +8,11 @@ export class MyBoard{
         this.graph = graph;
         this.size = size;
         this.mats = mats;
-        this.spots = [];
         this.pieces = {};
         this.spots = {};
         this.pieceInSpots = {};
+        let curID = 0;
+        this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));;
 
         let app1 = new CGFappearance(this.scene);
         app1.setShininess(mats[0][0]);
@@ -59,20 +60,21 @@ export class MyBoard{
                 let position = mat4.create();
                 position = mat4.translate(position, position, [x, -y, 0]);
                 if(spawnpiece) {
-                    let quadId = "spot_" + String(x) + "_" + String(y);
                     let spotRect = new MyRectangle(this.scene, "", -spot_size/2, spot_size/2, - spot_size/2, spot_size/2);
                     let spotObj = {}
-                    spotObj['rect'] = spotRect; spotObj['pos'] = position;
+                    spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
-                        let id = "piece_" + String(piecesSpawn) + "_" + String(curPiece);
-                        var piece = new MyPiece(this.scene, this, id, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2]);
+                        var piece = new MyPiece(this.scene, this, curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
                         curPiece++;
-                        this.pieces[id] = piece;
-                        spotObj['piece'] = id;
-                        this.pieceInSpots[id] = quadId;
+                        this.pieces[curID] = piece;
+                        spotObj['piece'] = curID;
+                        this.pieceInSpots[curID] = curID+1;
+                        curID++;
                     }
-                    this.spots[quadId] = spotObj;
+                    this.spots[curID] = spotObj;
+                    this.locationSpots[x][y] = curID;
+                    curID++;
                 }
                 spawnpiece = !spawnpiece;
             }
@@ -81,7 +83,6 @@ export class MyBoard{
 
         this.scene.setPickEnabled(true);
 
-        this.turn = 1;
         //this.selected = "piece_1_10"
         //this.pieces["piece_1_11"].makeKing();
 
@@ -90,6 +91,10 @@ export class MyBoard{
         this.doMove("piece_2_3", "spot_5_4");
         this.doMove("piece_1_9", "spot_2_3");
         this.doMove("piece_2_3", "spot_3_2");**/
+
+        this.validPieces = {};
+        this.turn = 2;
+        this.switchTurn();
     }
 
     updateAnimations(t) {
@@ -107,13 +112,15 @@ export class MyBoard{
 					var obj = this.scene.pickResults[i][0];
 					if (obj)
 					{
-						var customId = this.scene.pickResults[i][1];
-                        const words = customId.split('_');
-                        if(words[0] == "piece" && this.turn == int(words[1])) {
+						const customId = this.scene.pickResults[i][1];
+                        let piece = this.pieces[customId];
+                        if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
                             this.selected = customId;
+                            continue;
                         }
-                        if(words[0] == "spot" && this.selected != null) {
-                            this.doMove(this.selected, customId);
+                        let spot = this.spots[customId]
+                        if(spot != null && this.selected != null) {
+                            this.doMove(this.selected, parseInt(customId));
                         }
 					}
 				}
@@ -122,51 +129,110 @@ export class MyBoard{
 		}
 	}
 
+    calcValidMoves(sel_piece, non_captures) {
+        let validMoves = {};
+        let notNull = false;
+        let notCap = [];
+        const spot = this.spots[this.pieceInSpots[sel_piece]];
+        const x = spot['x']; const y = spot['y'];
+        const offsets = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        for(let i = 0; i < 4; i++) {
+            const mid_x = x + offsets[i][0];
+            const mid_y = y + offsets[i][1];
+            if(mid_x < 0 || mid_x >= this.size || mid_y < 0 || mid_y >= this.size)
+                continue;
+            const spot_mid = this.locationSpots[mid_x][mid_y]
+            const mid_piece = this.spots[spot_mid]['piece']
+            if(mid_piece == "empty") {
+                notCap.push(spot_mid);
+                continue;
+            }
+            else if(this.pieces[mid_piece].getPlayer() == this.turn)
+                continue;
+
+            const new_x = x + offsets[i][0]*2;
+            const new_y = y + offsets[i][1]*2;
+            if(new_x < 0 || new_x >= this.size || new_y < 0 || new_y >= this.size)
+                continue;
+            const spot_target = this.locationSpots[new_x][new_y];
+            if(this.spots[spot_target]['piece'] != "empty")
+                continue;
+            this.validMoves[spot_target] = spot_mid;
+            notNull = true;
+        }
+        if(!non_captures || notNull)
+            return validMoves;
+        for(let i = 0; i < notCap.length; i++) {
+            validMoves[notCap[i]] = -1;
+        }
+        return validMoves;
+    }
+
+    //function on switch turn to calc all moves to see if player can cap
+    switchTurn() {
+        this.validPieces = {};
+        let canCap = false;
+        for(const piece in this.pieces) {
+            if(this.pieces[piece].getPlayer() != this.turn)
+                continue;
+            const moves = this.calcValidMoves(piece,false);
+            if(Object.keys(moves).length > 0) {
+                canCap = true;
+                this.validPieces[piece] = moves;
+            }
+        }
+        if(canCap)
+            return;
+        if(this.turn == 1)
+            this.turn = 2;
+        else 
+            this.turn = 1;
+        canCap = false;
+        for(const piece in this.pieces) {
+            if(this.pieces[piece].getPlayer() != this.turn)
+                continue;
+            const moves = this.calcValidMoves(piece,false);
+            if(Object.keys(moves).length > 0) {
+                canCap = true;
+                this.validPieces[piece] = moves;
+            }
+        }
+        if(canCap)
+            return;
+        for(const piece in this.pieces) {
+            if(this.pieces[piece].getPlayer() != this.turn)
+                continue;
+            const moves = this.calcValidMoves(piece,true);
+            if(Object.keys(moves).length > 0) {
+                this.validPieces[piece] = moves;
+            }
+        }
+    }
+
     doMove(piece, spot) {
         this.selected = null;
-        let valid = false;
-        let capture = null;
+        const res = this.validPieces[piece][spot];
 
-        const spotArr = spot.split('_');
-        const orgSpotArr = this.pieceInSpots[piece].split('_');
-        const pieceArr = piece.split('_');
-
-        const diff_x = parseInt(spotArr[1]) - parseInt(orgSpotArr[1]);
-        const diff_y = parseInt(spotArr[2]) - parseInt(orgSpotArr[2]);
-
-        if(Math.abs(diff_x) == 1 && this.spots[spot]['piece'] == "empty") {
-            if((diff_y == 1 && this.turn == 1) || (diff_y == -1 && this.turn == 2))
-                valid = true;
-            else if(Math.abs(diff_y) == 1) {
-                valid = this.pieces[piece].isKing();
-            }
-        }
-        else if(Math.abs(diff_x) == 2 && Math.abs(diff_y) == 2) {
-            const mid_x = parseInt(orgSpotArr[1]) + diff_x/2;
-            const mid_y = parseInt(orgSpotArr[2]) + diff_y/2;
-            let mid_id = "spot_" + mid_x + "_" + mid_y;
-            let mid_obj = this.spots[mid_id]['piece'].split('_');
-            if(mid_obj[0] == "piece" && mid_obj[1] != pieceArr[1]) {
-                valid = true;
-                capture = this.spots[mid_id]['piece'];
-            }
-        }
-
-        if(valid) {
+        if(res != null) {
             let move = piece + "!" + spot;
             this.moveList.push(move);
             this.spots[spot]['piece'] = piece;
+            this.spots[this.pieceInSpots[piece]]['piece'] = "empty";
             this.pieceInSpots[piece] = spot;
+            this.pieces[piece].move(this.spots[spot]['pos']);
+            if(res != -1) {
+                //check valid pieces
+            }
+            
             if(this.turn == 1) {
-                this.turn = 2;
-                if(spotArr[2] == this.size-1)
+                if(this.spots[spot]['y'] == this.size-1)
                     this.pieces[piece].makeKing();
             } else if(this.turn == 2) {
-                this.turn = 1;
-                if(spotArr[2] == 0)
+                if(this.spots[spot]['y'] == 0)
                     this.pieces[piece].makeKing();
             }
-            this.pieces[piece].move(this.spots[spot]['pos']);
+
+            this.switchTurn();
         }
     }
 
