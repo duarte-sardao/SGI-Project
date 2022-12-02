@@ -7,6 +7,9 @@ export class MyBoard{
         this.scene = scene;
         this.graph = graph;
         this.size = size;
+        this.spot_size = spot_size;
+        this.piece_height = piece_height;
+        this.piece_radius = piece_radius;
         this.mats = mats;
         this.pieces = {};
         this.spots = {};
@@ -82,24 +85,22 @@ export class MyBoard{
         }
 
         this.scene.setPickEnabled(true);
-
-        //this.selected = "piece_1_10"
-        //this.pieces["piece_1_11"].makeKing();
-
         this.moveList = [];
-        /**this.doMove("piece_1_10", "spot_4_3");
-        this.doMove("piece_2_3", "spot_5_4");
-        this.doMove("piece_1_9", "spot_2_3");
-        this.doMove("piece_2_3", "spot_3_2");**/
 
         this.validPieces = {};
         this.turn = 2;
         this.switchTurn(false);
+
+        this.dead = [0,0];
+        this.graveyard = {};
     }
 
     updateAnimations(t) {
         for(const piece in this.pieces) {
             this.pieces[piece].updateAnimations(t);
+        }
+        for(const piece in this.graveyard) {
+            this.graveyard[piece].updateAnimations(t);
         }
     }
 
@@ -218,11 +219,11 @@ export class MyBoard{
             this.pieceInSpots[piece] = spot;
             this.pieces[piece].move(this.spots[spot]['pos']);
             if(res != -1) {
-                /**
+                this.graveyard[res] = this.pieces[res];
                 delete this.pieces[res];
-                this.spots[this.pieceInSpots[res]] = "empty";
+                this.spots[this.pieceInSpots[res]]['piece'] = "empty";
                 delete this.pieceInSpots[res];
-                */
+                this.capturePiece(this.graveyard[res]);
             }
             
             if(this.turn == 1) {
@@ -237,11 +238,35 @@ export class MyBoard{
         }
     }
 
+    capturePiece(piece) {
+        let gravePosition = mat4.create();
+        let dead = this.dead[piece.getPlayer()-1];
+        this.dead[piece.getPlayer()-1] += 1;
+        let mirror = 1;
+        let x_move = 1;
+        let y_move = 0;
+        if(piece.getPlayer()==1) {
+            mirror = -1;
+            y_move = 1;
+        }
+        else
+            x_move = this.size
+        let x_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
+        let y_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
+        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+1)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move)*this.spot_size + y_offset, dead*this.piece_height]);
+        piece.capture(gravePosition);
+    }
+
     display() {
         this.logPicking();
+        this.scene.clearPickRegistration();
 
         for(const piece in this.pieces) {
             this.pieces[piece].display(piece == this.selected);
+        }
+
+        for(const piece in this.graveyard) {
+            this.graveyard[piece].display(false);
         }
 
         for(const spot in this.spots) {

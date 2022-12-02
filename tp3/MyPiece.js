@@ -51,7 +51,7 @@ export class MyPiece {
         this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height]);
 
         this.king = false;
-
+        this.active = true;
     }
 
     getPlayer() {
@@ -79,6 +79,11 @@ export class MyPiece {
         this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
     }
 
+    capture(target) {
+        this.active = false;
+        this.animation = new MyArcAnimation(this.scene, this.position, target, 2, 0.8, this.piece_height*5, 0.9);
+    }
+
     display(selected) {
         this.scene.pushMatrix();
         if(selected) {
@@ -89,22 +94,28 @@ export class MyPiece {
             this.mat.apply()
         this.scene.multMatrix(this.position);
 
-        this.scene.registerForPick(this.id, this.semicircle3);
-        this.scene.registerForPick(this.id, this.semicircle4);
+        if(this.active) {
+            this.scene.registerForPick(this.id, this.semicircle3);
+            this.scene.registerForPick(this.id, this.semicircle4);
+        }
         if(!this.king) {
             this.cylinder.display();    
             this.semicircle1.display();
             this.semicircle2.display();
-            this.scene.registerForPick(this.id, this.semicircle1);
-            this.scene.registerForPick(this.id, this.semicircle2);
-            this.scene.registerForPick(this.id, this.cylinder);
+            if(this.active) {
+                this.scene.registerForPick(this.id, this.semicircle1);
+                this.scene.registerForPick(this.id, this.semicircle2);
+                this.scene.registerForPick(this.id, this.cylinder);
+            }
         } else {
             this.cylinderKing.display();    
             this.semicircle1King.display();
             this.semicircle2King.display();
-            this.scene.registerForPick(this.id, this.semicircle1King);
-            this.scene.registerForPick(this.id, this.semicircle2King);
-            this.scene.registerForPick(this.id, this.cylinderKing);
+            if(this.active) {
+                this.scene.registerForPick(this.id, this.semicircle1King);
+                this.scene.registerForPick(this.id, this.semicircle2King);
+                this.scene.registerForPick(this.id, this.cylinderKing);
+            }
         }
         this.semicircle3.display();
         this.semicircle4.display();
