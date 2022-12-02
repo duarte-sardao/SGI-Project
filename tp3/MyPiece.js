@@ -76,7 +76,7 @@ export class MyPiece {
     }
 
     move(target) {
-        this.animation = new MyArcAnimation(this.scene, this.position, target, 2, 1, this.piece_height*10);
+        this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
     }
 
     display(selected) {

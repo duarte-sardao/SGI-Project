@@ -157,7 +157,7 @@ export class MyBoard{
             const spot_target = this.locationSpots[new_x][new_y];
             if(this.spots[spot_target]['piece'] != "empty")
                 continue;
-            validMoves[spot_target] = spot_mid;
+            validMoves[spot_target] = mid_piece;
             notNull = true;
         }
         if(notNull)
@@ -218,7 +218,11 @@ export class MyBoard{
             this.pieceInSpots[piece] = spot;
             this.pieces[piece].move(this.spots[spot]['pos']);
             if(res != -1) {
-                //check valid pieces
+                /**
+                delete this.pieces[res];
+                this.spots[this.pieceInSpots[res]] = "empty";
+                delete this.pieceInSpots[res];
+                */
             }
             
             if(this.turn == 1) {
@@ -229,7 +233,7 @@ export class MyBoard{
                     this.pieces[piece].makeKing();
             }
 
-            this.switchTurn(res == -1);
+            this.switchTurn(res != -1);
         }
     }
 

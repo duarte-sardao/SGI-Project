@@ -39,13 +39,17 @@ export class MyArcAnimation extends MyAnimation{
         let prog = timeSince / this.length;
 
         let arc;
-        if(t < this.arc_peak)
-            arc = timeSince / this.arc_peak;
+        if(prog < this.arc_peak)
+            arc = prog / this.arc_peak;
         else
-            arc = (this.end - t) / this.end_length;
+            arc = (1-prog) / (1-this.arc_peak);
+
+        console.log(arc)
 
         arc = arc * (Math.PI/2);
         arc = Math.sin(arc)*this.arc_height;
+
+        console.log(arc);
 
         if(prog > 1) {
             prog = 1;
