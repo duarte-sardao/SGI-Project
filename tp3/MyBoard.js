@@ -94,7 +94,7 @@ export class MyBoard{
 
         this.validPieces = {};
         this.turn = 2;
-        this.switchTurn();
+        this.switchTurn(false);
     }
 
     updateAnimations(t) {
@@ -129,7 +129,7 @@ export class MyBoard{
 		}
 	}
 
-    calcValidMoves(sel_piece, non_captures) {
+    calcValidMoves(sel_piece) {
         let validMoves = {};
         let notNull = false;
         let notCap = [];
@@ -157,56 +157,53 @@ export class MyBoard{
             const spot_target = this.locationSpots[new_x][new_y];
             if(this.spots[spot_target]['piece'] != "empty")
                 continue;
-            this.validMoves[spot_target] = spot_mid;
+            validMoves[spot_target] = spot_mid;
             notNull = true;
         }
-        if(!non_captures || notNull)
-            return validMoves;
+        if(notNull)
+            return [true, validMoves];
         for(let i = 0; i < notCap.length; i++) {
             validMoves[notCap[i]] = -1;
         }
-        return validMoves;
+        return [false, validMoves];
     }
 
     //function on switch turn to calc all moves to see if player can cap
-    switchTurn() {
+    switchTurn(retry) {
         this.validPieces = {};
         let canCap = false;
-        for(const piece in this.pieces) {
-            if(this.pieces[piece].getPlayer() != this.turn)
-                continue;
-            const moves = this.calcValidMoves(piece,false);
-            if(Object.keys(moves).length > 0) {
-                canCap = true;
-                this.validPieces[piece] = moves;
+        if(retry) {
+            for(const piece in this.pieces) {
+                if(this.pieces[piece].getPlayer() != this.turn)
+                    continue;
+                const moves = this.calcValidMoves(piece);
+                if(moves[0]) {
+                    canCap = true;
+                    this.validPieces[piece] = moves[1];
+                }
             }
+            if(canCap)
+                return;
         }
-        if(canCap)
-            return;
         if(this.turn == 1)
             this.turn = 2;
         else 
             this.turn = 1;
-        canCap = false;
+        let movePieces = {};
         for(const piece in this.pieces) {
             if(this.pieces[piece].getPlayer() != this.turn)
                 continue;
-            const moves = this.calcValidMoves(piece,false);
-            if(Object.keys(moves).length > 0) {
+            const moves = this.calcValidMoves(piece);
+            if(moves[0]) {
                 canCap = true;
-                this.validPieces[piece] = moves;
+                this.validPieces[piece] = moves[1];
+            } else if (Object.keys(moves[1]).length) {
+                movePieces[piece] = moves[1];
             }
         }
-        if(canCap)
-            return;
-        for(const piece in this.pieces) {
-            if(this.pieces[piece].getPlayer() != this.turn)
-                continue;
-            const moves = this.calcValidMoves(piece,true);
-            if(Object.keys(moves).length > 0) {
-                this.validPieces[piece] = moves;
-            }
-        }
+        if(!canCap)
+            this.validPieces = movePieces;
+        console.log(this.validPieces);
     }
 
     doMove(piece, spot) {
@@ -232,7 +229,7 @@ export class MyBoard{
                     this.pieces[piece].makeKing();
             }
 
-            this.switchTurn();
+            this.switchTurn(res == -1);
         }
     }
 
