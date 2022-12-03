@@ -93,6 +93,10 @@ export class MyBoard{
 
         this.dead = [0,0];
         this.graveyard = {};
+
+
+        this.undoQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+1, spot_size/2+ this.size+1, - spot_size/2, spot_size/2);
+        this.undoID = curID++;
     }
 
     updateAnimations(t) {
@@ -114,6 +118,8 @@ export class MyBoard{
 					if (obj)
 					{
 						const customId = this.scene.pickResults[i][1];
+                        if(customId == this.undoID)
+                            this.undoMove();
                         let piece = this.pieces[customId];
                         if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
                             this.selected = customId;
@@ -170,7 +176,7 @@ export class MyBoard{
     }
 
     //function on switch turn to calc all moves to see if player can cap
-    switchTurn(retry) {
+    switchTurn(retry, choice) {
         this.validPieces = {};
         let canCap = false;
         if(retry) {
@@ -186,7 +192,9 @@ export class MyBoard{
             if(canCap)
                 return;
         }
-        if(this.turn == 1)
+        if(choice != null)
+            this.turn = choice;
+        else if(this.turn == 1)
             this.turn = 2;
         else 
             this.turn = 1;
@@ -212,8 +220,13 @@ export class MyBoard{
         const res = this.validPieces[piece][spot];
 
         if(res != null) {
-            let move = piece + "!" + spot;
-            this.moveList.push(move);
+            let move = {
+                turn: this.turn,
+                piece: piece,
+                spot: this.pieceInSpots[piece],
+                capspot: -1,
+                cappiece: res
+            }
             this.spots[spot]['piece'] = piece;
             this.spots[this.pieceInSpots[piece]]['piece'] = "empty";
             this.pieceInSpots[piece] = spot;
@@ -222,9 +235,11 @@ export class MyBoard{
                 this.graveyard[res] = this.pieces[res];
                 delete this.pieces[res];
                 this.spots[this.pieceInSpots[res]]['piece'] = "empty";
+                move.capspot = this.pieceInSpots[res];
                 delete this.pieceInSpots[res];
                 this.capturePiece(this.graveyard[res]);
             }
+            this.moveList.push(move);
             
             if(this.turn == 1) {
                 if(this.spots[spot]['y'] == this.size-1)
@@ -236,6 +251,30 @@ export class MyBoard{
 
             this.switchTurn(res != -1);
         }
+    }
+
+    undoMove() {
+        const move = this.moveList.pop();
+        if(move == null)
+            return;
+
+        let piece = this.pieces[move.piece];
+        piece.move(this.spots[move.spot].pos, 0.5);
+        this.spots[this.pieceInSpots[move.piece]].piece = "empty";
+        this.pieceInSpots[move.piece] = move.spot;
+        this.spots[move.spot].piece = move.piece;
+
+        if(move.cappiece != -1) {
+            let piece = this.graveyard[move.cappiece];
+            this.dead[piece.getPlayer()-1] -= 1;
+            this.pieces[move.cappiece] = piece;
+            delete this.graveyard[move.cappiece]
+            piece.unCapture(this.spots[move.capspot].pos, 0.5);
+            this.pieceInSpots[move.cappiece] = move.capspot;
+            this.spots[move.capspot].piece = move.cappiece;
+        }
+
+        this.switchTurn(false, move.turn);
     }
 
     capturePiece(piece) {
@@ -276,5 +315,8 @@ export class MyBoard{
             this.spots[spot]['rect'].display();
             this.scene.popMatrix();
         }
+
+        this.scene.registerForPick(this.undoID, this.undoQuad);
+        this.undoQuad.display();
     }
 }

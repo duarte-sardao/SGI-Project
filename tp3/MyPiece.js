@@ -75,13 +75,18 @@ export class MyPiece {
         }
     }
 
-    move(target) {
-        this.animation = new MyArcAnimation(this.scene, this.position, target, 1, 0.5, this.piece_height*3);
+    move(target, speed=1) {
+        this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.5, this.piece_height*3);
     }
 
-    capture(target) {
+    capture(target, speed=2) {
         this.active = false;
-        this.animation = new MyArcAnimation(this.scene, this.position, target, 2, 0.8, this.piece_height*5, 0.9);
+        this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.8, this.piece_height*5, 0.9);
+    }
+
+    unCapture(target, speed=1) {
+        this.active = true;
+        this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
 
     display(selected) {
