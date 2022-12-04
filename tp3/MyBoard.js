@@ -97,6 +97,34 @@ export class MyBoard{
 
         this.undoQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+1, spot_size/2+ this.size+1, - spot_size/2, spot_size/2);
         this.undoID = curID++;
+
+        this.filmQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+2.5, spot_size/2+ this.size+2.5, - spot_size/2, spot_size/2);
+        this.filmID = curID++;
+
+        this.playingDemo = false;
+    }
+
+    playDemo() {
+        if(this.moveList.length < 1)
+            return;
+        this.movieList = [...this.moveList].reverse();
+        while(this.moveList.length > 0)
+            this.undoMove();
+        this.playingDemo = true;
+        var t = this;
+        setInterval(function() {t.playInstance();}, 500);
+    }
+
+    playInstance() {
+        console.log(this.movieList);
+        if(this.movieList.length > 0) {
+            const move = this.movieList.pop();
+            console.log("playing " + move.piece + " to " + move.spot);
+            this.doMove(move.piece, move.playedspot, 0.5, 0.5);
+        } else {
+            clearInterval(this.filmID);
+            this.playingDemo = false;
+        }
     }
 
     updateAnimations(t) {
@@ -110,7 +138,7 @@ export class MyBoard{
 
     logPicking()
 	{
-		if (this.scene.pickMode == false) {
+		if (this.scene.pickMode == false && this.playingDemo != true) {
 			// results can only be retrieved when picking mode is false
 			if (this.scene.pickResults != null && this.scene.pickResults.length > 0) {
 				for (var i=0; i< this.scene.pickResults.length; i++) {
@@ -118,8 +146,14 @@ export class MyBoard{
 					if (obj)
 					{
 						const customId = this.scene.pickResults[i][1];
-                        if(customId == this.undoID)
+                        if(customId == this.undoID) {
                             this.undoMove();
+                            continue;
+                        }
+                        if(customId == this.filmID) {
+                            this.playDemo();
+                            continue;
+                        }
                         let piece = this.pieces[customId];
                         if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
                             this.selected = customId;
@@ -143,18 +177,21 @@ export class MyBoard{
         const spot = this.spots[this.pieceInSpots[sel_piece]];
         const x = spot['x']; const y = spot['y'];
         const offsets = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        const king = this.pieces[sel_piece].isKing();
+        const player = this.pieces[sel_piece].getPlayer();
         for(let i = 0; i < 4; i++) {
             const mid_x = x + offsets[i][0];
             const mid_y = y + offsets[i][1];
+
             if(mid_x < 0 || mid_x >= this.size || mid_y < 0 || mid_y >= this.size)
                 continue;
             const spot_mid = this.locationSpots[mid_x][mid_y]
             const mid_piece = this.spots[spot_mid]['piece']
-            if(mid_piece == "empty") {
+            if(mid_piece == "empty" && (king || (player == 1 && offsets[i][1] > 0) || (player == 2 && offsets[i][1] < 0))) {
                 notCap.push(spot_mid);
                 continue;
             }
-            else if(this.pieces[mid_piece].getPlayer() == this.turn)
+            else if(mid_piece != "empty" && this.pieces[mid_piece].getPlayer() == this.turn)
                 continue;
 
             const new_x = x + offsets[i][0]*2;
@@ -215,7 +252,7 @@ export class MyBoard{
         console.log(this.validPieces);
     }
 
-    doMove(piece, spot) {
+    doMove(piece, spot, movespeed = 1, capspeed = 2) {
         this.selected = null;
         const res = this.validPieces[piece][spot];
 
@@ -225,29 +262,29 @@ export class MyBoard{
                 piece: piece,
                 spot: this.pieceInSpots[piece],
                 capspot: -1,
-                cappiece: res
+                cappiece: res,
+                playedspot: spot,
+                madeking: false
             }
             this.spots[spot]['piece'] = piece;
             this.spots[this.pieceInSpots[piece]]['piece'] = "empty";
             this.pieceInSpots[piece] = spot;
-            this.pieces[piece].move(this.spots[spot]['pos']);
+            this.pieces[piece].move(this.spots[spot]['pos'], movespeed);
             if(res != -1) {
                 this.graveyard[res] = this.pieces[res];
                 delete this.pieces[res];
                 this.spots[this.pieceInSpots[res]]['piece'] = "empty";
                 move.capspot = this.pieceInSpots[res];
                 delete this.pieceInSpots[res];
-                this.capturePiece(this.graveyard[res]);
+                this.capturePiece(this.graveyard[res], capspeed);
             }
-            this.moveList.push(move);
             
-            if(this.turn == 1) {
-                if(this.spots[spot]['y'] == this.size-1)
-                    this.pieces[piece].makeKing();
-            } else if(this.turn == 2) {
-                if(this.spots[spot]['y'] == 0)
-                    this.pieces[piece].makeKing();
+            if((this.turn == 1 && this.spots[spot]['y'] == this.size-1) || (this.turn == 2 && this.spots[spot]['y'] == 0)) {
+                this.pieces[piece].makeKing(true);
+                move.madeking = true;
             }
+
+            this.moveList.push(move);
 
             this.switchTurn(res != -1);
         }
@@ -259,6 +296,7 @@ export class MyBoard{
             return;
 
         let piece = this.pieces[move.piece];
+        piece.makeKing(move.madeking);
         piece.move(this.spots[move.spot].pos, 0.5);
         this.spots[this.pieceInSpots[move.piece]].piece = "empty";
         this.pieceInSpots[move.piece] = move.spot;
@@ -277,7 +315,7 @@ export class MyBoard{
         this.switchTurn(false, move.turn);
     }
 
-    capturePiece(piece) {
+    capturePiece(piece, speed = 2) {
         let gravePosition = mat4.create();
         let dead = this.dead[piece.getPlayer()-1];
         this.dead[piece.getPlayer()-1] += 1;
@@ -293,7 +331,7 @@ export class MyBoard{
         let x_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
         let y_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
         gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+1)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move)*this.spot_size + y_offset, dead*this.piece_height]);
-        piece.capture(gravePosition);
+        piece.capture(gravePosition, speed);
     }
 
     display() {
@@ -318,5 +356,8 @@ export class MyBoard{
 
         this.scene.registerForPick(this.undoID, this.undoQuad);
         this.undoQuad.display();
+
+        this.scene.registerForPick(this.filmID, this.filmQuad);
+        this.filmQuad.display();
     }
 }

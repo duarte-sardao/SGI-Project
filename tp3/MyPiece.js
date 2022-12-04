@@ -62,8 +62,8 @@ export class MyPiece {
         return this.king;
     }
 
-    makeKing() {
-        this.king = true;
+    makeKing(value) {
+        this.king = value;
     }
 
     updateAnimations(t) {
