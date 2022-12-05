@@ -48,7 +48,7 @@ export class MyPiece {
         this.semicircle4 = new MyPatch(this.scene, 1, 6, 3, 6, semi4);
 
         this.moveUp = mat4.create();
-        this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height]);
+        this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height/2]);
 
         this.king = false;
         this.active = true;
@@ -94,7 +94,7 @@ export class MyPiece {
         this.scene.pushMatrix();
         if(selected) {
             this.selectmat.apply()
-            //this.scene.multMatrix(this.moveUp)
+            this.scene.multMatrix(this.moveUp)
         }
         else
             this.mat.apply()

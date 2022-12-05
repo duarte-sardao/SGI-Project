@@ -1,6 +1,7 @@
 import { CGFappearance } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
+import { MyUndoButton } from "./MyUndoButton.js"
 
 export class MyBoard{
     constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats) {
@@ -95,8 +96,10 @@ export class MyBoard{
         this.graveyard = {};
 
 
-        this.undoQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+1, spot_size/2+ this.size+1, - spot_size/2, spot_size/2);
         this.undoID = this.curID++;
+        let buttPos = mat4.create();
+        buttPos = mat4.translate(buttPos, buttPos, [(size+1)*spot_size, -spot_size, 0]);
+        this.undoButton =  new MyUndoButton(this.scene, this, this.undoID, spot_size/2, spot_size/4, buttPos);
 
         this.filmQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+2.5, spot_size/2+ this.size+2.5, - spot_size/2, spot_size/2);
         this.filmID = this.curID++;
@@ -358,8 +361,7 @@ export class MyBoard{
             this.scene.popMatrix();
         }
 
-        this.scene.registerForPick(this.undoID, this.undoQuad);
-        this.undoQuad.display();
+        this.undoButton.display();
 
         this.scene.registerForPick(this.filmID, this.filmQuad);
         this.filmQuad.display();
