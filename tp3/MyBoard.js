@@ -3,7 +3,7 @@ import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
 
 export class MyBoard{
-    constructor(scene, graph, size, spot_size, piece_radius, piece_height, mats) {
+    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -14,7 +14,7 @@ export class MyBoard{
         this.pieces = {};
         this.spots = {};
         this.pieceInSpots = {};
-        let curID = 0;
+        this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));;
 
         let app1 = new CGFappearance(this.scene);
@@ -68,16 +68,16 @@ export class MyBoard{
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
-                        var piece = new MyPiece(this.scene, this, curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
+                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
                         curPiece++;
-                        this.pieces[curID] = piece;
-                        spotObj['piece'] = curID;
-                        this.pieceInSpots[curID] = curID+1;
-                        curID++;
+                        this.pieces[this.curID] = piece;
+                        spotObj['piece'] = this.curID;
+                        this.pieceInSpots[this.curID] = this.curID+1;
+                        this.curID++;
                     }
-                    this.spots[curID] = spotObj;
-                    this.locationSpots[x][y] = curID;
-                    curID++;
+                    this.spots[this.curID] = spotObj;
+                    this.locationSpots[x][y] = this.curID;
+                    this.curID++;
                 }
                 spawnpiece = !spawnpiece;
             }
@@ -96,12 +96,16 @@ export class MyBoard{
 
 
         this.undoQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+1, spot_size/2+ this.size+1, - spot_size/2, spot_size/2);
-        this.undoID = curID++;
+        this.undoID = this.curID++;
 
         this.filmQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+2.5, spot_size/2+ this.size+2.5, - spot_size/2, spot_size/2);
-        this.filmID = curID++;
+        this.filmID = this.curID++;
 
         this.playingDemo = false;
+    }
+
+    getNewID() {
+        return this.curID + 1;
     }
 
     playDemo() {
@@ -112,7 +116,7 @@ export class MyBoard{
             this.undoMove();
         this.playingDemo = true;
         var t = this;
-        setInterval(function() {t.playInstance();}, 500);
+        this.interval = setInterval(function() {t.playInstance();}, 500);
     }
 
     playInstance() {
@@ -122,7 +126,7 @@ export class MyBoard{
             console.log("playing " + move.piece + " to " + move.spot);
             this.doMove(move.piece, move.playedspot, 0.5, 0.5);
         } else {
-            clearInterval(this.filmID);
+            clearInterval(this.interval);
             this.playingDemo = false;
         }
     }
@@ -191,7 +195,7 @@ export class MyBoard{
                 notCap.push(spot_mid);
                 continue;
             }
-            else if(mid_piece != "empty" && this.pieces[mid_piece].getPlayer() == this.turn)
+            else if(mid_piece == "empty" || this.pieces[mid_piece].getPlayer() == this.turn)
                 continue;
 
             const new_x = x + offsets[i][0]*2;

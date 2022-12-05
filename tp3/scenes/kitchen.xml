@@ -414,8 +414,9 @@
     <animations>
     </animations>
 
-    <board size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="basicMaterial" pos2_mat="redMaterial">
-    </board>
+    <boards>
+      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="basicMaterial" pos2_mat="redMaterial" />
+    </boards>
 
     <components>
         <component id="sceneRoot">
@@ -434,7 +435,7 @@
               <componentref id="chickenRaw"/>
               <componentref id="saltShaker" />
               <componentref id="temperShelf" />
-              <board />
+              <board id="table_board" />
             </children>
         </component>
 

@@ -211,13 +211,13 @@ export class MySceneGraph {
                 return error;
         }
 
-        // <components>
-        if ((index = nodeNames.indexOf("board")) != -1) {
+        // <boards>
+        if ((index = nodeNames.indexOf("boards")) != -1) {
             if (index != BOARD_INDEX)
-                this.onXMLMinorError("tag <board> out of order");
+                this.onXMLMinorError("tag <boards> out of order");
 
-            //Parse components block
-            if ((error = this.parseBoard(nodes[index])) != null)
+            //Parse board block
+            if ((error = this.parseBoards(nodes[index])) != null)
                 return error;
         }
 
@@ -1042,12 +1042,28 @@ export class MySceneGraph {
         return keyframeobj;
     }
 
+    /**
+     * Parses the <boards> block.
+     * @param {boards block element} boards
+     */
+    parseBoards(boards) {
+        let children = boards.children;
+        this.boards = {};
+        this.boardPickID = 0;
+        for(let i = 0; i < children.length; i++) {
+            this.parseBoard(children[i]);
+        }
+    }
+
 
     /**
-   * Parses the <board> block.
-   * @param {board block element} boardNode
-   */
+     * Parses the <board> block.
+     * @param {board block element} boardNode
+     */
     parseBoard(boardNode) {
+        var id = this.reader.getString(boardNode, 'id');
+        if (id == null)
+            return "no id defined for board";
         var size = this.reader.getInteger(boardNode, 'size');
         if (size == null)
             return "no size defined for board";
@@ -1073,7 +1089,8 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        this.board = new MyBoard(this.scene, this, size, spot_size, piece_radius, piece_height, mats);
+        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats);
+        this.boardPickID = this.boards[id].getNewID();
     }
 
 
@@ -1193,11 +1210,9 @@ export class MySceneGraph {
                 var node = grandgrandChildren[j];
                 if(node.nodeName != "componentref" && node.nodeName != "primitiveref" && node.nodeName != "board")
                     return "unknown node type for component children " + componentID;
-                if(node.nodeName != "board") {
-                    var cid = this.reader.getString(node, "id");
-                    if(cid == null)
-                        return "id not defined for component child " + componentID;
-                }
+                var cid = this.reader.getString(node, "id");
+                if(cid == null)
+                    return "id not defined for component child " + componentID;
                 if(node.nodeName == "componentref") {
                     childComps.push(cid);
                 } else if(node.nodeName == "primitiveref") {
@@ -1205,8 +1220,8 @@ export class MySceneGraph {
                     if(primitive == null)
                         return "Unknown primitive " + cid;
                     primmies.push(primitive);
-                } else {
-                    component['hasBoard'] = true;
+                } else if(node.nodeName == "board") {
+                    component['board'] = cid;
                 }
             }
             if(primmies.length == 0 && childComps.length == 0)
@@ -1448,8 +1463,6 @@ export class MySceneGraph {
      */
     displayScene() {
         this.displayNode(this.idRoot, null, null);
-        if(this.board)
-            this.board.display();
         this.lastoffset = this.matoffset;
         this.firstRun = false;
     }
@@ -1463,8 +1476,10 @@ export class MySceneGraph {
             let anim = this.animations[key];
             anim.update(t);
         }
-        if(this.board)
-            this.board.updateAnimations(t);
+        for(let key in this.boards) {
+            let b = this.boards[key];
+            b.updateAnimations(t);
+        }
     }
 
     /**
@@ -1503,6 +1518,7 @@ export class MySceneGraph {
     var transfMatrix = component['transformation'];
     var animation = this.animations[component['animation']];
     var shader = this.shaders[id];
+    var board = component['board'];
     var shaderInit = component['shaderInit'];
 
 
@@ -1564,14 +1580,15 @@ export class MySceneGraph {
         //primitives[i].enableNormalViz();
         if(!primitives[i].isQuadratic())
             primitives[i].setLength(component["s"], component["t"]);
+        this.scene.registerForPick(-1, primitives[i]);
         primitives[i].display();
     }
 
     if(shader != null && this.scene.shaderVal[id])
         this.scene.setActiveShader(this.scene.defaultShader);
 
-    if(component['hasBoard']) {
-        this.board.display();
+    if(board != null) {
+        this.boards[board].display();
     }
 
     //keep exploring

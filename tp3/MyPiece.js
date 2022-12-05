@@ -81,6 +81,7 @@ export class MyPiece {
 
     capture(target, speed=2) {
         this.active = false;
+        this.king = false;
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.8, this.piece_height*5, 0.9);
     }
 
