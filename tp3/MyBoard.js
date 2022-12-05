@@ -1,7 +1,7 @@
 import { CGFappearance } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
-import { MyUndoButton } from "./MyUndoButton.js"
+import { MyButton } from "./MyButton.js"
 
 export class MyBoard{
     constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats) {
@@ -99,10 +99,12 @@ export class MyBoard{
         this.undoID = this.curID++;
         let buttPos = mat4.create();
         buttPos = mat4.translate(buttPos, buttPos, [(size+1)*spot_size, -spot_size, 0]);
-        this.undoButton =  new MyUndoButton(this.scene, this, this.undoID, spot_size/2, spot_size/4, buttPos);
+        this.undoButton =  new MyButton(this.scene, this, this.undoID, spot_size/2, spot_size/4, buttPos);
 
-        this.filmQuad =  new MyRectangle(this.scene, "", -spot_size/2 + this.size+2.5, spot_size/2+ this.size+2.5, - spot_size/2, spot_size/2);
         this.filmID = this.curID++;
+        let buttPos2 = mat4.create();
+        buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*2, 0]);
+        this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size/2, spot_size/4, buttPos2);
 
         this.playingDemo = false;
     }
@@ -141,6 +143,8 @@ export class MyBoard{
         for(const piece in this.graveyard) {
             this.graveyard[piece].updateAnimations(t);
         }
+        this.filmButton.update(t);
+        this.undoButton.update(t);
     }
 
     logPicking()
@@ -155,10 +159,12 @@ export class MyBoard{
 						const customId = this.scene.pickResults[i][1];
                         if(customId == this.undoID) {
                             this.undoMove();
+                            this.undoButton.playAnim();
                             continue;
                         }
                         if(customId == this.filmID) {
                             this.playDemo();
+                            this.filmButton.playAnim();
                             continue;
                         }
                         let piece = this.pieces[customId];
@@ -362,8 +368,6 @@ export class MyBoard{
         }
 
         this.undoButton.display();
-
-        this.scene.registerForPick(this.filmID, this.filmQuad);
-        this.filmQuad.display();
+        this.filmButton.display();
     }
 }

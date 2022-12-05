@@ -7,7 +7,7 @@ export class MyPiece {
     constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player) {
         this.scene = scene;
         this.board = board;
-        this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 10, 1);
+        this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 12, 1);
         this.cylinderKing = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height*2, 10, 1);
         this.position = position;
         this.id = id;
@@ -40,12 +40,12 @@ export class MyPiece {
         [[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, -piece_radius*1.314, 0, 1 ],[ piece_radius, -piece_radius*1.314, 0, 1 ],[ piece_radius,  0, 0, 1 ]]
         ,[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, 0, 0, 5 ],[ piece_radius,  0, 0, 5 ],[ piece_radius,  0, 0, 1 ]]]
 
-        this.semicircle1 = new MyPatch(this.scene, 1, 6, 3, 6, semi1);
-        this.semicircle2 = new MyPatch(this.scene, 1, 6, 3, 6, semi2);
-        this.semicircle1King = new MyPatch(this.scene, 1, 6, 3, 6, semi1King);
-        this.semicircle2King = new MyPatch(this.scene, 1, 6, 3, 6, semi2King);
-        this.semicircle3 = new MyPatch(this.scene, 1, 6, 3, 6, semi3);
-        this.semicircle4 = new MyPatch(this.scene, 1, 6, 3, 6, semi4);
+        this.semicircle1 = new MyPatch(this.scene, 1, 8, 3, 8, semi1);
+        this.semicircle2 = new MyPatch(this.scene, 1, 8, 3, 8, semi2);
+        this.semicircle1King = new MyPatch(this.scene, 1, 8, 3, 8, semi1King);
+        this.semicircle2King = new MyPatch(this.scene, 1, 8, 3, 8, semi2King);
+        this.semicircle3 = new MyPatch(this.scene, 1, 8, 3, 8, semi3);
+        this.semicircle4 = new MyPatch(this.scene, 1, 8, 3, 8, semi4);
 
         this.moveUp = mat4.create();
         this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height/2]);

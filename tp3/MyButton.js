@@ -3,13 +3,14 @@ import { MyPatch } from "./MyPatch.js"
 import { MyTorus } from "./MyTorus.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
-export class MyUndoButton {
+export class MyButton {
     constructor(scene, board, id, radius, height, position) {
         this.scene = scene;
         this.board = board;
-        this.cylinder = new MyCylinder(this.scene, "", radius, radius, height, 10, 1);
+        this.cylinder = new MyCylinder(this.scene, "", radius, radius, height, 18, 1);
         this.position = position;
         this.id = id;
+        this.height = height;
 
         let semi1 = 
         [[[ -radius, 0, height, 1 ],[ -radius, radius*1.314, height, 1 ],[ radius, radius*1.314, height, 1 ],[ radius,  0, height, 1 ]],
@@ -20,10 +21,10 @@ export class MyUndoButton {
         ,[[ -radius, 0, height, 1 ],[ -radius, -radius*1.314, height, 1 ],[ radius, -radius*1.314, height, 1 ],[ radius,  0, height, 1 ]]]
 
 
-        this.semicircle1 = new MyPatch(this.scene, 1, 6, 3, 6, semi1);
-        this.semicircle2 = new MyPatch(this.scene, 1, 6, 3, 6, semi2);
+        this.semicircle1 = new MyPatch(this.scene, 1, 12, 3, 12, semi1);
+        this.semicircle2 = new MyPatch(this.scene, 1, 12, 3, 12, semi2);
 
-        this.torus = new MyTorus(this.scene, id, radius/8, radius, 10, 10);
+        this.torus = new MyTorus(this.scene, id, radius/8, radius, 18, 8);
 
         this.mat = new CGFappearance(this.scene);
         this.mat.setShininess(10);
@@ -39,6 +40,35 @@ export class MyUndoButton {
         this.mat2.setDiffuse(0.4,0.4,0.4,1);
         this.mat2.setSpecular(0.77,0.77,0.77,1);
 
+
+    }
+
+    update(t) {
+        if(this.beginAnim) {
+            this.startTime = t;
+            this.beginAnim = false;
+            return;
+        }
+        if(this.startTime  == null)
+            return;
+        this.animMatrix = mat4.create();
+        let prog = ((t - this.startTime) / 0.5) * Math.PI;
+        if(prog < Math.PI / 2) {
+            prog *= 4;
+            if(prog > Math.PI / 2) {
+                prog = Math.PI / 2;
+            }
+        } else if (prog >= Math.PI) {
+            this.animMatrix = null;
+            this.startTime = null;
+        }
+        //console.log(prog);
+        let offset = -Math.sin(prog)*this.height*0.5;
+        this.animMatrix = mat4.translate(this.animMatrix, this.animMatrix, [0,0,offset]);
+    }
+
+    playAnim() {
+        this.beginAnim = true;
     }
 
     display() {
@@ -46,6 +76,10 @@ export class MyUndoButton {
         this.mat.apply()
         this.scene.multMatrix(this.position);
 
+        if(this.animMatrix != null) {
+            this.scene.pushMatrix();
+            this.scene.multMatrix(this.animMatrix);
+        }
 
         this.scene.registerForPick(this.id, this.semicircle1);
         this.scene.registerForPick(this.id, this.semicircle2);
@@ -53,6 +87,12 @@ export class MyUndoButton {
         this.cylinder.display();    
         this.semicircle1.display();
         this.semicircle2.display();
+
+        if(this.animMatrix != null) {
+            this.scene.popMatrix();
+        }
+
+
         this.mat2.apply();
         this.torus.display();
 
