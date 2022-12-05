@@ -435,9 +435,24 @@
               <componentref id="chickenRaw"/>
               <componentref id="saltShaker" />
               <componentref id="temperShelf" />
-              <board id="table_board" />
+              <componentref id="board" />
             </children>
         </component>
+
+      <component id="board">
+        <transformation>
+          <translate x="7.5" y="3" z="6.75" />
+          <rotate axis="x" angle="-90" />
+          <scale x="0.35" y="0.35" z="0.35" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <board id="table_board" />
+        </children>
+      </component>
 
       <component id="temperShelf">
         <transformation>

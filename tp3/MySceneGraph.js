@@ -1224,7 +1224,7 @@ export class MySceneGraph {
                     component['board'] = cid;
                 }
             }
-            if(primmies.length == 0 && childComps.length == 0)
+            if(primmies.length == 0 && childComps.length == 0 && component['board'] == null)
                 return "no children defined for component " + componentID;
             component['primitives'] = primmies;
             component['children'] = childComps;
