@@ -111,7 +111,8 @@ export class MyBoard{
 
         this.playingDemo = false;
 
-        this.scene.setLight(false, spotlight)
+        this.spotOffset = mat4.create();
+        this.spotOffset = mat4.translate(this.spotOffset, this.spotOffset, [0,0,0.001])
     }
 
     getNewID() {
@@ -364,6 +365,8 @@ export class MyBoard{
             this.graveyard[piece].display(false);
         }
 
+        this.scene.pushMatrix();
+        this.scene.multMatrix(this.spotOffset);
         for(const spot in this.spots) {
             this.scene.pushMatrix();
             this.scene.multMatrix(this.spots[spot]['pos']);
@@ -374,6 +377,7 @@ export class MyBoard{
             }
             this.scene.popMatrix();
         }
+        this.scene.popMatrix();
 
         this.undoButton.display();
         this.filmButton.display();
