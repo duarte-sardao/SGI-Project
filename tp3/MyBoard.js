@@ -4,7 +4,7 @@ import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
 
 export class MyBoard{
-    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats) {
+    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -46,6 +46,9 @@ export class MyBoard{
         app2_high.setDiffuse(mats[1][3][0], mats[1][3][1], mats[1][3][2], mats[1][3][3]);
         app2_high.setSpecular(mats[1][4][0], mats[1][4][1], mats[1][4][2], mats[1][4][3]);
 
+        this.app_spot = new CGFappearance(this.scene);
+        this.app_spot.setEmission(0.45, 0.3, 0.1, 1);
+
         let matArr = [null, app1, app2, app1_high, app2_high]
 
         let spawnpiece = false;
@@ -69,7 +72,7 @@ export class MyBoard{
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
-                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
+                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn, spotlight);
                         curPiece++;
                         this.pieces[this.curID] = piece;
                         spotObj['piece'] = this.curID;
@@ -107,6 +110,8 @@ export class MyBoard{
         this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size/2, spot_size/4, buttPos2);
 
         this.playingDemo = false;
+
+        this.scene.setLight(false, spotlight)
     }
 
     getNewID() {
@@ -121,14 +126,14 @@ export class MyBoard{
             this.undoMove();
         this.playingDemo = true;
         var t = this;
-        this.interval = setInterval(function() {t.playInstance();}, 500);
+        this.interval = setInterval(function() {t.playInstance();}, 600);
     }
 
     playInstance() {
-        console.log(this.movieList);
+        //console.log(this.movieList);
         if(this.movieList.length > 0) {
             const move = this.movieList.pop();
-            console.log("playing " + move.piece + " to " + move.spot);
+            //console.log("playing " + move.piece + " to " + move.spot);
             this.doMove(move.piece, move.playedspot, 0.5, 0.5);
         } else {
             clearInterval(this.interval);
@@ -262,7 +267,7 @@ export class MyBoard{
         }
         if(!canCap)
             this.validPieces = movePieces;
-        console.log(this.validPieces);
+        //console.log(this.validPieces);
     }
 
     doMove(piece, spot, movespeed = 1, capspeed = 2) {
@@ -299,7 +304,7 @@ export class MyBoard{
 
             this.moveList.push(move);
 
-            this.switchTurn(res != -1);
+           + this.switchTurn(res != -1);
         }
     }
 
@@ -352,7 +357,7 @@ export class MyBoard{
         this.scene.clearPickRegistration();
 
         for(const piece in this.pieces) {
-            this.pieces[piece].display(piece == this.selected);
+            this.pieces[piece].display(piece == this.selected && !this.playingDemo, Object.keys(this.validPieces).includes(piece) && !this.playingDemo);
         }
 
         for(const piece in this.graveyard) {
@@ -363,7 +368,10 @@ export class MyBoard{
             this.scene.pushMatrix();
             this.scene.multMatrix(this.spots[spot]['pos']);
             this.scene.registerForPick(spot, this.spots[spot]['rect']);
-            this.spots[spot]['rect'].display();
+            if(this.selected != null && Object.keys(this.validPieces[this.selected]).includes(spot) && !this.playingDemo) {
+                this.app_spot.apply();
+                this.spots[spot]['rect'].display();
+            }
             this.scene.popMatrix();
         }
 

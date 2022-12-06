@@ -4,7 +4,7 @@ import { MyArcAnimation } from "./MyArcAnimation.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
-    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player) {
+    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player, light) {
         this.scene = scene;
         this.board = board;
         this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 12, 1);
@@ -52,6 +52,8 @@ export class MyPiece {
 
         this.king = false;
         this.active = true;
+
+        this.light = light;
     }
 
     getPlayer() {
@@ -90,11 +92,12 @@ export class MyPiece {
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
 
-    display(selected) {
+    display(selected, playable) {
         this.scene.pushMatrix();
-        if(selected) {
+        if(selected || playable) {
             this.selectmat.apply()
-            this.scene.multMatrix(this.moveUp)
+            if(selected)
+                this.scene.multMatrix(this.moveUp)
         }
         else
             this.mat.apply()

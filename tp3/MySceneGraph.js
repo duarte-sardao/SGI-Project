@@ -521,6 +521,7 @@ export class MySceneGraph {
             this.onXMLMinorError("too many lights defined; WebGL imposes a limit of 8 lights");
 
         this.log("Parsed lights");
+        this.numLights = numLights;
         return null;
     }
 
@@ -1078,6 +1079,11 @@ export class MySceneGraph {
         var piece_height = this.reader.getFloat(boardNode, 'piece_height');
         if (piece_height == null)
             return "no piece height defined for board";
+        var spotlight = this.reader.getString(boardNode, 'spotlight');
+        if (spotlight == null)
+            return "no spotlight defined for board";
+        if(this.lights[spotlight][1] != "spot")
+            return "referenced light is not spotlight"
         var mats = [];
         var matsNeed = ["pos1_mat", "pos2_mat"];
         for(let i = 0; i < matsNeed.length; i++) {
@@ -1089,7 +1095,7 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats);
+        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight);
         this.boardPickID = this.boards[id].getNewID();
     }
 

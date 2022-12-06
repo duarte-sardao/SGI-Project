@@ -117,6 +117,27 @@ export class XMLscene extends CGFscene {
     }
 
     /**
+     * Enables or disables light
+     * @param {Boolean} enable 
+     * @param {Light Index} i 
+     */
+    setLight(enable, i) {
+        if(this.sceneInited)
+            this.lightVal[i] = enable;
+    }
+
+    /**
+     * Moves a spotlight to new position
+     * @param {Vec3} spot 
+     * @param {Vec3} target 
+     * @param {Light index} i 
+     */
+    moveLight(spot, target, i) {
+        this.lights[i].setPosition(spot[0], spot[1], spot[2]);
+        this.lights[i].setSpotDirection(target[0], target[1], target[2]);
+    }
+
+    /**
      * Initializes the shader object to use to enable/disable in UI
      */
     initShaders() {
