@@ -5,6 +5,7 @@ import { MyCylinder } from "./MyCylinder.js";
 import { MySphere } from "./MySphere.js"
 import { MyTorus } from "./MyTorus.js"
 import { MyPatch } from "./MyPatch.js"
+import { CGFOBJModel } from "./CGFOBJModel.js"
 import { MyBoard} from "./MyBoard.js"
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js"
 
@@ -776,7 +777,7 @@ export class MySceneGraph {
             if ((grandChildren[0].nodeName != "patch" && grandChildren.length != 1) ||
                 (grandChildren[0].nodeName != 'rectangle' && grandChildren[0].nodeName != 'triangle' &&
                     grandChildren[0].nodeName != 'cylinder' && grandChildren[0].nodeName != 'sphere' &&
-                    grandChildren[0].nodeName != 'torus' && grandChildren[0].nodeName != "patch")) {
+                    grandChildren[0].nodeName != 'torus' && grandChildren[0].nodeName != "patch" && grandChildren[0].nodeName != "objfile")) {
                 return "There must be exactly 1 primitive type (rectangle, triangle, cylinder, sphere or torus)"
             }
 
@@ -929,6 +930,12 @@ export class MySceneGraph {
                 }
 
                 prim = new MyPatch(this.scene, degree_u, parts_u, degree_v, parts_v, controlpoints);
+            } else if(primitiveType == "objfile") {
+                var file = this.reader.getString(grandChildren[0], 'file');
+                if (!(file != null && !isNaN(file)))
+                    return "unable to parse file of the primitive coordinates for ID = " + primitiveId;
+
+                prim = new CGFOBJModel(this.scene, file);
             }
 
             this.primitives[primitiveId] = prim;
