@@ -100,6 +100,9 @@
         <texture id="salt" file="scenes/images/sal.png" />
         <texture id="saltTop" file="scenes/images/salTop.png" />
         <texture id="saltBack" file="scenes/images/salBack.png" />
+
+        <texture id="board" file="scenes/images/boardwood.jpg" />
+        <texture id="board8x8" file="scenes/images/boardwood8x8.jpg" />
         
     </textures>
 
@@ -409,13 +412,22 @@
       <primitive id="temperShelfBoard">
         <rectangle x1="0" y1="0" x2="2" y2="0.5" />
       </primitive>
+
+      <primitive id="board_patch">
+        <patch degree_u="1" parts_u="50" degree_v="1" parts_v="50">
+          <controlpoint x="-0.5" y="0.5" z="0" />
+          <controlpoint x="7.5" y="0.5" z="0" />
+          <controlpoint x="-0.5" y="-7.5" z="0" />
+          <controlpoint x="7.5" y="-7.5" z="0" />
+        </patch>
+      </primitive>
     </primitives>
 
     <animations>
     </animations>
 
     <boards>
-      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="basicMaterial" pos2_mat="redMaterial" spotlight="boardLight" />
+      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="basicMaterial" pos2_mat="redMaterial" spotlight="boardLight" button_offset="0.5" />
     </boards>
 
     <components>
@@ -441,16 +453,107 @@
 
       <component id="board">
         <transformation>
-          <translate x="7.5" y="3" z="6.75" />
+          <translate x="7.5" y="3.3" z="6.75" />
           <rotate axis="x" angle="-90" />
           <scale x="0.35" y="0.35" z="0.35" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="board8x8" length_s="1" length_t="1"/>
         <children>
+          <primitiveref id="board_patch" />
           <board id="table_board" />
+          <componentref id="boardside"/>
+          <componentref id="boardside2"/>
+          <componentref id="boardside3"/>
+          <componentref id="boardcontrols"/>
+          <componentref id="boardcontrols2"/>
+          <componentref id="boardCap1" />
+        </children>
+      </component>
+
+      <component id="boardCap1">
+        <transformation>
+          <translate x="8.6" y="-3.55" z="-0.5" />
+          <scale x="1" y="1.1" z="0.4"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="cube"/>
+        </children>
+      </component>
+
+      <component id="boardcontrols2">
+        <transformation>
+          <translate x="0" y="-5.45" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="boardcontrols"/>
+        </children>
+      </component>
+
+      <component id="boardcontrols">
+        <transformation>
+          <translate x="8.9" y="-0.8" z="-0.3" />
+          <scale x="1" y="1.66" z="0.7"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="cube"/>
+        </children>
+      </component>
+
+      <component id="boardside3">
+        <transformation>
+          <translate x="0" y="-7.35" z="0" />
+          <rotate axis="z" angle="90" />
+          <scale x="1.1" y="1" z="1" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="boardside"/>
+          <componentref id="boardside2"/>
+        </children>
+      </component>
+
+      <component id="boardside2">
+        <transformation>
+          <translate x="0" y="-8.4" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="boardside"/>
+        </children>
+      </component>
+
+      <component id="boardside">
+        <transformation>
+          <translate x="3.5" y="0.7" z="-0.3" />
+          <scale x="4" y="0.2" z="0.7"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="cube"/>
         </children>
       </component>
 

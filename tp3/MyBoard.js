@@ -4,7 +4,7 @@ import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
 
 export class MyBoard{
-    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight) {
+    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, button_offset) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -101,18 +101,21 @@ export class MyBoard{
 
         this.undoID = this.curID++;
         let buttPos = mat4.create();
-        buttPos = mat4.translate(buttPos, buttPos, [(size+1)*spot_size, -spot_size, 0]);
+        buttPos = mat4.translate(buttPos, buttPos, [(size+0.75)*spot_size, 0, 0]);
         this.undoButton =  new MyButton(this.scene, this, this.undoID, spot_size/2, spot_size/4, buttPos);
 
         this.filmID = this.curID++;
         let buttPos2 = mat4.create();
-        buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*2, 0]);
+        buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*1.66, 0]);
         this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size/2, spot_size/4, buttPos2);
 
         this.playingDemo = false;
 
         this.spotOffset = mat4.create();
         this.spotOffset = mat4.translate(this.spotOffset, this.spotOffset, [0,0,0.001])
+
+        this.buttonOffset = mat4.create();
+        this.buttonOffset = mat4.translate(this.buttonOffset, this.buttonOffset, [0,0,button_offset])
     }
 
     getNewID() {
@@ -379,7 +382,10 @@ export class MyBoard{
         }
         this.scene.popMatrix();
 
+        this.scene.pushMatrix();
+        this.scene.multMatrix(this.buttonOffset);
         this.undoButton.display();
         this.filmButton.display();
+        this.scene.popMatrix();
     }
 }

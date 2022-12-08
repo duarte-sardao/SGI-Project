@@ -1091,6 +1091,9 @@ export class MySceneGraph {
             return "no spotlight defined for board";
         if(this.lights[spotlight][1] != "spot")
             return "referenced light is not spotlight"
+        var button_offset = this.reader.getFloat(boardNode, 'button_offset');
+        if (button_offset == null)
+            button_offset = 0;
         var mats = [];
         var matsNeed = ["pos1_mat", "pos2_mat"];
         for(let i = 0; i < matsNeed.length; i++) {
@@ -1102,7 +1105,7 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight);
+        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, button_offset);
         this.boardPickID = this.boards[id].getNewID();
     }
 
