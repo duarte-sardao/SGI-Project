@@ -124,6 +124,7 @@ export class MyBoard{
 
         this.scene.setPickEnabled(true);
         this.moveList = [];
+        this.fakeCaps = [];
 
         this.validPieces = {};
         this.turn = 2;
@@ -139,9 +140,16 @@ export class MyBoard{
     }
 
     restart() {
-        this.gameOver=false;
         while(this.moveList.length > 0)
             this.undoMove();
+        for(const piece of this.fakeCaps) {
+            this.unCapturePiece(this.pieces[piece], this.pieceInSpots[piece]);
+        }
+
+        this.fakeCaps = [];
+        this.turn = 2;
+        this.switchTurn(false);
+        this.gameOver = false;
     }
 
     playDemo() {
@@ -155,10 +163,8 @@ export class MyBoard{
     }
 
     playInstance() {
-        //console.log(this.movieList);
         if(this.movieList.length > 0) {
             const move = this.movieList.pop();
-            //console.log("playing " + move.piece + " to " + move.spot);
             this.doMove(move.piece, move.playedspot, 0.5, 0.5);
         } else {
             clearInterval(this.interval);
@@ -179,6 +185,14 @@ export class MyBoard{
 
     handleID(customId)
 	{
+        if(this.playingDemo)
+            return;
+        if(customId == this.restartID) {
+            this.restart();
+            return;
+        }
+        if(this.gameOver) //we only want to pick the restart button if the game is over
+            return;
         if(customId == this.undoID) {
             this.undoMove();
             this.undoButton.playAnim();
@@ -187,10 +201,6 @@ export class MyBoard{
         if(customId == this.filmID) {
             this.playDemo();
             this.filmButton.playAnim();
-            return;
-        }
-        if(customId == this.restartID) {
-            this.restart();
             return;
         }
         let piece = this.pieces[customId];
@@ -248,10 +258,10 @@ export class MyBoard{
 
     //function on switch turn to calc all moves to see if player can cap
     switchTurn(retry, choice) {
-        if(this.dead[0] == this.winCondition) {
+        if(this.dead[0] == this.winCondition && !this.gameOver) {
             alert("Player 2 won!");
             this.gameOver = true;
-        } else if(this.dead[1] == this.winCondition) {
+        } else if(this.dead[1] == this.winCondition && !this.gameOver) {
             alert("Player 1 won!");
             this.gameOver = true;
         }
@@ -313,12 +323,8 @@ export class MyBoard{
             this.pieceInSpots[piece] = spot;
             this.pieces[piece].move(this.spots[spot]['pos'], movespeed);
             if(res != -1) {
-                this.graveyard[res] = this.pieces[res];
-                delete this.pieces[res];
-                this.spots[this.pieceInSpots[res]]['piece'] = "empty";
                 move.capspot = this.pieceInSpots[res];
-                delete this.pieceInSpots[res];
-                this.capturePiece(this.graveyard[res], capspeed);
+                this.cap(res, capspeed)
             }
             
             if((this.turn == 1 && this.spots[spot]['y'] == this.size-1) || (this.turn == 2 && this.spots[spot]['y'] == 0)) {
@@ -332,29 +338,12 @@ export class MyBoard{
         }
     }
 
-    undoMove() {
-        const move = this.moveList.pop();
-        if(move == null)
-            return;
-
-        let piece = this.pieces[move.piece];
-        piece.makeKing(move.madeking);
-        piece.move(this.spots[move.spot].pos, 0.5);
-        this.spots[this.pieceInSpots[move.piece]].piece = "empty";
-        this.pieceInSpots[move.piece] = move.spot;
-        this.spots[move.spot].piece = move.piece;
-
-        if(move.cappiece != -1) {
-            let piece = this.graveyard[move.cappiece];
-            this.dead[piece.getPlayer()-1] -= 1;
-            this.pieces[move.cappiece] = piece;
-            delete this.graveyard[move.cappiece]
-            piece.unCapture(this.spots[move.capspot].pos, 0.5);
-            this.pieceInSpots[move.cappiece] = move.capspot;
-            this.spots[move.capspot].piece = move.cappiece;
-        }
-
-        this.switchTurn(false, move.turn);
+    cap(res, capspeed) {
+        this.graveyard[res] = this.pieces[res];
+        delete this.pieces[res];
+        this.spots[this.pieceInSpots[res]]['piece'] = "empty";
+        delete this.pieceInSpots[res];
+        this.capturePiece(this.graveyard[res], capspeed);
     }
 
     capturePiece(piece, speed = 2) {
@@ -376,16 +365,54 @@ export class MyBoard{
         piece.capture(gravePosition, speed);
     }
 
+    undoMove() {
+        const move = this.moveList.pop();
+        if(move == null)
+            return;
+
+        let piece = this.pieces[move.piece];
+        piece.makeKing(move.madeking);
+        piece.move(this.spots[move.spot].pos, 0.5);
+        this.spots[this.pieceInSpots[move.piece]].piece = "empty";
+        this.pieceInSpots[move.piece] = move.spot;
+        this.spots[move.spot].piece = move.piece;
+
+        if(move.cappiece != -1) {
+            this.unCap(move.cappiece, move.capspot)
+        }
+
+        this.switchTurn(false, move.turn);
+    }
+
+    unCap(pieceID, spotID) {
+        let piece = this.graveyard[pieceID];
+        this.pieces[pieceID] = piece;
+        delete this.graveyard[pieceID];
+        this.unCapturePiece(piece, spotID);    
+        this.pieceInSpots[pieceID] = spotID;
+        this.spots[spotID].piece = pieceID;
+    }
+
+    unCapturePiece(piece, spotID) {
+        this.dead[piece.getPlayer()-1] -= 1;
+        piece.unCapture(this.spots[spotID].pos, 0.5);
+    }
+
     checkTime() {
         if(this.turnStart == null || this.gameOver)
             return;
         const diff = Math.floor((new Date() - this.turnStart) / 1000);
         if(diff > this.time) {
-            alert("Player " + this.turn + " took too long!");
+            let otherP = 2;
+            if(this.turn == 2)
+                otherP = 1;
+            alert("Player " + this.turn + " took too long! Player " + otherP + " wins!");
+            this.fakeCaps = [];
             for(const piece in this.pieces) {
-                const p = this.pieces[piece];
-                if(p.getPlayer() == this.turn)
-                    this.capturePiece(p);
+                if(this.pieces[piece].getPlayer() == this.turn) {
+                    this.fakeCaps.push(piece);
+                    this.capturePiece(this.pieces[piece])
+                }
             }
             this.gameOver = true;
         }
@@ -396,7 +423,8 @@ export class MyBoard{
         this.scene.clearPickRegistration();
 
         for(const piece in this.pieces) {
-            this.pieces[piece].display(piece == this.selected && !this.playingDemo, Object.keys(this.validPieces).includes(piece) && !this.playingDemo);
+            this.pieces[piece].display(piece == this.selected && !this.playingDemo && !this.gameOver, 
+                Object.keys(this.validPieces).includes(piece) && !this.playingDemo && !this.gameOver);
         }
 
         for(const piece in this.graveyard) {
@@ -409,7 +437,7 @@ export class MyBoard{
             this.scene.pushMatrix();
             this.scene.multMatrix(this.spots[spot]['pos']);
             this.scene.registerForPick(spot, this.spots[spot]['rect']);
-            if(this.selected != null && Object.keys(this.validPieces[this.selected]).includes(spot) && !this.playingDemo) {
+            if(this.selected != null && Object.keys(this.validPieces[this.selected]).includes(spot) && !this.playingDemo && !this.gameOver) {
                 this.app_spot.apply();
                 this.spots[spot]['rect'].display();
             }
