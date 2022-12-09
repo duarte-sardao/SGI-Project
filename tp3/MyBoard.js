@@ -15,6 +15,7 @@ export class MyBoard{
         this.pieces = {};
         this.spots = {};
         this.pieceInSpots = {};
+        this.initID = id;
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
@@ -89,7 +90,6 @@ export class MyBoard{
         this.dead = [0,0];
         this.graveyard = {};
         this.winCondition = Object.keys(this.pieces).length / 2;
-        this.winCondition = 2;
 
 
         this.undoID = this.curID++;
@@ -128,6 +128,10 @@ export class MyBoard{
         this.validPieces = {};
         this.turn = 2;
         this.switchTurn(false);
+    }
+
+    idInRange(val) {
+        return val >= this.initID && val <= this.curID;
     }
 
     getNewID() {
@@ -173,44 +177,31 @@ export class MyBoard{
         this.undoButton.update(t);
     }
 
-    logPicking()
+    handleID(customId)
 	{
-		if (this.scene.pickMode == false && this.playingDemo != true) {
-			// results can only be retrieved when picking mode is false
-			if (this.scene.pickResults != null && this.scene.pickResults.length > 0) {
-				for (var i=0; i< this.scene.pickResults.length; i++) {
-					var obj = this.scene.pickResults[i][0];
-					if (obj)
-					{
-						const customId = this.scene.pickResults[i][1];
-                        if(customId == this.undoID) {
-                            this.undoMove();
-                            this.undoButton.playAnim();
-                            continue;
-                        }
-                        if(customId == this.filmID) {
-                            this.playDemo();
-                            this.filmButton.playAnim();
-                            continue;
-                        }
-                        if(customId == this.restartID) {
-                            this.restart();
-                            continue;
-                        }
-                        let piece = this.pieces[customId];
-                        if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
-                            this.selected = customId;
-                            continue;
-                        }
-                        let spot = this.spots[customId]
-                        if(spot != null && this.selected != null) {
-                            this.doMove(this.selected, parseInt(customId));
-                        }
-					}
-				}
-				this.scene.pickResults.splice(0,this.scene.pickResults.length);
-			}		
-		}
+        if(customId == this.undoID) {
+            this.undoMove();
+            this.undoButton.playAnim();
+            return;
+        }
+        if(customId == this.filmID) {
+            this.playDemo();
+            this.filmButton.playAnim();
+            return;
+        }
+        if(customId == this.restartID) {
+            this.restart();
+            return;
+        }
+        let piece = this.pieces[customId];
+        if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
+            this.selected = customId;
+            return;
+        }
+        let spot = this.spots[customId]
+        if(spot != null && this.selected != null) {
+            this.doMove(this.selected, parseInt(customId));
+        }
 	}
 
     calcValidMoves(sel_piece) {
@@ -402,7 +393,6 @@ export class MyBoard{
 
     display() {
         this.checkTime();
-        this.logPicking();
         this.scene.clearPickRegistration();
 
         for(const piece in this.pieces) {

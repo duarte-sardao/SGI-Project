@@ -200,6 +200,29 @@ export class XMLscene extends CGFscene {
         this.graph.updateShaders(seconds);
     }
 
+    logPicking()
+	{
+		if (this.pickMode == false && this.playingDemo != true) {
+			// results can only be retrieved when picking mode is false
+			if (this.pickResults != null && this.pickResults.length > 0) {
+				for (var i=0; i< this.pickResults.length; i++) {
+					var obj = this.pickResults[i][0];
+					if (obj)
+					{
+                        for(const board in this.graph.boards) {
+                            const b = this.graph.boards[board];
+                            if(b.idInRange(this.pickResults[i][1])) {
+                                b.handleID(this.pickResults[i][1]);
+                                continue;
+                            }
+                        }
+					}
+				}
+				this.pickResults.splice(0,this.pickResults.length);
+			}		
+		}
+	}
+
     /**
      * Displays the scene.
      */
@@ -239,6 +262,7 @@ export class XMLscene extends CGFscene {
         this.setDefaultAppearance();
 
         // Displays the scene (MySceneGraph function).
+        this.logPicking();
         this.graph.displayScene();
 
         this.popMatrix();
