@@ -1094,6 +1094,9 @@ export class MySceneGraph {
         var button_offset = this.reader.getFloat(boardNode, 'button_offset');
         if (button_offset == null)
             button_offset = 0;
+        var time = this.reader.getInteger(boardNode, 'time');
+        if (time == null)
+            time = 30;
         var mats = [];
         var matsNeed = ["pos1_mat", "pos2_mat"];
         for(let i = 0; i < matsNeed.length; i++) {
@@ -1105,7 +1108,7 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, button_offset);
+        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset);
         this.boardPickID = this.boards[id].getNewID();
     }
 
@@ -1589,7 +1592,7 @@ export class MySceneGraph {
             }
             component['shaderInit'] = true;
         }
-        this.scene.setActiveShader(shader);
+        this.scene.setActiveShaderSimple(shader);
     }
 
     for(var i = 0; i < primitives.length; i++) {
@@ -1601,7 +1604,7 @@ export class MySceneGraph {
     }
 
     if(shader != null && this.scene.shaderVal[id])
-        this.scene.setActiveShader(this.scene.defaultShader);
+        this.scene.setActiveShaderSimple(this.scene.defaultShader);
 
     if(board != null) {
         this.boards[board].display();

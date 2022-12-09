@@ -4,7 +4,7 @@ import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
 
 export class MyBoard{
-    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, button_offset) {
+    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -16,7 +16,8 @@ export class MyBoard{
         this.spots = {};
         this.pieceInSpots = {};
         this.curID = id;
-        this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));;
+        this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
+        this.time = time;
 
         let app1 = new CGFappearance(this.scene);
         app1.setShininess(mats[0][0]);
@@ -54,14 +55,12 @@ export class MyBoard{
         let spawnpiece = false;
         let skiplines = false;
         let piecesSpawn = 1;
-        let curPiece = 1;
         for(let y = 0; y < size; y++){
             if(!skiplines && y == (size / 2)-1)
                 skiplines = true;
             if(skiplines && y == (size / 2)+1) {
                 piecesSpawn = 2;
                 skiplines = false;
-                curPiece = 1;
             }
             for(let x = 0; x < size; x++) {
                 let position = mat4.create();
@@ -73,7 +72,6 @@ export class MyBoard{
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
                         var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn, spotlight);
-                        curPiece++;
                         this.pieces[this.curID] = piece;
                         spotObj['piece'] = this.curID;
                         this.pieceInSpots[this.curID] = this.curID+1;
@@ -88,15 +86,10 @@ export class MyBoard{
             spawnpiece = !spawnpiece;
         }
 
-        this.scene.setPickEnabled(true);
-        this.moveList = [];
-
-        this.validPieces = {};
-        this.turn = 2;
-        this.switchTurn(false);
-
         this.dead = [0,0];
         this.graveyard = {};
+        this.winCondition = Object.keys(this.pieces).length / 2;
+        this.winCondition = 2;
 
 
         this.undoID = this.curID++;
@@ -109,6 +102,16 @@ export class MyBoard{
         buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*1.66, 0]);
         this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size/2, spot_size/4, buttPos2);
 
+        this.camID = this.curID++;
+        let buttPos3 = mat4.create();
+        buttPos3 = mat4.translate(buttPos3, buttPos, [0, -(size+0.75)*spot_size+spot_size*1.66, 0]);
+        this.camButton =  new MyButton(this.scene, this, this.camID, spot_size/2, spot_size/4, buttPos3);
+
+        this.restartID = this.curID++;
+        let buttPos4 = mat4.create();
+        buttPos4 = mat4.translate(buttPos4, buttPos3, [0, spot_size*1.66, 0]);
+        this.restartButton =  new MyButton(this.scene, this, this.restartID, spot_size/2, spot_size/4, buttPos4);
+
         this.playingDemo = false;
 
         this.spotOffset = mat4.create();
@@ -116,18 +119,32 @@ export class MyBoard{
 
         this.buttonOffset = mat4.create();
         this.buttonOffset = mat4.translate(this.buttonOffset, this.buttonOffset, [0,0,button_offset])
+
+        this.gameOver=false;
+
+        this.scene.setPickEnabled(true);
+        this.moveList = [];
+
+        this.validPieces = {};
+        this.turn = 2;
+        this.switchTurn(false);
     }
 
     getNewID() {
         return this.curID + 1;
     }
 
+    restart() {
+        this.gameOver=false;
+        while(this.moveList.length > 0)
+            this.undoMove();
+    }
+
     playDemo() {
         if(this.moveList.length < 1)
             return;
         this.movieList = [...this.moveList].reverse();
-        while(this.moveList.length > 0)
-            this.undoMove();
+        this.restart();
         this.playingDemo = true;
         var t = this;
         this.interval = setInterval(function() {t.playInstance();}, 600);
@@ -174,6 +191,10 @@ export class MyBoard{
                         if(customId == this.filmID) {
                             this.playDemo();
                             this.filmButton.playAnim();
+                            continue;
+                        }
+                        if(customId == this.restartID) {
+                            this.restart();
                             continue;
                         }
                         let piece = this.pieces[customId];
@@ -236,6 +257,14 @@ export class MyBoard{
 
     //function on switch turn to calc all moves to see if player can cap
     switchTurn(retry, choice) {
+        if(this.dead[0] == this.winCondition) {
+            alert("Player 2 won!");
+            this.gameOver = true;
+        } else if(this.dead[1] == this.winCondition) {
+            alert("Player 1 won!");
+            this.gameOver = true;
+        }
+        this.turnStart = new Date();
         this.validPieces = {};
         let canCap = false;
         if(retry) {
@@ -356,7 +385,23 @@ export class MyBoard{
         piece.capture(gravePosition, speed);
     }
 
+    checkTime() {
+        if(this.turnStart == null || this.gameOver)
+            return;
+        const diff = Math.floor((new Date() - this.turnStart) / 1000);
+        if(diff > this.time) {
+            alert("Player " + this.turn + " took too long!");
+            for(const piece in this.pieces) {
+                const p = this.pieces[piece];
+                if(p.getPlayer() == this.turn)
+                    this.capturePiece(p);
+            }
+            this.gameOver = true;
+        }
+    }
+
     display() {
+        this.checkTime();
         this.logPicking();
         this.scene.clearPickRegistration();
 
@@ -386,6 +431,8 @@ export class MyBoard{
         this.scene.multMatrix(this.buttonOffset);
         this.undoButton.display();
         this.filmButton.display();
+        this.camButton.display();
+        this.restartButton.display();
         this.scene.popMatrix();
     }
 }
