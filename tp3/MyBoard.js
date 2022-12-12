@@ -1,9 +1,23 @@
-import { CGFappearance } from "../lib/CGF.js";
+import { CGFappearance, CGFscene } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
 
 export class MyBoard{
+    /**
+     * Board constructor
+     * @param {CGFscene} scene 
+     * @param {SceneGraph} graph 
+     * @param {int} id first id for picking id ranges 
+     * @param {int} size board side size in amount of spots
+     * @param {float} spot_size spot in board size
+     * @param {float} piece_radius radius of pieces
+     * @param {float} piece_height height of pieces
+     * @param {array of arrays} mats materials to use for pieces
+     * @param {int} spotlight spotlight that follows playing pieces
+     * @param {int} time time for turn timeout 
+     * @param {float} button_offset height offset for buttons from rest of board
+     */
     constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset) {
         this.scene = scene;
         this.graph = graph;
@@ -131,14 +145,26 @@ export class MyBoard{
         this.switchTurn(false);
     }
 
+    /**
+     * Check if a guy id is within the board's picking range.
+     * @param {int} val 
+     * @returns boolean
+     */
     idInRange(val) {
         return val >= this.initID && val <= this.curID;
     }
 
+    /**
+     * Gets the id following the range of this board
+     * @returns int
+     */
     getNewID() {
         return this.curID + 1;
     }
 
+    /**
+     * Undoes all moves and resets board to original state.
+     */
     restart() {
         while(this.moveList.length > 0)
             this.undoMove();
@@ -148,6 +174,10 @@ export class MyBoard{
         this.gameOver = false;
     }
 
+    /**
+     * Plays the demo, going over the move list
+     * @returns Returns early if theres no moves to play
+     */
     playDemo() {
         if(this.moveList.length < 1)
             return;
@@ -158,6 +188,9 @@ export class MyBoard{
         this.interval = setInterval(function() {t.playInstance();}, 600);
     }
 
+    /**
+     * Plays an instance of the demo (a move) and ends the demo if theres no more left.
+     */
     playInstance() {
         if(this.movieList.length > 0) {
             const move = this.movieList.pop();
@@ -170,6 +203,10 @@ export class MyBoard{
         }
     }
 
+    /**
+     * Updates animations for all board elements (pieces and buttons)
+     * @param {time} t 
+     */
     updateAnimations(t) {
         for(const piece in this.pieces) {
             this.pieces[piece].updateAnimations(t);
@@ -179,8 +216,15 @@ export class MyBoard{
         }
         this.filmButton.update(t);
         this.undoButton.update(t);
+        this.resetButton.update(t);
+        this.camButton.update(t);
     }
 
+    /**
+     * Given a picking id, proccesses it and executes required action on object
+     * @param {int} customId 
+     * @returns null
+     */
     handleID(customId)
 	{
         if(this.playingDemo)
@@ -212,6 +256,11 @@ export class MyBoard{
         }
 	}
 
+    /**
+     * Calculates all the move a piece given by id can execute
+     * @param {String} sel_piece 
+     * @returns [Boolean, Moves object array] with boolean being True if the user can capture a piece
+     */
     calcValidMoves(sel_piece) {
         let validMoves = {};
         let notNull = false;
@@ -254,7 +303,12 @@ export class MyBoard{
         return [false, validMoves];
     }
 
-    //function on switch turn to calc all moves to see if player can cap
+    /**
+     * Switches a turn, either to the opposite of the current or for given in parameter and checks for loss
+     * @param {boolean} retry Wether to attempt to maintain the current turn (if player can capture turn doesn't switch) 
+     * @param {int} choice Optional parameter for player to switch to
+     * @returns null
+     */
     switchTurn(retry, choice) {
         this.turnStart = new Date();
         this.validPieces = {};
@@ -262,9 +316,11 @@ export class MyBoard{
         if(this.dead[0] == this.winCondition && !this.gameOver) {
             alert("Player 2 won!");
             this.gameOver = true;
+            return;
         } else if(this.dead[1] == this.winCondition && !this.gameOver) {
             alert("Player 1 won!");
             this.gameOver = true;
+            return;
         }
         if(retry) {
             for(const piece in this.pieces) {
@@ -299,9 +355,15 @@ export class MyBoard{
         }
         if(!canCap)
             this.validPieces = movePieces;
-        //console.log(this.validPieces);
     }
 
+    /**
+     * Does a move, checking validity and doing capturing if necessary
+     * @param {String} piece moving piece id
+     * @param {String} spot target spot id
+     * @param {int} movespeed seconds for moving animation
+     * @param {int} capspeed seconds for capture animation
+     */
     doMove(piece, spot, movespeed = 1, capspeed = 2) {
         this.selected = null;
         const res = this.validPieces[piece][spot];
@@ -336,6 +398,11 @@ export class MyBoard{
         }
     }
 
+    /**
+     * Updates board state on piece capture and calls animation
+     * @param {String} res captured piece
+     * @param {int} capspeed seconds for capture animation 
+     */
     cap(res, capspeed) {
         this.graveyard[res] = this.pieces[res];
         delete this.pieces[res];
@@ -344,6 +411,11 @@ export class MyBoard{
         this.capturePiece(this.graveyard[res], capspeed);
     }
 
+    /**
+     * Visually updates piece to be captured, calculating position to target and calling animation on it 
+     * @param {String} piece captured piece
+     * @param {int} speed seconds for capture animation
+     */
     capturePiece(piece, speed = 2) {
         let gravePosition = mat4.create();
         let dead = this.dead[piece.getPlayer()-1];
@@ -363,6 +435,9 @@ export class MyBoard{
         piece.capture(gravePosition, speed);
     }
 
+    /**
+     * Undoes a move
+     */
     undoMove() {
         this.gameOver = false;
         const move = this.moveList.pop();
@@ -393,6 +468,11 @@ export class MyBoard{
         this.switchTurn(false, move.turn);
     }
 
+    /**
+     * Undoes a captured piece, restoring board state and then calling function to visually update
+     * @param {String} pieceID piece that was captured
+     * @param {String} spotID spot to return to
+     */
     unCap(pieceID, spotID) {
         let piece = this.graveyard[pieceID];
         this.pieces[pieceID] = piece;
@@ -402,15 +482,20 @@ export class MyBoard{
         this.spots[spotID].piece = pieceID;
     }
 
+    /**
+     * Visually updates a captured piece retorning to previous state
+     * @param {MyPiece} piece piece to move
+     * @param {String} spotID spot to go to
+     */
     unCapturePiece(piece, spotID) {
         this.dead[piece.getPlayer()-1] -= 1;
         piece.unCapture(this.spots[spotID].pos, 0.5);
     }
 
-    undofakecap() {
-
-    }
-
+    /**
+     * On turn timeout all pieces of the loser are moved to the graveyard (purely visual as state is maintained and no validity checks are made)
+     * The turn is then switched to the other player (the winner)
+     */
     finalfakecap() {
         let move = {
             fakecapturn: this.turn
@@ -427,6 +512,9 @@ export class MyBoard{
         this.switchTurn(false);
     }
 
+    /**
+     * Checks if current player has timed out their turn and handles loss in such case.
+     */
     checkTime() {
         if(this.turnStart == null || this.gameOver)
             return;
@@ -440,6 +528,9 @@ export class MyBoard{
         }
     }
 
+    /**
+     * Display the board elements
+     */
     display() {
         this.checkTime();
         this.scene.clearPickRegistration();
