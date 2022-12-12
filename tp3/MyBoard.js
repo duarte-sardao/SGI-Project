@@ -142,11 +142,7 @@ export class MyBoard{
     restart() {
         while(this.moveList.length > 0)
             this.undoMove();
-        for(const piece of this.fakeCaps) {
-            this.unCapturePiece(this.pieces[piece], this.pieceInSpots[piece]);
-        }
-
-        this.fakeCaps = [];
+        
         this.turn = 2;
         this.switchTurn(false);
         this.gameOver = false;
@@ -165,6 +161,8 @@ export class MyBoard{
     playInstance() {
         if(this.movieList.length > 0) {
             const move = this.movieList.pop();
+            if(move.fakecapturn != null)
+                this.finalfakecap();
             this.doMove(move.piece, move.playedspot, 0.5, 0.5);
         } else {
             clearInterval(this.interval);
@@ -191,8 +189,6 @@ export class MyBoard{
             this.restart();
             return;
         }
-        if(this.gameOver) //we only want to pick the restart button if the game is over
-            return;
         if(customId == this.undoID) {
             this.undoMove();
             this.undoButton.playAnim();
@@ -203,6 +199,8 @@ export class MyBoard{
             this.filmButton.playAnim();
             return;
         }
+        if(this.gameOver) //we only want to pick buttons if the game is over
+            return;
         let piece = this.pieces[customId];
         if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
             this.selected = customId;
@@ -258,6 +256,9 @@ export class MyBoard{
 
     //function on switch turn to calc all moves to see if player can cap
     switchTurn(retry, choice) {
+        this.turnStart = new Date();
+        this.validPieces = {};
+        let canCap = false;
         if(this.dead[0] == this.winCondition && !this.gameOver) {
             alert("Player 2 won!");
             this.gameOver = true;
@@ -265,9 +266,6 @@ export class MyBoard{
             alert("Player 1 won!");
             this.gameOver = true;
         }
-        this.turnStart = new Date();
-        this.validPieces = {};
-        let canCap = false;
         if(retry) {
             for(const piece in this.pieces) {
                 if(this.pieces[piece].getPlayer() != this.turn)
@@ -366,9 +364,20 @@ export class MyBoard{
     }
 
     undoMove() {
+        this.gameOver = false;
         const move = this.moveList.pop();
         if(move == null)
             return;
+        else if (move.fakecapturn != null) {
+            for(const piece of this.fakeCaps) {
+                this.unCapturePiece(this.pieces[piece], this.pieceInSpots[piece]);
+            }
+    
+            this.fakeCaps = [];
+            this.switchTurn(false,move.fakecapturn);
+            return;
+        }
+
 
         let piece = this.pieces[move.piece];
         piece.makeKing(move.madeking);
@@ -398,6 +407,26 @@ export class MyBoard{
         piece.unCapture(this.spots[spotID].pos, 0.5);
     }
 
+    undofakecap() {
+
+    }
+
+    finalfakecap() {
+        let move = {
+            fakecapturn: this.turn
+        }
+        this.moveList.push(move);
+        this.fakeCaps = [];
+        for(const piece in this.pieces) {
+            if(this.pieces[piece].getPlayer() == this.turn) {
+                this.fakeCaps.push(piece);
+                this.capturePiece(this.pieces[piece])
+            }
+        }
+        this.gameOver = true;
+        this.switchTurn(false);
+    }
+
     checkTime() {
         if(this.turnStart == null || this.gameOver)
             return;
@@ -407,14 +436,7 @@ export class MyBoard{
             if(this.turn == 2)
                 otherP = 1;
             alert("Player " + this.turn + " took too long! Player " + otherP + " wins!");
-            this.fakeCaps = [];
-            for(const piece in this.pieces) {
-                if(this.pieces[piece].getPlayer() == this.turn) {
-                    this.fakeCaps.push(piece);
-                    this.capturePiece(this.pieces[piece])
-                }
-            }
-            this.gameOver = true;
+            this.finalfakecap();
         }
     }
 
