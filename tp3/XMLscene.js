@@ -67,6 +67,7 @@ export class XMLscene extends CGFscene {
     initLights() {
         var i = 0;
         this.lightVal = {};
+        this.lightId = {};
         // Lights index.
 
         // Reads the lights from the scene graph.
@@ -109,6 +110,7 @@ export class XMLscene extends CGFscene {
                 this.lights[i].update();
 
                 this.lightVal[key] = light[0];
+                this.lightId[key] = i;
 
                 i++;
             }
@@ -119,7 +121,7 @@ export class XMLscene extends CGFscene {
     /**
      * Enables or disables light
      * @param {Boolean} enable 
-     * @param {Light Index} i 
+     * @param {String} i 
      */
     setLight(enable, i) {
         if(this.sceneInited)
@@ -130,9 +132,10 @@ export class XMLscene extends CGFscene {
      * Moves a spotlight to new position
      * @param {Vec3} spot 
      * @param {Vec3} target 
-     * @param {Light index} i 
+     * @param {String} i 
      */
     moveLight(spot, target, i) {
+        i = this.lightId[i];
         this.lights[i].setPosition(spot[0], spot[1], spot[2]);
         this.lights[i].setSpotDirection(target[0], target[1], target[2]);
     }
@@ -248,10 +251,8 @@ export class XMLscene extends CGFscene {
         let i = 0;
         for (var key in this.lightVal) {
             if(this.lightVal[key]) {
-                //this.lights[i].setVisible(true);
                 this.lights[i].enable();
             } else {
-                //this.lights[i].setVisible(false);
                 this.lights[i].disable();
             }
             this.lights[i].setVisible(false);

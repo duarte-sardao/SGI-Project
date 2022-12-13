@@ -5,7 +5,7 @@ import { CGFOBJModel } from "./CGFOBJModel.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
-    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player, light) {
+    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player) {
         this.scene = scene;
         this.board = board;
         this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 12, 1);
@@ -40,9 +40,8 @@ export class MyPiece {
 
         this.king = false;
         this.active = true;
-
-        this.light = light;
         this.cylUsed = this.cylinder;
+        this.lastPos = mat4.create();
     }
 
     getPlayer() {
@@ -66,8 +65,9 @@ export class MyPiece {
         if(this.animation != null) {
             this.animation.update(t);
             this.position = this.animation.getMatrix();
-            if(this.animation.getDone())
+            if(this.animation.getDone()) {
                 this.animation = null;
+            }
         }
     }
 
@@ -86,6 +86,10 @@ export class MyPiece {
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
 
+    getPos() {
+        return this.lastPos;
+    }
+
     display(selected, playable) {
         this.scene.pushMatrix();
         if(selected || playable) {
@@ -96,6 +100,8 @@ export class MyPiece {
         else
             this.mat.apply()
         this.scene.multMatrix(this.position);
+
+        this.lastPos = this.scene.getMatrix();
 
         if(this.active) {
             this.scene.registerForPick(this.id, this.circle1);

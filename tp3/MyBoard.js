@@ -86,7 +86,7 @@ export class MyBoard{
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
-                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn, spotlight);
+                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
                         this.pieces[this.curID] = piece;
                         spotObj['piece'] = this.curID;
                         this.pieceInSpots[this.curID] = this.curID+1;
@@ -216,8 +216,12 @@ export class MyBoard{
         }
         this.filmButton.update(t);
         this.undoButton.update(t);
-        this.resetButton.update(t);
+        this.restartButton.update(t);
         this.camButton.update(t);
+        if(this.spotFollow != null) {
+            //let mtx = this.pieces[this.spotFollow].getPos();
+            //this.scene.moveLight();
+        }
     }
 
     /**
@@ -366,6 +370,7 @@ export class MyBoard{
      */
     doMove(piece, spot, movespeed = 1, capspeed = 2) {
         this.selected = null;
+        this.spotFollow = piece;
         const res = this.validPieces[piece][spot];
 
         if(res != null) {
