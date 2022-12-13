@@ -5,7 +5,7 @@ import { CGFOBJModel } from "./CGFOBJModel.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 
 export class MyPiece {
-    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player) {
+    constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player, light) {
         this.scene = scene;
         this.board = board;
         this.cylinder = new MyCylinder(this.scene, "", piece_radius, piece_radius, piece_height, 12, 1);
@@ -16,6 +16,7 @@ export class MyPiece {
         this.mat = mat;
         this.selectmat = selectmat;
         this.player = player;
+        this.light = light;
 
         let semi1 = 
         [[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, 0, 0, 5 ],[ piece_radius,  0, 0, 5 ],[ piece_radius,  0, 0, 1 ]],
@@ -67,8 +68,12 @@ export class MyPiece {
             this.position = this.animation.getMatrix();
             if(this.animation.getDone()) {
                 this.animation = null;
+                this.scene.lights[this.scene.lightId[this.light]].disable();
+                this.scene.lights[this.scene.lightId[this.light]].update();
+                return true;
             }
         }
+        return false;
     }
 
     move(target, speed=1) {
@@ -90,7 +95,7 @@ export class MyPiece {
         return this.lastPos;
     }
 
-    display(selected, playable) {
+    display(selected, playable, dospot) {
         this.scene.pushMatrix();
         if(selected || playable) {
             this.selectmat.apply()
@@ -101,9 +106,10 @@ export class MyPiece {
             this.mat.apply()
         this.scene.multMatrix(this.position);
 
-        if(this.id == 18) {
-            this.scene.lights[5].setVisible(true);
-            this.scene.lights[5].update();
+        if(dospot) {
+            //this.scene.lights[this.scene.lightId[this.light]].setVisible(true);
+            this.scene.lights[this.scene.lightId[this.light]].enable();
+            this.scene.lights[this.scene.lightId[this.light]].update();
         }
 
         if(this.active) {

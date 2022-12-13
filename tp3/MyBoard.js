@@ -33,6 +33,7 @@ export class MyBoard{
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
+        this.scene.addRemQueue(spotlight);
 
         let app1 = new CGFappearance(this.scene);
         app1.setShininess(mats[0][0]);
@@ -86,7 +87,7 @@ export class MyBoard{
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
                     if(!skiplines) {
-                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn);
+                        var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn, spotlight);
                         this.pieces[this.curID] = piece;
                         spotObj['piece'] = this.curID;
                         this.pieceInSpots[this.curID] = this.curID+1;
@@ -209,7 +210,9 @@ export class MyBoard{
      */
     updateAnimations(t) {
         for(const piece in this.pieces) {
-            this.pieces[piece].updateAnimations(t);
+            if(this.pieces[piece].updateAnimations(t) && this.spotFollow == piece) {
+                this.spotFollow = null;
+            }
         }
         for(const piece in this.graveyard) {
             this.graveyard[piece].updateAnimations(t);
@@ -218,9 +221,6 @@ export class MyBoard{
         this.undoButton.update(t);
         this.restartButton.update(t);
         this.camButton.update(t);
-        if(this.spotFollow != null) {
-            //
-        }
     }
 
     /**
@@ -234,6 +234,7 @@ export class MyBoard{
             return;
         if(customId == this.restartID) {
             this.restart();
+            this.restartButton.playAnim();
             return;
         }
         if(customId == this.undoID) {
@@ -541,7 +542,9 @@ export class MyBoard{
 
         for(const piece in this.pieces) {
             this.pieces[piece].display(piece == this.selected && !this.playingDemo && !this.gameOver, 
-                Object.keys(this.validPieces).includes(piece) && !this.playingDemo && !this.gameOver);
+                Object.keys(this.validPieces).includes(piece) && !this.playingDemo && !this.gameOver,
+                this.spotFollow == piece
+                );
         }
 
         for(const piece in this.graveyard) {

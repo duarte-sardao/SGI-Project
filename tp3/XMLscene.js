@@ -38,6 +38,8 @@ export class XMLscene extends CGFscene {
 
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(10);
+
+        this.remqueue = [];
     }
 
     /**
@@ -101,6 +103,12 @@ export class XMLscene extends CGFscene {
                         this.lights[i].setQuadraticAttenuation(attenuation[2])
                 }
 
+                this.lightId[key] = i;
+                if(this.remqueue.includes(key)) {
+                    i++;
+                    continue;
+                }
+
                 this.lights[i].setVisible(true);
                 if (light[0])
                     this.lights[i].enable();
@@ -110,34 +118,16 @@ export class XMLscene extends CGFscene {
                 this.lights[i].update();
 
                 this.lightVal[key] = light[0];
-                this.lightId[key] = i;
 
                 i++;
             }
         }
         this.lightNumb = i;
+        this.remqueue = [];
     }
 
-    /**
-     * Enables or disables light
-     * @param {Boolean} enable 
-     * @param {String} i 
-     */
-    setLight(enable, i) {
-        if(this.sceneInited)
-            this.lightVal[i] = enable;
-    }
-
-    /**
-     * Moves a spotlight to new position
-     * @param {Vec3} spot 
-     * @param {Vec3} target 
-     * @param {String} i 
-     */
-    moveLight(spot, target, i) {
-        i = this.lightId[i];
-        this.lights[i].setPosition(spot[0], spot[1], spot[2]);
-        this.lights[i].setSpotDirection(target[0], target[1], target[2]);
+    addRemQueue(id) {
+        this.remqueue.push(id);
     }
 
     /**
@@ -248,8 +238,8 @@ export class XMLscene extends CGFscene {
         this.pushMatrix();
         this.axis.display();
 
-        let i = 0;
         for (var key in this.lightVal) {
+            const i = this.lightId[key];
             if(this.lightVal[key]) {
                 this.lights[i].enable();
             } else {
@@ -257,7 +247,6 @@ export class XMLscene extends CGFscene {
             }
             this.lights[i].setVisible(false);
             this.lights[i].update();
-            i++;
         }
         
         this.setDefaultAppearance();
