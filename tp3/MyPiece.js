@@ -101,7 +101,10 @@ export class MyPiece {
             this.mat.apply()
         this.scene.multMatrix(this.position);
 
-        this.lastPos = this.scene.getMatrix();
+        if(this.id == 18) {
+            this.scene.lights[5].setVisible(true);
+            this.scene.lights[5].update();
+        }
 
         if(this.active) {
             this.scene.registerForPick(this.id, this.circle1);

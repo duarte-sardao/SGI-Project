@@ -219,8 +219,7 @@ export class MyBoard{
         this.restartButton.update(t);
         this.camButton.update(t);
         if(this.spotFollow != null) {
-            //let mtx = this.pieces[this.spotFollow].getPos();
-            //this.scene.moveLight();
+            //
         }
     }
 
