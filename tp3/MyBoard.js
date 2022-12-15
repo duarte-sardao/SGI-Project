@@ -2,6 +2,7 @@ import { CGFappearance, CGFscene } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
+import { MyHUD } from "./MyHUD.js"
 
 export class MyBoard{
     /**
@@ -33,6 +34,7 @@ export class MyBoard{
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
+        this.hud = new MyHUD(scene, this);
         this.scene.addRemQueue(spotlight);
 
         let app1 = new CGFappearance(this.scene);
@@ -164,6 +166,13 @@ export class MyBoard{
     }
 
     /**
+     * Returns HUD object
+     */
+    getHUD() {
+        return this.hud;
+    }
+
+    /**
      * Undoes all moves and resets board to original state.
      */
     restart() {
@@ -186,7 +195,7 @@ export class MyBoard{
         this.restart();
         this.playingDemo = true;
         var t = this;
-        this.interval = setInterval(function() {t.playInstance();}, 600);
+        this.interval = setInterval(function() {t.playInstance();}, 1100);
     }
 
     /**
@@ -423,8 +432,11 @@ export class MyBoard{
      */
     capturePiece(piece, speed = 2) {
         let gravePosition = mat4.create();
-        let dead = this.dead[piece.getPlayer()-1];
-        this.dead[piece.getPlayer()-1] += 1;
+        const pl = piece.getPlayer()-1;
+        let dead = this.dead[pl];
+        this.dead[pl] += 1;
+        this.updateHudScoring(pl)
+
         let mirror = 1;
         let x_move = 1;
         let y_move = 0;
@@ -438,6 +450,13 @@ export class MyBoard{
         let y_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
         gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+1)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move)*this.spot_size + y_offset, dead*this.piece_height]);
         piece.capture(gravePosition, speed);
+    }
+
+    updateHudScoring(pl) {
+        let p = pl
+        if(pl == 0)
+            p = 2
+        this.hud.setScore(this.dead[pl],p)
     }
 
     /**
@@ -494,6 +513,7 @@ export class MyBoard{
      */
     unCapturePiece(piece, spotID) {
         this.dead[piece.getPlayer()-1] -= 1;
+        this.updateHudScoring(piece.getPlayer()-1);
         piece.unCapture(this.spots[spotID].pos, 0.5);
     }
 

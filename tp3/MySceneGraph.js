@@ -1057,6 +1057,7 @@ export class MySceneGraph {
     parseBoards(boards) {
         let children = boards.children;
         this.boards = {};
+        this.huds = [];
         this.boardPickID = 0;
         for(let i = 0; i < children.length; i++) {
             this.parseBoard(children[i]);
@@ -1110,6 +1111,7 @@ export class MySceneGraph {
         }
         this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset);
         this.boardPickID = this.boards[id].getNewID();
+        this.huds.push(this.boards[id].getHUD())
     }
 
 
@@ -1482,6 +1484,9 @@ export class MySceneGraph {
      */
     displayScene() {
         this.displayNode(this.idRoot, null, null);
+        for(let i = 0; i < this.huds.length; i++) {
+            this.huds[i].display();
+        }
         this.lastoffset = this.matoffset;
         this.firstRun = false;
     }
