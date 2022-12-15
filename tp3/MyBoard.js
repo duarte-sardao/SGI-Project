@@ -544,6 +544,7 @@ export class MyBoard{
         if(this.turnStart == null || this.gameOver)
             return;
         const diff = Math.floor((new Date() - this.turnStart) / 1000);
+        this.hud.setTime(this.time-diff);
         if(diff > this.time) {
             let otherP = 2;
             if(this.turn == 2)
