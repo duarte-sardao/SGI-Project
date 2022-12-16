@@ -1109,7 +1109,9 @@ export class MySceneGraph {
                 return "unknown material " + matid;
             mats.push(mat);
         }
-        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset);
+        var frame = this.reader.getString(boardNode, 'ui_frame');
+        frame = this.textures[frame];
+        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame);
         this.boardPickID = this.boards[id].getNewID();
         this.huds.push(this.boards[id].getHUD())
     }

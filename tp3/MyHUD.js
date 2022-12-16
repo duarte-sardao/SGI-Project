@@ -1,7 +1,7 @@
 import { MyQuad } from "./MyQuad.js"
 import { CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
 export class MyHUD {
-    constructor(scene, board) {
+    constructor(scene, board, frame) {
         this.scene = scene;
         this.board = board;
         this.quad = new MyQuad(scene)
@@ -14,6 +14,12 @@ export class MyHUD {
         this.appearance = new CGFappearance(this.scene);
 		this.fontTexture = new CGFtexture(this.scene, "shaders/oolite-font.trans.png");
 		this.appearance.setTexture(this.fontTexture);
+
+        if(frame != null) {
+            this.fappearance = new CGFappearance(this.scene);
+            this.fappearance.setTexture(frame);
+            this.ignorelight=new CGFshader(this.scene.gl, "shaders/nolight.vert", "shaders/nolight.frag");
+        }
     }
 
     setTime(i) {
@@ -109,11 +115,42 @@ export class MyHUD {
         this.scene.popMatrix();
     }
 
+    winLine() {
+        this.scene.pushMatrix();
+        this.scene.activeShader.setUniformsValues({'charCoords': [10,0]});//Icon
+        this.quad.display();
+        this.scene.translate(0.8,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [0,5]});//P
+        this.quad.display();
+        this.scene.translate(0.5,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [this.board.turn,3]});//numb
+        this.quad.display();
+        this.scene.translate(0.6,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [7,7]});//w
+        this.quad.display();
+        this.scene.translate(0.6,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [9,6]});//i
+        this.quad.display();
+        this.scene.translate(0.2,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [14,6]});//n
+        this.quad.display();
+        this.scene.translate(0.4,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords': [3,7]});//s
+        this.quad.display();
+        this.scene.translate(0.4,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords':  [1,2]});//!
+        this.quad.display();
+        this.scene.translate(0.4,0,0);
+        this.scene.activeShader.setUniformsValues({'charCoords':  [10,0]});//Icon
+        this.quad.display();
+        this.scene.popMatrix();
+    }
+
     statusLine() {
         if(this.board.playingDemo) {
             this.demoLine();
         } else if(this.board.gameOver) {
-
+            this.winLine();
         } else {
             this.playerLine();
         }
@@ -123,13 +160,24 @@ export class MyHUD {
     display() {
         this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
 
-        this.appearance.apply();
-        this.scene.setActiveShaderSimple(this.textShader);
-
         this.scene.pushMatrix();
         this.scene.loadIdentity();
 
         this.scene.translate(-25,12,-50);
+        if(this.fappearance != null) {
+            this.scene.setActiveShaderSimple(this.ignorelight);
+            this.scene.pushMatrix();
+            this.scene.translate(1.5, -1, 0);
+            this.scene.scale(6,4,1);
+            this.fappearance.apply();
+            this.quad.display();
+            this.scene.popMatrix();
+        }
+
+        this.appearance.apply();
+
+        this.scene.setActiveShaderSimple(this.textShader);
+
         this.scoreLine(1);
 
         this.scene.translate(0,-1,0);

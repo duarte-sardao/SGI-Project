@@ -19,7 +19,7 @@ export class MyBoard{
      * @param {int} time time for turn timeout 
      * @param {float} button_offset height offset for buttons from rest of board
      */
-    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset) {
+    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -34,7 +34,7 @@ export class MyBoard{
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
-        this.hud = new MyHUD(scene, this);
+        this.hud = new MyHUD(scene, this, frame);
         this.scene.addRemQueue(spotlight);
 
         let app1 = new CGFappearance(this.scene);
@@ -327,11 +327,13 @@ export class MyBoard{
         this.validPieces = {};
         let canCap = false;
         if(this.dead[0] == this.winCondition && !this.gameOver) {
-            alert("Player 2 won!");
+            if(!this.playingDemo)
+                alert("Player 2 won!");
             this.gameOver = true;
             return;
         } else if(this.dead[1] == this.winCondition && !this.gameOver) {
-            alert("Player 1 won!");
+            if(!this.playingDemo)
+                alert("Player 1 won!");
             this.gameOver = true;
             return;
         }

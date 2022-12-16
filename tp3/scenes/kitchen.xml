@@ -103,6 +103,7 @@
 
         <texture id="board" file="scenes/images/boardwood.jpg" />
         <texture id="board8x8" file="scenes/images/boardwood8x8.jpg" />
+        <texture id="woodframe" file="scenes/images/woodframe.jpg" />
         
     </textures>
 
@@ -427,7 +428,8 @@
     </animations>
 
     <boards>
-      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="gold" pos2_mat="redMaterial" spotlight="boardLight" time="15" button_offset="0.4" />
+      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="gold" pos2_mat="redMaterial" 
+      spotlight="boardLight" time="15" button_offset="0.4" ui_frame="woodframe"/>
     </boards>
 
     <components>
