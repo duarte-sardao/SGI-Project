@@ -1,6 +1,13 @@
 import { MyQuad } from "./MyQuad.js"
 import { CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
+import { MyBoard } from "./MyBoard.js";
 export class MyHUD {
+    /**
+     * Hud constructors
+     * @param {XMLScene} scene scene object
+     * @param {MyBoard} board board
+     * @param {CGFtexture} frame frame texture (may be null)
+     */
     constructor(scene, board, frame) {
         this.scene = scene;
         this.board = board;
@@ -22,18 +29,31 @@ export class MyHUD {
         }
     }
 
+    /**
+     * Gets amount of seconds to round end and updates array of digits
+     * @param {Integer} i 
+     */
     setTime(i) {
         this.time[0] = Math.floor(i/100) % 10
         this.time[1] = Math.floor(i/10) % 10
         this.time[2] = i % 10
     }
 
+    /**
+     * Gets score and player and updates respective array of digits
+     * @param {Integer} i score
+     * @param {Integer} p player
+     */
     setScore(i, p) {
         p = p-1;
         this.count[p][0] = Math.floor(i/10) % 10
         this.count[p][1] = i % 10
     }
 
+    /**
+     * Displays line of score
+     * @param {Integer} i player
+     */
     scoreLine(i) {
         this.scene.pushMatrix();
         this.scene.activeShader.setUniformsValues({'charCoords': [3,5]});//S
@@ -65,6 +85,9 @@ export class MyHUD {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays line informing turn and time left
+     */
     playerLine() {
         this.scene.pushMatrix();
         this.scene.activeShader.setUniformsValues({'charCoords': [4,5]});//T
@@ -96,6 +119,9 @@ export class MyHUD {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays line informing demo is playing
+     */
     demoLine() {
         this.scene.pushMatrix();
         this.scene.activeShader.setUniformsValues({'charCoords': [4,4]});//D
@@ -115,6 +141,9 @@ export class MyHUD {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays line of win status
+     */
     winLine() {
         this.scene.pushMatrix();
         this.scene.activeShader.setUniformsValues({'charCoords': [10,0]});//Icon
@@ -146,6 +175,9 @@ export class MyHUD {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays turn/demo/win line in respect to game state
+     */
     statusLine() {
         if(this.board.playingDemo) {
             this.demoLine();
@@ -156,7 +188,9 @@ export class MyHUD {
         }
     }
 
-
+    /**
+     * Displays HUD
+     */
     display() {
         this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
 
@@ -167,7 +201,7 @@ export class MyHUD {
         if(this.fappearance != null) {
             this.scene.setActiveShaderSimple(this.ignorelight);
             this.scene.pushMatrix();
-            this.scene.translate(1.5, -1, 0);
+            this.scene.translate(2, -1, 0);
             this.scene.scale(6,4,1);
             this.fappearance.apply();
             this.quad.display();
@@ -189,6 +223,5 @@ export class MyHUD {
         this.scene.popMatrix();
         this.scene.setActiveShaderSimple(this.scene.defaultShader);
         this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-        return;
     }
 }

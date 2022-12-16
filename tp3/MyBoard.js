@@ -437,7 +437,7 @@ export class MyBoard{
         const pl = piece.getPlayer()-1;
         let dead = this.dead[pl];
         this.dead[pl] += 1;
-        this.updateHudScoring(pl)
+        this.updateHudScoring(pl);
 
         let mirror = 1;
         let x_move = 1;
@@ -448,12 +448,16 @@ export class MyBoard{
         }
         else
             x_move = this.size
-        let x_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
-        let y_offset = 0.2*(Math.random()-0.5) * this.piece_radius;
-        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+1)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move)*this.spot_size + y_offset, dead*this.piece_height]);
+        let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
+        let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
+        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror))*this.spot_size + y_offset, dead*this.piece_height]);
         piece.capture(gravePosition, speed);
     }
 
+    /**
+     * Updates the score for player x when player y gets a piece captured.
+     * @param {Integer} pl int for captured player (used to access dead array so 0 = 1 and 1 = 2) 
+     */
     updateHudScoring(pl) {
         let p = pl
         if(pl == 0)

@@ -3,8 +3,22 @@ import { MyPatch } from "./MyPatch.js"
 import { MyArcAnimation } from "./MyArcAnimation.js"
 import { CGFOBJModel } from "./CGFOBJModel.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
+import { MyBoard } from "./MyBoard.js";
 
 export class MyPiece {
+    /**
+     * Piece constructors
+     * @param {XMLScene} scene 
+     * @param {MyBoard} board 
+     * @param {Integer} id 
+     * @param {Float} piece_radius 
+     * @param {Float} piece_height 
+     * @param {mat4} position 
+     * @param {CGFappearance} mat 
+     * @param {CGFappearance} selectmat 
+     * @param {Integer} player 
+     * @param {String} light 
+     */
     constructor(scene, board, id, piece_radius, piece_height, position, mat, selectmat, player, light) {
         this.scene = scene;
         this.board = board;
@@ -42,17 +56,28 @@ export class MyPiece {
         this.king = false;
         this.active = true;
         this.cylUsed = this.cylinder;
-        this.lastPos = mat4.create();
     }
 
+    /**
+     * Returns associated player
+     * @returns Integer
+     */
     getPlayer() {
         return this.player;
     }
 
+    /**
+     * Returns if is king
+     * @returns boolean
+     */
     isKing() {
         return this.king;
     }
 
+    /**
+     * Updates to be king or not
+     * @param {boolean} value 
+     */
     makeKing(value) {
         this.king = value;
         if(value) {
@@ -62,6 +87,11 @@ export class MyPiece {
         }
     }
 
+    /**
+     * Updates animations given time
+     * @param {float} t 
+     * @returns True if animation ended, else false
+     */
     updateAnimations(t) {
         if(this.animation != null) {
             this.animation.update(t);
@@ -76,25 +106,43 @@ export class MyPiece {
         return false;
     }
 
+    /**
+     * Moves to a position
+     * @param {mat4} target 
+     * @param {float} speed (time in seconds for movement so higher is slower)
+     */
     move(target, speed=1) {
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.5, this.piece_height*3);
     }
 
+    /**
+     * Moves to a position after capture, with delay arc pronounced at the end and undoing king status
+     * @param {mat4} target 
+     * @param {float} speed 
+     */
     capture(target, speed=2) {
         this.active = false;
         this.makeKing(false);
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.8, this.piece_height*5, 0.9);
     }
 
+    /**
+     * Moves to a position undoing capture(arc is pronounced at the beggining)
+     * @param {mat4} target 
+     * @param {float} speed 
+     */
     unCapture(target, speed=1) {
         this.active = true;
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
 
-    getPos() {
-        return this.lastPos;
-    }
-
+    /**
+     * Displays piece
+     * @param {boolean} selected Wether to apply selected transformation and special mat
+     * @param {boolean} playable Wether to apply special mat
+     * @param {boolean} dospot Wether to position spotlight over it
+     * @returns 
+     */
     display(selected, playable, dospot) {
         this.scene.pushMatrix();
         if(selected || playable) {
