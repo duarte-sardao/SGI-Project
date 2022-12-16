@@ -54,6 +54,7 @@ export class MyPiece {
         this.moveUp = mat4.translate(this.moveUp, this.moveUp, [0, 0, piece_height/2]);
 
         this.king = false;
+        this.kingVisual = false;
         this.active = true;
         this.cylUsed = this.cylinder;
     }
@@ -78,8 +79,16 @@ export class MyPiece {
      * Updates to be king or not
      * @param {boolean} value 
      */
-    makeKing(value) {
+    makeKing(value,delay) {
+        if(this.king == value)
+            return;
         this.king = value;
+        var t = this;
+        setTimeout(function(value) {t.makeKingVisually(value);}, delay*1000, value)
+    }
+
+    makeKingVisually(value) {
+        this.kingVisual = value;
         if(value) {
             this.cylUsed = this.cylinderKing;
         } else {
@@ -122,7 +131,8 @@ export class MyPiece {
      */
     capture(target, speed=2) {
         this.active = false;
-        this.makeKing(false);
+        this.wasKing = this.king;
+        this.makeKing(false, 0.9);
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.8, this.piece_height*5, 0.9);
     }
 
@@ -133,6 +143,8 @@ export class MyPiece {
      */
     unCapture(target, speed=1) {
         this.active = true;
+        if(this.wasKing)
+            this.makeKing(true, speed);
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
 
@@ -173,7 +185,7 @@ export class MyPiece {
 
         this.scene.pushMatrix();
         this.scene.multMatrix(this.circleMove);
-        if(this.king)
+        if(this.kingVisual)
             this.scene.multMatrix(this.circleMove);
         this.scene.multMatrix(this.circleScale);
         this.circle1.display();

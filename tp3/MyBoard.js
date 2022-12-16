@@ -404,7 +404,7 @@ export class MyBoard{
             }
             
             if((this.turn == 1 && this.spots[spot]['y'] == this.size-1) || (this.turn == 2 && this.spots[spot]['y'] == 0)) {
-                this.pieces[piece].makeKing(true);
+                this.pieces[piece].makeKing(true, movespeed);
                 move.madeking = true;
             }
 
@@ -485,7 +485,8 @@ export class MyBoard{
 
 
         let piece = this.pieces[move.piece];
-        piece.makeKing(move.madeking);
+        if(move.madeking)
+            piece.makeKing(false, 0.5);
         piece.move(this.spots[move.spot].pos, 0.5);
         this.spots[this.pieceInSpots[move.piece]].piece = "empty";
         this.pieceInSpots[move.piece] = move.spot;
