@@ -107,8 +107,10 @@ export class MyPiece {
             this.position = this.animation.getMatrix();
             if(this.animation.getDone()) {
                 this.animation = null;
-                this.scene.lights[this.scene.lightId[this.light]].disable();
-                this.scene.lights[this.scene.lightId[this.light]].update();
+                if(this.movedlight) {
+                    this.scene.lights[this.scene.lightId[this.light]].disable();
+                    this.scene.lights[this.scene.lightId[this.light]].update();
+                }
                 return true;
             }
         }
@@ -156,6 +158,7 @@ export class MyPiece {
      * @returns 
      */
     display(selected, playable, dospot) {
+        this.movedlight = dospot;
         this.scene.pushMatrix();
         if(selected || playable) {
             this.selectmat.apply()

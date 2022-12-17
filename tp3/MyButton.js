@@ -2,40 +2,33 @@ import { MyCylinder } from "./MyCylinder.js"
 import { MyPatch } from "./MyPatch.js"
 import { MyTorus } from "./MyTorus.js"
 import { CGFappearance, CGFtexture } from '../lib/CGF.js';
+import { CGFOBJModel } from "./CGFOBJModel.js"
 
 export class MyButton {
-    constructor(scene, board, id, radius, height, position) {
+    constructor(scene, board, id, size, height, position, type) {
         this.scene = scene;
         this.board = board;
-        this.cylinder = new MyCylinder(this.scene, "", radius, radius, height, 18, 1);
         this.position = position;
         this.id = id;
         this.height = height;
 
-        let semi1 = 
-        [[[ -radius, 0, height, 1 ],[ -radius, radius*1.314, height, 1 ],[ radius, radius*1.314, height, 1 ],[ radius,  0, height, 1 ]],
-        [[ -radius, 0, height, 1 ],[ -radius, 0, height, 5 ],[ radius,  0, height, 5 ],[ radius,  0, height, 1 ]]]
+        this.scaler = mat4.create();
+        this.scaler = mat4.scale(this.scaler, this.scaler, [size, size, height]);
 
-        let semi2 = 
-        [[[ -radius, 0, height, 1 ],[ -radius, 0, height, 5 ],[ radius,  0, height, 5 ],[ radius,  0, height, 1 ]]
-        ,[[ -radius, 0, height, 1 ],[ -radius, -radius*1.314, height, 1 ],[ radius, -radius*1.314, height, 1 ],[ radius,  0, height, 1 ]]]
-
-
-        this.semicircle1 = new MyPatch(this.scene, 1, 12, 3, 12, semi1);
-        this.semicircle2 = new MyPatch(this.scene, 1, 12, 3, 12, semi2);
-
-        this.torus = new MyTorus(this.scene, id, radius/8, radius, 18, 8);
+        let path = "models/"+type+"butt"+"/";
+        this.butt = new CGFOBJModel(this.scene, path + "top.obj");
+        this.edge = new CGFOBJModel(this.scene, path + "bottom.obj");
 
         this.mat = new CGFappearance(this.scene);
         this.mat.setShininess(10);
-        this.mat.setEmission(0,0,0,0);
+        this.mat.setEmission(0,0.1,0,0);
         this.mat.setAmbient(0,0.05,0,1);
         this.mat.setDiffuse(0.4,0.5,0.4,1);
         this.mat.setSpecular(0.4,0.07,0.4,1);
 
         this.mat2 = new CGFappearance(this.scene);
         this.mat2.setShininess(77);
-        this.mat2.setEmission(0,0,0,0);
+        this.mat2.setEmission(0.1,0.1,0.1,0);
         this.mat2.setAmbient(0.25,0.25,0.25,1);
         this.mat2.setDiffuse(0.4,0.4,0.4,1);
         this.mat2.setSpecular(0.77,0.77,0.77,1);
@@ -62,8 +55,7 @@ export class MyButton {
             this.animMatrix = null;
             this.startTime = null;
         }
-        //console.log(prog);
-        let offset = -Math.sin(prog)*this.height*0.5;
+        let offset = -Math.sin(prog)*this.height*0.1;
         this.animMatrix = mat4.translate(this.animMatrix, this.animMatrix, [0,0,offset]);
     }
 
@@ -75,18 +67,15 @@ export class MyButton {
         this.scene.pushMatrix();
         this.mat.apply()
         this.scene.multMatrix(this.position);
+        this.scene.multMatrix(this.scaler);
 
         if(this.animMatrix != null) {
             this.scene.pushMatrix();
             this.scene.multMatrix(this.animMatrix);
         }
 
-        this.scene.registerForPick(this.id, this.semicircle1);
-        this.scene.registerForPick(this.id, this.semicircle2);
-        this.scene.registerForPick(this.id, this.cylinder);
-        this.cylinder.display();    
-        this.semicircle1.display();
-        this.semicircle2.display();
+        this.scene.registerForPick(this.id, this.butt);
+        this.butt.display();
 
         if(this.animMatrix != null) {
             this.scene.popMatrix();
@@ -94,7 +83,7 @@ export class MyButton {
 
 
         this.mat2.apply();
-        this.torus.display();
+        this.edge.display();
 
         this.scene.popMatrix();
         return;

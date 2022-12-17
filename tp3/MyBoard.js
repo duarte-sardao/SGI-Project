@@ -112,22 +112,22 @@ export class MyBoard{
         this.undoID = this.curID++;
         let buttPos = mat4.create();
         buttPos = mat4.translate(buttPos, buttPos, [(size+0.75)*spot_size, 0, 0]);
-        this.undoButton =  new MyButton(this.scene, this, this.undoID, spot_size/2, spot_size/4, buttPos);
+        this.undoButton =  new MyButton(this.scene, this, this.undoID, spot_size, spot_size, buttPos, "back");
 
         this.filmID = this.curID++;
         let buttPos2 = mat4.create();
         buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*1.66, 0]);
-        this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size/2, spot_size/4, buttPos2);
+        this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size, spot_size, buttPos2, "demo");
 
         this.camID = this.curID++;
         let buttPos3 = mat4.create();
         buttPos3 = mat4.translate(buttPos3, buttPos, [0, -(size+0.75)*spot_size+spot_size*1.66, 0]);
-        this.camButton =  new MyButton(this.scene, this, this.camID, spot_size/2, spot_size/4, buttPos3);
+        this.camButton =  new MyButton(this.scene, this, this.camID, spot_size, spot_size, buttPos3, "cam");
 
         this.restartID = this.curID++;
         let buttPos4 = mat4.create();
         buttPos4 = mat4.translate(buttPos4, buttPos3, [0, spot_size*1.66, 0]);
-        this.restartButton =  new MyButton(this.scene, this, this.restartID, spot_size/2, spot_size/4, buttPos4);
+        this.restartButton =  new MyButton(this.scene, this, this.restartID, spot_size, spot_size, buttPos4, "res");
 
         this.playingDemo = false;
 
