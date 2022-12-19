@@ -236,6 +236,7 @@ export class MyBoard{
         this.undoButton.update(t);
         this.restartButton.update(t);
         this.camButton.update(t);
+        this.camera.update(t);
     }
 
     /**
@@ -245,6 +246,11 @@ export class MyBoard{
      */
     handleID(customId)
 	{
+        if(customId == this.camID) {
+            this.camera.switch();
+            this.camButton.playAnim();
+            return;
+        }
         if(this.playingDemo)
             return;
         if(customId == this.restartID) {

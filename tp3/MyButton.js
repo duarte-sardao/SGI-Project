@@ -54,6 +54,7 @@ export class MyButton {
         } else if (prog >= Math.PI) {
             this.animMatrix = null;
             this.startTime = null;
+            return;
         }
         let offset = -Math.sin(prog)*this.height*0.1;
         this.animMatrix = mat4.translate(this.animMatrix, this.animMatrix, [0,0,offset]);
