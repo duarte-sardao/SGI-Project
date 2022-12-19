@@ -435,12 +435,16 @@
             <to x="9" y="2" z="10" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="9" y="9" z="8" />
-            <to x="9" y="0" z="8.1" />
+            <from x="11" y="10" z="8" />
+            <to x="9" y="2" z="8" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
             <from x="9" y="6" z="12" />
             <to x="9" y="2" z="6" />
+        </perspective>
+        <perspective near="0.1" far="500" angle="30">
+            <from x="7" y="10" z="8" />
+            <to x="9" y="2" z="8" />
         </perspective>
       </board>
     </boards>
