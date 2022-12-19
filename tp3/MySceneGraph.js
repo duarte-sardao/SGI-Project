@@ -1069,7 +1069,9 @@ export class MySceneGraph {
         this.huds = [];
         this.boardPickID = 0;
         for(let i = 0; i < children.length; i++) {
-            this.parseBoard(children[i]);
+            let res = this.parseBoard(children[i]);
+            if(res != null)
+                return res;
         }
     }
 
@@ -1120,7 +1122,17 @@ export class MySceneGraph {
         }
         var frame = this.reader.getString(boardNode, 'ui_frame');
         frame = this.textures[frame];
-        this.boards[id] = new MyBoard(this.scene, this, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame);
+
+        let children = boardNode.children;
+        let cams = [];
+        for(let i = 0; i < children.length; i++) {
+            const cam = this.parseCamera(children[i], id);
+            if(cam[0] == "perspective")
+                cams.push(cam);
+        }
+        if(cams.length < 2)
+            return "Not enough cam positions defined for board " + id;
+        this.boards[id] = new MyBoard(this.scene, this, id, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame, cams);
         this.boardPickID = this.boards[id].getNewID();
         this.huds.push(this.boards[id].getHUD())
     }

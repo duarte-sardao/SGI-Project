@@ -3,12 +3,14 @@ import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
 import { MyHUD } from "./MyHUD.js"
+import { MySwitchingCamera } from "./MySwitchingCamera.js"
 
 export class MyBoard{
     /**
      * Board constructor
      * @param {CGFscene} scene 
      * @param {SceneGraph} graph 
+     * @param {String} textid id identifying board
      * @param {int} id first id for picking id ranges 
      * @param {int} size board side size in amount of spots
      * @param {float} spot_size spot in board size
@@ -18,8 +20,9 @@ export class MyBoard{
      * @param {int} spotlight spotlight that follows playing pieces
      * @param {int} time time for turn timeout 
      * @param {float} button_offset height offset for buttons from rest of board
+     * @param {array} cams list of camera positions to switch around
      */
-    constructor(scene, graph, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame) {
+    constructor(scene, graph, textid, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame, cams) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -34,6 +37,9 @@ export class MyBoard{
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
+
+        this.camera = new MySwitchingCamera(scene, this, graph, cams, textid);
+
         this.hud = new MyHUD(scene, this, frame);
         this.scene.addRemQueue(spotlight);
 
