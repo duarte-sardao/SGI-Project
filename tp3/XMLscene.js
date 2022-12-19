@@ -53,11 +53,11 @@ export class XMLscene extends CGFscene {
             var camera = this.graph.cameras[key];
             var camObj;
             if(camera[0] == "perspective")
-                camObj = new CGFcamera(camera[4] * DEGREE_TO_RAD, camera[2], camera[3], camera[5], camera[6]);
+                camObj = new CGFcamera(camera[3] * DEGREE_TO_RAD, camera[1], camera[2], camera[4], camera[5]);
             else if(camera[0] == "ortho")
-                camObj = new CGFcameraOrtho(camera[4], camera[5], camera[7], camera[6], camera[2], camera[3], camera[8], camera[9], camera[10]);
+                camObj = new CGFcameraOrtho(camera[3], camera[4], camera[6], camera[5], camera[1], camera[2], camera[7], camera[8], camera[9]);
             this.cameras.push(camObj);
-            this.cameraList[camera[1]] = i;
+            this.cameraList[key] = i;
             i++;
         }
         this.updateCamera();

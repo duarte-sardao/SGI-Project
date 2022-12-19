@@ -275,18 +275,6 @@ export class MySceneGraph {
         var hasCamera = false;
 
         for(var i = 0; i < children.length; i++) {
-            var global = [];
-            var attributeNames = [];
-            //Check type of cam
-            if (children[i].nodeName != "perspective" && children[i].nodeName != "ortho") {
-                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
-                continue;
-            }
-            else {
-                attributeNames.push(...["from", "to"]);
-                global.push(children[i].nodeName);
-            }
-
             // Get id of the current cam.
             var camId = this.reader.getString(children[i], 'id');
             if (camId == null)
@@ -295,63 +283,10 @@ export class MySceneGraph {
             // Checks for repeated IDs.
             if (this.cameras[camId] != null)
                 return "ID must be unique for each view (conflict: ID = " + camId + ")";
-
-            global.push(camId);
-
-            // Specifications for the current view.
-            var upIndex;
-            var reqs = ["near", "far"];
-            if(children[i].nodeName == "perspective")
-                reqs.push("angle");
-            else if(children[i].nodeName == "ortho") {
-                reqs.push(...["left", "right", "top", "bottom"]);
-            }
-
-            for(var k = 0; k < reqs.length; k++) {
-                var req = this.reader.getFloat(children[i], reqs[k])
-                if(req == null)
-                    return "no " + reqs[k] + " defined for view " + camId;  
-                global.push(req);
-            }
-
-            //children checks (from, to and opt up)
-            var grandChildren = children[i].children;
-            var nodeNames = [];
-            for (var j = 0; j < grandChildren.length; j++) {
-                nodeNames.push(grandChildren[j].nodeName);
-            }
-
-            for (var j = 0; j < attributeNames.length; j++) {
-                var attributeIndex = nodeNames.indexOf(attributeNames[j]);
-
-                if (attributeIndex != -1) {
-                    var aux = this.parseCoordinates3D(grandChildren[attributeIndex], "view position for ID " + camId);
-
-                    if (!Array.isArray(aux))
-                        return aux;
-
-                    global.push(aux);
-                }
-                else
-                    return "view " + attributeNames[i] + " undefined for ID = " + camId;
-            }
-
-            if(children[i].nodeName == "ortho") {
-                var upIndex = nodeNames.indexOf("up");
-
-                if (upIndex != -1) {
-                    var aux = this.parseCoordinates3D(grandChildren[upIndex], "view position for ID " + camId);
-
-                    if (!Array.isArray(aux))
-                        return aux;
-
-                    global.push(aux);
-                } else {
-                    global.push([0,1,0]);
-                }
-            }
-            this.cameras[camId] = global;
-            hasCamera = true;
+            const cam = this.parseCamera(children[i], camId);
+            if(cam != null)
+                hasCamera = true;
+            this.cameras[camId] = cam;
         }
 
         if(!hasCamera)
@@ -359,6 +294,80 @@ export class MySceneGraph {
 
         this.log("Parsed views");
         return null;
+    }
+
+    /**
+     * Parse a single camera component and return array with values
+     * @param {block element} cameraNode 
+     * @param {String} camId 
+     * @returns 
+     */
+    parseCamera(cameraNode, camId) {
+        var global = [];
+        var attributeNames = [];
+        //Check type of cam
+        if (cameraNode.nodeName != "perspective" && cameraNode.nodeName != "ortho") {
+            this.onXMLMinorError("unknown tag <" + cameraNode.nodeName + ">");
+            return null;
+        }
+        else {
+            attributeNames.push(...["from", "to"]);
+            global.push(cameraNode.nodeName);
+        }
+
+        // Specifications for the current view.
+        var upIndex;
+        var reqs = ["near", "far"];
+        if(cameraNode.nodeName == "perspective")
+            reqs.push("angle");
+        else if(cameraNode.nodeName == "ortho") {
+            reqs.push(...["left", "right", "top", "bottom"]);
+        }
+
+        for(var k = 0; k < reqs.length; k++) {
+            var req = this.reader.getFloat(cameraNode, reqs[k])
+            if(req == null)
+                return "no " + reqs[k] + " defined for view " + camId;  
+            global.push(req);
+        }
+
+        //children checks (from, to and opt up)
+        var grandChildren = cameraNode.children;
+        var nodeNames = [];
+        for (var j = 0; j < grandChildren.length; j++) {
+            nodeNames.push(grandChildren[j].nodeName);
+        }
+
+        for (var j = 0; j < attributeNames.length; j++) {
+            var attributeIndex = nodeNames.indexOf(attributeNames[j]);
+
+            if (attributeIndex != -1) {
+                var aux = this.parseCoordinates3D(grandChildren[attributeIndex], "view position for ID " + camId);
+
+                if (!Array.isArray(aux))
+                    return aux;
+
+                global.push(aux);
+            }
+            else
+                return "view " + attributeNames[i] + " undefined for ID = " + camId;
+        }
+
+        if(cameraNode.nodeName == "ortho") {
+            var upIndex = nodeNames.indexOf("up");
+
+            if (upIndex != -1) {
+                var aux = this.parseCoordinates3D(grandChildren[upIndex], "view position for ID " + camId);
+
+                if (!Array.isArray(aux))
+                    return aux;
+
+                global.push(aux);
+            } else {
+                global.push([0,1,0]);
+            }
+        }
+        return global;
     }
 
     /**
