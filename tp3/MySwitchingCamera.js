@@ -1,4 +1,3 @@
-import { CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
 import { MyBoard } from "./MyBoard.js";
 import { CGFcamera } from '../lib/CGF.js';
 export class MySwitchingCamera {
@@ -58,7 +57,6 @@ export class MySwitchingCamera {
         }
         if(timediff == 1)
             this.time = null;
-        console.log(timediff);
         this.setcam();
     }
 

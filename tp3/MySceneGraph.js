@@ -1089,9 +1089,6 @@ export class MySceneGraph {
             return "no size defined for board";
         if (size % 2 != 0 || size < 6)
             return "invalid size for board (even numbers greater or equal to 6)";
-        var spot_size = this.reader.getFloat(boardNode, 'spot_size');
-        if (spot_size == null)
-            return "no spot spize defined for board";
         var piece_radius = this.reader.getFloat(boardNode, 'piece_radius');
         if (piece_radius == null)
             return "no piece radius defined for board";
@@ -1103,9 +1100,17 @@ export class MySceneGraph {
             return "no spotlight defined for board";
         if(this.lights[spotlight][1] != "spot")
             return "referenced light is not spotlight"
-        var button_offset = this.reader.getFloat(boardNode, 'button_offset');
-        if (button_offset == null)
-            button_offset = 0;
+        
+        let buttpositions = {}
+        let buttons = ["undo_transform","restart_transform","demo_transform","camera_transform"]
+        for(let i = 0; i < 4; i++) {
+            var transform = this.reader.getString(boardNode, buttons[i]);
+            transform = this.transformations[transform];
+            if(transform == null)
+                return "Invalid definition of " + buttons[i] + " for " + id;
+            buttpositions[buttons[i]] = transform;
+        }
+        
         var time = this.reader.getInteger(boardNode, 'time');
         if (time == null)
             time = 30;
@@ -1132,7 +1137,7 @@ export class MySceneGraph {
         }
         if(cams.length < 2)
             return "Not enough cam positions defined for board " + id;
-        this.boards[id] = new MyBoard(this.scene, this, id, this.boardPickID, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame, cams);
+        this.boards[id] = new MyBoard(this.scene, this, id, this.boardPickID, size, piece_radius, piece_height, mats, spotlight, time, buttpositions, frame, cams);
         this.boardPickID = this.boards[id].getNewID();
         this.huds.push(this.boards[id].getHUD())
     }

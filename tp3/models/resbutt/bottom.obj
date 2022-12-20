@@ -1,6 +1,6 @@
 # Blender v2.93.1 OBJ File: 'piecetop.blend'
 # www.blender.org
-mtllib bottom.mtl
+mtllib bottomalt.mtl
 o Arrow_Bottom
 v 0.609875 0.396358 -0.065643
 v 0.652017 0.381085 -0.098179

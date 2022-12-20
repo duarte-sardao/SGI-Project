@@ -1,4 +1,4 @@
-import { CGFappearance, CGFscene } from "../lib/CGF.js";
+import { CGFappearance, CGFscene, CGFtexture } from "../lib/CGF.js";
 import { MyPiece } from "./MyPiece.js"
 import { MyRectangle } from "./MyRectangle.js"
 import { MyButton } from "./MyButton.js"
@@ -13,20 +13,19 @@ export class MyBoard{
      * @param {String} textid id identifying board
      * @param {int} id first id for picking id ranges 
      * @param {int} size board side size in amount of spots
-     * @param {float} spot_size spot in board size
      * @param {float} piece_radius radius of pieces
      * @param {float} piece_height height of pieces
      * @param {array of arrays} mats materials to use for pieces
      * @param {int} spotlight spotlight that follows playing pieces
      * @param {int} time time for turn timeout 
-     * @param {float} button_offset height offset for buttons from rest of board
+     * @param {object of mat4s} buttPos obj with positions for 4 buttons
+     * @param {CGFtexture} frame frame for ui
      * @param {array} cams list of camera positions to switch around
      */
-    constructor(scene, graph, textid, id, size, spot_size, piece_radius, piece_height, mats, spotlight, time, button_offset, frame, cams) {
+    constructor(scene, graph, textid, id, size, piece_radius, piece_height, mats, spotlight, time, buttPos, frame, cams) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
-        this.spot_size = spot_size;
         this.piece_height = piece_height;
         this.piece_radius = piece_radius;
         this.mats = mats;
@@ -90,7 +89,7 @@ export class MyBoard{
                 let position = mat4.create();
                 position = mat4.translate(position, position, [x, -y, 0]);
                 if(spawnpiece) {
-                    let spotRect = new MyRectangle(this.scene, "", -spot_size/2, spot_size/2, - spot_size/2, spot_size/2);
+                    let spotRect = new MyRectangle(this.scene, "", -1/2, 1/2, - 1/2, 1/2);
                     let spotObj = {}
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
                     spotObj['piece'] = "empty"
@@ -116,32 +115,21 @@ export class MyBoard{
 
 
         this.undoID = this.curID++;
-        let buttPos = mat4.create();
-        buttPos = mat4.translate(buttPos, buttPos, [(size+0.75)*spot_size, 0, 0]);
-        this.undoButton =  new MyButton(this.scene, this, this.undoID, spot_size, spot_size, buttPos, "back");
+        this.undoButton =  new MyButton(this.scene, this, this.undoID, buttPos["undo_transform"], "back");
 
         this.filmID = this.curID++;
-        let buttPos2 = mat4.create();
-        buttPos2 = mat4.translate(buttPos2, buttPos, [0, -spot_size*1.66, 0]);
-        this.filmButton =  new MyButton(this.scene, this, this.filmID, spot_size, spot_size, buttPos2, "demo");
+        this.filmButton =  new MyButton(this.scene, this, this.filmID, buttPos["demo_transform"], "demo");
 
         this.camID = this.curID++;
-        let buttPos3 = mat4.create();
-        buttPos3 = mat4.translate(buttPos3, buttPos, [0, -(size+0.75)*spot_size+spot_size*1.66, 0]);
-        this.camButton =  new MyButton(this.scene, this, this.camID, spot_size, spot_size, buttPos3, "cam");
+        this.camButton =  new MyButton(this.scene, this, this.camID, buttPos["camera_transform"], "cam");
 
         this.restartID = this.curID++;
-        let buttPos4 = mat4.create();
-        buttPos4 = mat4.translate(buttPos4, buttPos3, [0, spot_size*1.66, 0]);
-        this.restartButton =  new MyButton(this.scene, this, this.restartID, spot_size, spot_size, buttPos4, "res");
+        this.restartButton =  new MyButton(this.scene, this, this.restartID, buttPos["restart_transform"], "res");
 
         this.playingDemo = false;
 
         this.spotOffset = mat4.create();
         this.spotOffset = mat4.translate(this.spotOffset, this.spotOffset, [0,0,0.001])
-
-        this.buttonOffset = mat4.create();
-        this.buttonOffset = mat4.translate(this.buttonOffset, this.buttonOffset, [0,0,button_offset])
 
         this.gameOver=false;
 
@@ -462,7 +450,7 @@ export class MyBoard{
             x_move = this.size
         let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
         let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
-        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*this.spot_size*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror))*this.spot_size + y_offset, dead*this.piece_height]);
+        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror)) + y_offset, dead*this.piece_height]);
         piece.capture(gravePosition, speed);
     }
 
@@ -606,7 +594,6 @@ export class MyBoard{
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.multMatrix(this.buttonOffset);
         this.undoButton.display();
         this.filmButton.display();
         this.camButton.display();

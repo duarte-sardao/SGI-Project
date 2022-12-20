@@ -5,15 +5,11 @@ import { CGFappearance, CGFtexture } from '../lib/CGF.js';
 import { CGFOBJModel } from "./CGFOBJModel.js"
 
 export class MyButton {
-    constructor(scene, board, id, size, height, position, type) {
+    constructor(scene, board, id, position, type) {
         this.scene = scene;
         this.board = board;
         this.position = position;
         this.id = id;
-        this.height = height;
-
-        this.scaler = mat4.create();
-        this.scaler = mat4.scale(this.scaler, this.scaler, [size, size, height]);
 
         let path = "models/"+type+"butt"+"/";
         this.butt = new CGFOBJModel(this.scene, path + "top.obj");
@@ -56,7 +52,7 @@ export class MyButton {
             this.startTime = null;
             return;
         }
-        let offset = -Math.sin(prog)*this.height*0.1;
+        let offset = -Math.sin(prog)*0.1;
         this.animMatrix = mat4.translate(this.animMatrix, this.animMatrix, [0,0,offset]);
     }
 
@@ -68,7 +64,6 @@ export class MyButton {
         this.scene.pushMatrix();
         this.mat.apply()
         this.scene.multMatrix(this.position);
-        this.scene.multMatrix(this.scaler);
 
         if(this.animMatrix != null) {
             this.scene.pushMatrix();

@@ -164,6 +164,27 @@
       <transformation id="moveZ1">
         <translate x="0" y="0" z="1"/>
       </transformation>
+
+      <transformation id="undo">
+        <translate x="9" y="-1" z="0.4"/>
+        <rotate axis="z" angle="-90" />
+        <scale x="1.2" y="1.2" z="1" />
+      </transformation>
+      <transformation id="demo">
+        <translate x="9" y="-6.5" z="0.4"/>
+        <rotate axis="z" angle="-90" />
+        <scale x="1.2" y="1.2" z="1" />
+      </transformation>
+      <transformation id="camera">
+        <translate x="-1.7" y="-0.7" z="0.4"/>
+        <rotate axis="z" angle="90" />
+        <scale x="1.2" y="1.2" z="1" />
+      </transformation>
+      <transformation id="restart">
+        <translate x="-1.85" y="-6.5" z="0.4"/>
+        <rotate axis="z" angle="90" />
+        <scale x="1.1" y="1.1" z="1" />
+      </transformation>
     </transformations>
 
     <primitives>
@@ -429,21 +450,21 @@
 
     <boards>
       <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="gold" pos2_mat="redMaterial" 
-      spotlight="boardLight" time="15" button_offset="0.4" ui_frame="woodframe">
+      spotlight="boardLight" time="15" undo_transform="undo" demo_transform="demo" restart_transform="restart" camera_transform="camera" ui_frame="woodframe">
         <perspective near="0.1" far="500" angle="30">
-            <from x="9" y="6" z="4" />
-            <to x="9" y="2" z="10" />
+            <from x="8.5" y="6" z="4" />
+            <to x="8.5" y="2" z="10" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="11" y="10" z="8" />
-            <to x="9" y="2" z="8" />
+            <from x="10" y="11" z="8" />
+            <to x="8.5" y="2" z="8" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="9" y="6" z="12" />
-            <to x="9" y="2" z="6" />
+            <from x="8.5" y="6" z="12" />
+            <to x="8.5" y="2" z="6" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="7" y="10" z="8" />
+            <from x="7" y="11" z="8" />
             <to x="9" y="2" z="8" />
         </perspective>
       </board>
@@ -488,6 +509,7 @@
           <componentref id="boardside3"/>
           <componentref id="boardcontrols"/>
           <componentref id="boardcontrols2"/>
+          <componentref id="boardcontrols3"/>
           <componentref id="boardCap1" />
           <componentref id="boardCap2" />
         </children>
@@ -520,6 +542,20 @@
         </children>
       </component>
 
+      <component id="boardcontrols3">
+        <transformation>
+          <translate x="-10.75" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="board" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="boardcontrols"/>
+          <componentref id="boardcontrols2"/>
+        </children>
+      </component>
+
       <component id="boardcontrols2">
         <transformation>
           <translate x="0" y="-5.45" z="0" />
@@ -549,9 +585,9 @@
 
       <component id="boardside3">
         <transformation>
-          <translate x="0" y="-7.35" z="0" />
+          <translate x="0" y="-7.35" z="0.25" />
           <rotate axis="z" angle="90" />
-          <scale x="1.1" y="1" z="1" />
+          <scale x="1.1" y="1" z="1.1" />
         </transformation>
         <materials>
             <material id="inherit" />
