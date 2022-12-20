@@ -7,11 +7,13 @@ export class MyHUD {
      * @param {XMLScene} scene scene object
      * @param {MyBoard} board board
      * @param {CGFtexture} frame frame texture (may be null)
+     * @param {int} lim time limit for red warning
      */
-    constructor(scene, board, frame) {
+    constructor(scene, board, frame, lim) {
         this.scene = scene;
         this.board = board;
         this.quad = new MyQuad(scene)
+        this.lim = lim;
 
         this.count = [[0,0],[0,0]]
         this.time = [0,0,0]
@@ -27,6 +29,7 @@ export class MyHUD {
             this.fappearance.setTexture(frame);
             this.ignorelight=new CGFshader(this.scene.gl, "shaders/nolight.vert", "shaders/nolight.frag");
         }
+        this.drawred = false;
     }
 
     /**
@@ -34,6 +37,9 @@ export class MyHUD {
      * @param {Integer} i 
      */
     setTime(i) {
+        if(i < this.lim) {
+            this.drawred = true;
+        }
         this.time[0] = Math.floor(i/100) % 10
         this.time[1] = Math.floor(i/10) % 10
         this.time[2] = i % 10
@@ -107,6 +113,9 @@ export class MyHUD {
         this.scene.translate(0.4,0,0);
         this.scene.activeShader.setUniformsValues({'charCoords': [this.board.turn,3]});//numb
         this.quad.display();
+
+        this.textShader.setUniformsValues({'drawred': this.drawred});
+
         this.scene.translate(0.6,0,0);
         this.scene.activeShader.setUniformsValues({'charCoords': [this.time[0],3]});//digi1
         this.quad.display();
@@ -117,6 +126,8 @@ export class MyHUD {
         this.scene.activeShader.setUniformsValues({'charCoords':  [this.time[2],3]});//digi3
         this.quad.display();
         this.scene.popMatrix();
+
+        this.textShader.setUniformsValues({'drawred': false});
     }
 
     /**

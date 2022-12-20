@@ -40,7 +40,7 @@ export class MyBoard{
 
         this.camera = new MySwitchingCamera(scene, this, graph, cams, textid);
 
-        this.hud = new MyHUD(scene, this, frame);
+        this.hud = new MyHUD(scene, this, frame, Math.min(10, Math.round(time/2)));
         this.scene.addRemQueue(spotlight);
 
         let app1 = new CGFappearance(this.scene);
