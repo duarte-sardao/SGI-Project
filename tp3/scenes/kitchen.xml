@@ -34,7 +34,7 @@
     </ambient>
 
     <lights>
-        <omni id="omniLight" enabled="1">
+        <omni id="omniLight" enabled="0">
             <location x="9.8" y="11.9" z="10" w="1.0" />
             <ambient r="0.025" g="0.025" b="0.05" a="0.1" />
             <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
@@ -46,17 +46,20 @@
             <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
             <specular r="0.50" g="0.50" b="0.75" a="0.1" />
         </omni>
-
-        <spot id="bulbLight" enabled="1" angle="45" exponent="5">
-            <location x="9" y="7.25" z="7.5" w="1.0" />
-            <target x="9" y="-10" z="7.5" w="1.0" />
-            <ambient r="0.1" g="0.06" b="0" a="0.1" />
-            <diffuse r="1.0" g="0.6" b="0" a="1.0" />
-            <specular r="1.0" g="0.6" b="0.1" a="1.0" />
-            <attenuation constant="1" linear="0" quadratic="0" />  
-        </spot>
+        <omni id="omniLightTV" enabled="0">
+            <location x="20" y="7" z="8" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.1" />
+            <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
+            <specular r="0.50" g="0.50" b="0.75" a="0.1" />
+        </omni>
+        <omni id="omniLightLamp" enabled="1">
+            <location x="2.6" y="7" z="7.25" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.1" />
+            <diffuse r="0.50" g="0.50" b="0.75" a="0.1" />
+            <specular r="0.50" g="0.50" b="0.75" a="0.1" />
+        </omni>
         
-        <spot id="boardLight" enabled="1" angle="20" exponent="20">
+        <spot id="boardLight" enabled="0" angle="20" exponent="20">
             <location x="0" y="0" z="4" w="1.0" />
             <target x="0" y="0" z="0" w="1.0" />
             <ambient r="0.1" g="0.06" b="0" a="0.1" />
@@ -64,11 +67,27 @@
             <specular r="1.0" g="0.6" b="0.1" a="1.0" />
             <attenuation constant="1" linear="0" quadratic="0" />  
         </spot>
+        <spot id="tvLight" enabled="0" angle="20" exponent="20">
+            <location x="22" y="6.5" z="15" w="1.0" />
+            <target x="0" y="3" z="3" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.1" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="0.1" />
+            <attenuation constant="1" linear="0" quadratic="0" />  
+        </spot>
+        <spot id="lamp" enabled="0" angle="20" exponent="20">
+            <location x="2.6" y="7" z="7.25" w="1.0" />
+            <target x="2.6" y="0" z="7.25" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.1" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="0.1" />
+            <attenuation constant="1" linear="0" quadratic="0" />  
+        </spot>
     </lights>
 
     <textures>
         <texture id="unknown" file="scenes/images/unknown.jpg" />
-        <texture id="wallTexture" file="scenes/images/woodwall.jpg" />
+        <texture id="wallTexture" file="scenes/images/wallpaper.jpg" />
         <texture id="floorTexture" file="scenes/images/woodfloor.jpg" />
 
         <texture id="cabinFront" file="scenes/images/cabinetfront.jpg" />
@@ -92,6 +111,13 @@
 
         <texture id="board" file="scenes/images/boardwood.jpg" />
         <texture id="board8x8" file="scenes/images/boardwood8x8.jpg" />
+
+        
+        <texture id="coach" file="scenes/images/couch.jpg" />
+
+        <texture id="screen" file="scenes/images/televisionscreen.jpg" />
+
+        <texture id="pillow" file="scenes/images/sofa.jpg" />
         
     </textures>
 
@@ -131,6 +157,12 @@
             <ambient r="0.25" g="0.20725" b="0.20725" a="1.0" />
             <diffuse r="1" g="0.829" b="0.829" a="1.0" />
             <specular r="0.296648" g="0.296648" b="0.296648" a="1.0" />
+        </material>
+        <material id="blackPlastic" shininess="32">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+            <diffuse r="0.1" g="0.1" b="0.1" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
         </material>
     </materials>
 
@@ -324,7 +356,7 @@
       </primitive>
 
       <primitive id="bulbCone">
-        <cylinder base="0.75" top="0.05" height="1" slices="10" stacks="10" />
+        <cylinder base="0.75" top="0.5" height="1" slices="10" stacks="10" />
       </primitive>
 
       <primitive id="lightBulb">
@@ -332,17 +364,24 @@
       </primitive>
 
       <primitive id="wire">
-        <cylinder base="0.05" top="0.05" height="1" slices="10" stacks="10" />
+        <cylinder base="0.04" top="0.04" height="0.92" slices="10" stacks="10" />
       </primitive>
 
       <primitive id="wire2">
-        <cylinder base="0.05" top="0.05" height="4.4" slices="10" stacks="10" />
+        <cylinder base="0.05" top="0.05" height="5" slices="10" stacks="10" />
       </primitive>
 
       <primitive id="circleRound">
         <cylinder base="1" top="1" height="0.3" slices="30" stacks="30" />
       </primitive>
 
+      <primitive id="monitorSupport">
+        <cylinder base="0.08" top="0.08" height="0.5" slices="15" stacks="10"/>
+      </primitive>
+
+      <primitive id="tvScreen">
+        <rectangle x1="0" y1="0" x2="5" y2="2.5" />
+      </primitive>
 
     </primitives>
 
@@ -364,13 +403,92 @@
             <children>  
               <componentref id="walls" />
               <componentref id="table" />
-              <componentref id="lightRoof" />
+              <componentref id="lamp" />
+              <componentref id="couch" />
+              <componentref id="couch2" />
+              <componentref id="television" />
             </children>
         </component>
 
-      <component id="lightRoof">
+
+      <component id="television">
         <transformation>
-          <translate x="3" y="-0.75" z="2.5" />
+          <translate x="22" y="6" z="8" />
+          <rotate axis="y" angle="90"/>
+        </transformation>
+        <materials>
+            <material id="blackPlastic" />
+        </materials>
+        <texture id="none" />
+        <children>
+          <componentref id="monitor"/>
+          <primitiveref id="monitorSupport"/>
+          <componentref id="screen" />
+        </children>
+      </component>  
+
+      <component id="monitor">
+        <transformation>
+          <translate x="0" y="0" z="-0.1" />
+          <scale x="3" y="1.5" z="0.1"/>
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <children>
+          <componentref id="cube"/>
+        </children>
+      </component>  
+
+      <component id="screen">
+        <transformation>
+          <translate x="2.5" y="-1.23" z="-0.23" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="basicMaterial" />
+        </materials>
+        <texture id="screen" length_s="4.4" length_t="2.5" />
+        <children>
+          <primitiveref id="tvScreen"/>
+        </children>
+      </component>  
+
+      <component id="couch">
+        <transformation>
+          <translate x="3" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="coach" length_s="3" length_t="3" />
+        <children>
+          <componentref id="couchArm1"/>
+          <componentref id="couchArm2"/>
+          <componentref id="couchBottom"/>
+          <componentref id="couchBottomPillow"/>
+          <componentref id="couchBack"/>
+        </children>
+      </component>  
+
+      <component id="couch2">
+        <transformation>
+          <translate x="22" y="0" z="15" />
+          <rotate axis="y" angle="180" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="coach" length_s="3" length_t="3" />
+        <children>
+          <componentref id="couch"/>
+        </children>
+      </component>  
+
+      <component id="lamp">
+        <transformation>
+          <translate x="2.5" y="-0.75" z="2.5" />
         </transformation>
         <materials>
             <material id="redMaterial" />
@@ -385,10 +503,82 @@
         </children>
       </component>
 
+      <component id="couchArm1">
+        <transformation>
+          <translate x="3.7" y="1.7" z="1.5" />
+          <scale x="0.3" y="1.7" z="1.5" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <children>
+          <componentref id="cube"/>
+        </children>
+      </component>
+
+      <component id="couchArm2">
+        <transformation>
+          <translate x="8.6" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <children>
+          <componentref id="couchArm1"/>
+        </children>
+      </component>
+
+      <component id="couchBottom">
+        <transformation>
+          <translate x="8" y="0.5" z="1.5" />
+          <scale x="4" y="0.5" z="1.5" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="inherit" />
+        <children>
+          <componentref id="cube"/>
+        </children>
+      </component>
+
+      <component id="couchBottomPillow">
+        <transformation>
+          <translate x="0" y="1" z="0" />
+          <scale x="1" y="0.7" z="1" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="pillow" length_s="1" length_t="1"/>
+        <children>
+          <componentref id="couchBottom"/>
+        </children>
+      </component>
+
+      <component id="couchBack">
+        <transformation>
+          <translate x="0" y="4.5" z="-1" />
+          <rotate axis="x" angle="90" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="pillow" length_s="1" length_t="4" />
+        <children>
+          <componentref id="couchBottomPillow"/>
+        </children>
+      </component>
+
+      
+      
+
       <component id="coneBulb">
         <transformation>
-          <translate x="0.1" y="7" z="5" />
-          <rotate axis="x" angle="90" />
+          <translate x="0.1" y="6.5" z="5" />
+          <rotate axis="x" angle="-90" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -396,7 +586,6 @@
         <texture id="none"/>
         <children>
           <primitiveref id="bulbCone"/>
-          <primitiveref id="wire"/>
         </children>
       </component>  
 
@@ -445,7 +634,6 @@
           <primitiveref id="semiCircleInvert" />
         </children>
       </component>
-
 
 
       <component id="lightSphere">
@@ -651,7 +839,7 @@
       
       <component id="walls">
         <transformation>
-          <scale x="1.5" y="1.2" z="1.5" />
+          <scale x="1.5" y="1.2" z="1" />
         </transformation>
         <materials>
             <material id="inherit" />
@@ -729,7 +917,7 @@
 
       <component id="table">
         <transformation>
-          <translate x="-5" y="0" z="1"/>
+          <translate x="-2.5" y="0" z="1"/>
           <scale x="1.5" y="0.9" z="1" />
         </transformation>
         <materials>
