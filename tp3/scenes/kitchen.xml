@@ -447,6 +447,7 @@
               <componentref id="couch" />
               <componentref id="couch2" />
               <componentref id="television" />
+              <componentref id="board" />
             </children>
         </component>
 
