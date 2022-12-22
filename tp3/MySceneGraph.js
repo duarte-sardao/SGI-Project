@@ -1114,11 +1114,13 @@ export class MySceneGraph {
         let cappositions = []
         let caps = ["capture_1","capture_2"]
         for(let i = 0; i < 2; i++) {
-            var transform = this.reader.getString(boardNode, caps[i]);
-            transform = this.transformations[transform];
-            if(transform == null)
+            try {
+                var transform = this.reader.getString(boardNode, caps[i]);
+                transform = this.transformations[transform];
+                cappositions.push(transform);
+            } catch {
                 continue;
-            cappositions.push(transform);
+            }
         }
         
         var time = this.reader.getInteger(boardNode, 'time');
@@ -1523,7 +1525,9 @@ export class MySceneGraph {
     displayScene() {
         this.displayNode(this.idRoot, null, null);
         for(let i = 0; i < this.huds.length; i++) {
-            this.huds[i].display();
+            this.scene.pushMatrix();
+            this.huds[i].display(i);
+            this.scene.popMatrix();
         }
         this.lastoffset = this.matoffset;
         this.firstRun = false;

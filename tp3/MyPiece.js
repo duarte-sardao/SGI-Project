@@ -87,6 +87,11 @@ export class MyPiece {
         setTimeout(function(value) {t.makeKingVisually(value);}, delay*1000, value)
     }
 
+    
+    /**
+     * Updates to king visual look
+     * @param {boolean} value 
+     */
     makeKingVisually(value) {
         this.kingVisual = value;
         if(value) {

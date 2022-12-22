@@ -39,6 +39,8 @@ export class MyHUD {
     setTime(i) {
         if(i < this.lim) {
             this.drawred = true;
+        } else {
+            this.drawred = false;
         }
         this.time[0] = Math.floor(i/100) % 10
         this.time[1] = Math.floor(i/10) % 10
@@ -201,14 +203,15 @@ export class MyHUD {
 
     /**
      * Displays HUD
+     * @param {int} vertical offset
      */
-    display() {
+    display(offset) {
         this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
 
         this.scene.pushMatrix();
         this.scene.loadIdentity();
 
-        this.scene.translate(-25,12,-50);
+        this.scene.translate(-25,12-offset*5,-50);
         if(this.fappearance != null) {
             this.scene.setActiveShaderSimple(this.ignorelight);
             this.scene.pushMatrix();

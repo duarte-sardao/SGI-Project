@@ -2,7 +2,7 @@ import { MyBoard } from "./MyBoard.js";
 import { CGFcamera } from '../lib/CGF.js';
 export class MySwitchingCamera {
     /**
-     * Hud constructors
+     * Camera that moves around on click
      * @param {XMLScene} scene scene object
      * @param {MyBoard} board board
      * @param {SceneGraph} graph 
@@ -22,6 +22,11 @@ export class MySwitchingCamera {
         this.curvals = [...this.cams[0]];
     }
 
+    /**
+     * Treats the parsing input to be usable here (removes "perspective as they all are, makes 2d for easier ops")
+     * @param {array} cams 
+     * @returns treated array
+     */
     treat(cams) {
         let ncams = [];
         for(let i = 0; i < cams.length; i++) {
@@ -34,6 +39,9 @@ export class MySwitchingCamera {
         return ncams;
     }
 
+    /**
+     * Switches view to move to next camera
+     */
     switch() {
         this.origin = [...this.curvals];
         this.cur = (this.cur + 1) % this.cams.length;
@@ -41,6 +49,10 @@ export class MySwitchingCamera {
         this.beginswitch = true;
     }
 
+    /**
+     * Updates moving camera position
+     * @param {float} t time in seconds
+     */
     update(t) {
         if(this.beginswitch) {
             this.time = t;
@@ -60,6 +72,9 @@ export class MySwitchingCamera {
         this.setcam();
     }
 
+    /**
+     * Updates camera object after new position is gotten
+     */
     setcam() {
         let pos = this.scene.cameraList[this.id];
         var camObj = new CGFcamera(this.curvals[2], this.curvals[0], this.curvals[1], [this.curvals[3],this.curvals[4],this.curvals[5]],[this.curvals[6],this.curvals[7],this.curvals[8]]);
