@@ -21,8 +21,9 @@ export class MyBoard{
      * @param {object of mat4s} buttPos obj with positions for 4 buttons
      * @param {CGFtexture} frame frame for ui
      * @param {array} cams list of camera positions to switch around
+     * @param {array} caps optional definition of place to put captured pieces
      */
-    constructor(scene, graph, textid, id, size, piece_radius, piece_height, mats, spotlight, time, buttPos, frame, cams) {
+    constructor(scene, graph, textid, id, size, piece_radius, piece_height, mats, spotlight, time, buttPos, frame, cams, caps) {
         this.scene = scene;
         this.graph = graph;
         this.size = size;
@@ -36,6 +37,7 @@ export class MyBoard{
         this.curID = id;
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
+        this.capbase = caps;
 
         this.camera = new MySwitchingCamera(scene, this, graph, cams, textid);
 
@@ -439,18 +441,24 @@ export class MyBoard{
         this.dead[pl] += 1;
         this.updateHudScoring(pl);
 
-        let mirror = 1;
-        let x_move = 1;
-        let y_move = 0;
-        if(piece.getPlayer()==1) {
-            mirror = -1;
-            y_move = 1;
+
+        if(this.capbase[pl] == null) {
+            let mirror = 1;
+            let x_move = 1;
+            let y_move = 0;
+            if(piece.getPlayer()==1) {
+                mirror = -1;
+                y_move = 1;
+            }
+            else
+                x_move = this.size
+            let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
+            let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
+            gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror)) + y_offset, 0]);
+        } else {
+            gravePosition = mat4.copy(gravePosition, this.capbase[pl]);
         }
-        else
-            x_move = this.size
-        let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
-        let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
-        gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror)) + y_offset, dead*this.piece_height]);
+        gravePosition = mat4.translate(gravePosition, gravePosition, [0,0,dead*this.piece_height]);
         piece.capture(gravePosition, speed);
     }
 
@@ -553,6 +561,7 @@ export class MyBoard{
         const diff = Math.floor((new Date() - this.turnStart) / 1000);
         this.hud.setTime(this.time-diff);
         if(diff > this.time) {
+            this.selected = null;
             let otherP = 2;
             if(this.turn == 2)
                 otherP = 1;

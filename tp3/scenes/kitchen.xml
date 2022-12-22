@@ -449,7 +449,7 @@
     </animations>
 
     <boards>
-      <board id="table_board" size="8" spot_size="1" piece_radius="0.4" piece_height="0.25" pos1_mat="gold" pos2_mat="redMaterial" 
+      <board id="table_board" size="8" piece_radius="0.4" piece_height="0.25" pos1_mat="gold" pos2_mat="redMaterial" 
       spotlight="boardLight" time="15" undo_transform="undo" demo_transform="demo" restart_transform="restart" camera_transform="camera" ui_frame="woodframe">
         <perspective near="0.1" far="500" angle="30">
             <from x="8.5" y="6" z="4" />
@@ -592,7 +592,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="board" length_s="5" length_t="5"/>
         <children>
           <componentref id="boardside"/>
           <componentref id="boardside2"/>
@@ -606,7 +606,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="board" length_s="5" length_t="5"/>
         <children>
           <componentref id="boardside"/>
         </children>
@@ -620,7 +620,7 @@
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="board" length_s="0.1" length_t="0.3"/>
         <children>
           <componentref id="cube"/>
         </children>

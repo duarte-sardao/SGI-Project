@@ -1110,6 +1110,16 @@ export class MySceneGraph {
                 return "Invalid definition of " + buttons[i] + " for " + id;
             buttpositions[buttons[i]] = transform;
         }
+
+        let cappositions = []
+        let caps = ["capture_1","capture_2"]
+        for(let i = 0; i < 2; i++) {
+            var transform = this.reader.getString(boardNode, caps[i]);
+            transform = this.transformations[transform];
+            if(transform == null)
+                continue;
+            cappositions.push(transform);
+        }
         
         var time = this.reader.getInteger(boardNode, 'time');
         if (time == null)
@@ -1137,7 +1147,7 @@ export class MySceneGraph {
         }
         if(cams.length < 2)
             return "Not enough cam positions defined for board " + id;
-        this.boards[id] = new MyBoard(this.scene, this, id, this.boardPickID, size, piece_radius, piece_height, mats, spotlight, time, buttpositions, frame, cams);
+        this.boards[id] = new MyBoard(this.scene, this, id, this.boardPickID, size, piece_radius, piece_height, mats, spotlight, time, buttpositions, frame, cams, cappositions);
         this.boardPickID = this.boards[id].getNewID();
         this.huds.push(this.boards[id].getHUD())
     }
