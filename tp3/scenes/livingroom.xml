@@ -226,12 +226,12 @@
       </transformation>
 
       <transformation id="undo2">
-        <translate x="9" y="-1" z="0.4"/>
+        <translate x="10.9" y="-0.7" z="0.4"/>
         <rotate axis="z" angle="-90" />
         <scale x="1.2" y="1.2" z="1" />
       </transformation>
       <transformation id="demo2">
-        <translate x="9" y="-6.5" z="0.4"/>
+        <translate x="10.9" y="-8.5" z="0.4"/>
         <rotate axis="z" angle="-90" />
         <scale x="1.2" y="1.2" z="1" />
       </transformation>
@@ -241,7 +241,7 @@
         <scale x="1.2" y="1.2" z="1" />
       </transformation>
       <transformation id="restart2">
-        <translate x="-1.85" y="-6.5" z="0.4"/>
+        <translate x="-1.85" y="-8.5" z="0.4"/>
         <rotate axis="z" angle="90" />
         <scale x="1.1" y="1.1" z="1" />
       </transformation>
@@ -479,20 +479,28 @@
       <board id="alien_board" size="10" piece_radius="0.45" piece_height="0.15" pos1_mat="turq" pos2_mat="copp" 
       spotlight="boardLight2" time="60" undo_transform="undo2" demo_transform="demo2" restart_transform="restart2" camera_transform="camera2" ui_frame="metalframe">
         <perspective near="0.1" far="500" angle="30">
-            <from x="8.5" y="6" z="4" />
-            <to x="8.5" y="2" z="10" />
+            <from x="13" y="6" z="3" />
+            <to x="13" y="2" z="9" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="10" y="11" z="8" />
-            <to x="8.5" y="2" z="8" />
+            <from x="14" y="11" z="8" />
+            <to x="13" y="2" z="8" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="8.5" y="6" z="12" />
-            <to x="8.5" y="2" z="6" />
+            <from x="14" y="20" z="8" />
+            <to x="13" y="2" z="8" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="7" y="11" z="8" />
-            <to x="9" y="2" z="8" />
+            <from x="13" y="6" z="14" />
+            <to x="13" y="2" z="8" />
+        </perspective>
+        <perspective near="0.1" far="500" angle="30">
+            <from x="12" y="11" z="8" />
+            <to x="13" y="2" z="8" />
+        </perspective>
+        <perspective near="0.1" far="500" angle="30">
+            <from x="12" y="20" z="8" />
+            <to x="13" y="2" z="8" />
         </perspective>
       </board>
     </boards>
@@ -755,7 +763,7 @@
 
       <component id="board2">
         <transformation>
-          <translate x="11.5" y="3.3" z="6.75" />
+          <translate x="11.5" y="2.85" z="6.75" />
           <rotate axis="x" angle="-90" />
           <scale x="0.30" y="0.30" z="0.30" />
         </transformation>
@@ -766,6 +774,19 @@
         <children>
           <primitiveref id="bigger_board_patch" />
           <board id="alien_board" />
+          <componentref id="board2outer"/>
+        </children>
+      </component>
+
+      <component id="board2outer">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="inherit" />
+        </materials>
+        <texture id="none"/>
+        <children>
           <componentref id="boardside"/>
           <componentref id="boardside2"/>
           <componentref id="boardside3"/>
@@ -779,12 +800,12 @@
 
       <component id="boardCap2">
         <transformation>
-          <translate x="-10.5" y="0" z="0" />
+          <translate x="-12.4" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="none"/>
         <children>
           <componentref id="boardCap1"/>
         </children>
@@ -792,13 +813,13 @@
 
       <component id="boardCap1">
         <transformation>
-          <translate x="8.6" y="-3.55" z="-0.5" />
-          <scale x="1" y="1.1" z="0.4"/>
+          <translate x="10.7" y="-4.55" z="-0.4" />
+          <scale x="1" y="2.2" z="0.4"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="cube"/>
         </children>
@@ -806,12 +827,12 @@
 
       <component id="boardcontrols3">
         <transformation>
-          <translate x="-10.75" y="0" z="0" />
+          <translate x="-12.8" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="boardcontrols"/>
           <componentref id="boardcontrols2"/>
@@ -820,12 +841,12 @@
 
       <component id="boardcontrols2">
         <transformation>
-          <translate x="0" y="-5.45" z="0" />
+          <translate x="0" y="-7.45" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="boardcontrols"/>
         </children>
@@ -833,13 +854,13 @@
 
       <component id="boardcontrols">
         <transformation>
-          <translate x="8.9" y="-0.8" z="-0.3" />
+          <translate x="10.9" y="-0.8" z="-0.3" />
           <scale x="1" y="1.66" z="0.7"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="1" length_t="1"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="cube"/>
         </children>
@@ -847,14 +868,14 @@
 
       <component id="boardside3">
         <transformation>
-          <translate x="0" y="-7.35" z="0.25" />
+          <translate x="0" y="-9.5" z="0.25" />
           <rotate axis="z" angle="90" />
           <scale x="1.1" y="1" z="1.1" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="5" length_t="5"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="boardside"/>
           <componentref id="boardside2"/>
@@ -863,12 +884,12 @@
 
       <component id="boardside2">
         <transformation>
-          <translate x="0" y="-8.4" z="0" />
+          <translate x="0" y="-10.4" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="5" length_t="5"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="boardside"/>
         </children>
@@ -876,13 +897,13 @@
 
       <component id="boardside">
         <transformation>
-          <translate x="3.5" y="0.7" z="-0.3" />
-          <scale x="4" y="0.2" z="0.7"/>
+          <translate x="4.5" y="0.7" z="-0.3" />
+          <scale x="5" y="0.2" z="0.7"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board" length_s="0.1" length_t="0.3"/>
+        <texture id="inherit"/>
         <children>
           <componentref id="cube"/>
         </children>
