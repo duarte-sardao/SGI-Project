@@ -177,11 +177,11 @@
             <diffuse r="0.714" g="0.4284" b="0.18144" a="1.0" />
             <specular r="0.393548" g="0.271906" b="0.166721" a="1.0" />
         </material>
-        <material id="silver" shininess="51.2">
+        <material id="silver" shininess="5">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.19225" g="0.19225" b="0.19225" a="1.0" />
-            <diffuse r="0.50754" g="0.50754" b="0.50754" a="1.0" />
-            <specular r="0.508273" g="0.508273" b="0.508273" a="1.0" />
+            <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+            <specular r="1" g="1" b="1" a="1.0" />
         </material>
     </materials>
 
