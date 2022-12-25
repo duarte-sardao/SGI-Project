@@ -12,8 +12,9 @@
 
 import {CGFobject} from '../lib/CGF.js';
 import {CGFresourceReader} from './CGFResourceReader.js';
+import { MyPrimitive } from './MyPrimitive.js';
 
-export class CGFOBJModel extends CGFobject {
+export class CGFOBJModel extends MyPrimitive {
 
 	constructor(scene, url, wireframe) 
 	{

@@ -459,6 +459,19 @@
         <rectangle x1="0" y1="0" x2="5" y2="2.5" />
       </primitive>
 
+      <primitive id="alienBod">
+        <objfile file="scenes/models/alienbod.obj"/>
+      </primitive>
+      <primitive id="alienEyes">
+        <objfile file="scenes/models/alieneyes.obj"/>
+      </primitive>
+      <primitive id="humanBod">
+        <objfile file="scenes/models/humanbod.obj"/>
+      </primitive>
+      <primitive id="humanHelmet">
+        <objfile file="scenes/models/humanhelmet.obj"/>
+      </primitive>
+
     </primitives>
 
     <animations>
@@ -781,6 +794,55 @@
           <primitiveref id="bigger_board_patch" />
           <board id="alien_board" />
           <componentref id="board2outer"/>
+          <componentref id="alien" />
+          <componentref id="human" />
+        </children>
+      </component>
+
+      <component id="human">
+        <transformation>
+          <translate x="9.7" y="-9.5" z="1" />
+          <rotate axis="z" angle="90" />
+          <rotate axis="x" angle="90" />
+          <scale x="0.3" y="0.3" z="0.3" />
+        </transformation>
+        <materials>
+            <material id="copp" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="humanBod"/>
+          <primitiveref id="humanHelmet" />
+        </children>
+      </component>
+
+      <component id="alien">
+        <transformation>
+          <translate x="-0.7" y="0" z="1" />
+          <rotate axis="z" angle="-90" />
+          <rotate axis="x" angle="90" />
+          <scale x="0.3" y="0.3" z="0.3" />
+        </transformation>
+        <materials>
+            <material id="turq" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="alienBod"/>
+          <componentref id="eyes" />
+        </children>
+      </component>
+
+      <component id="eyes">
+        <transformation>
+          <translate x="0" y="0" z="0" />
+        </transformation>
+        <materials>
+            <material id="blackPlastic" />
+        </materials>
+        <texture id="none"/>
+        <children>
+          <primitiveref id="alienEyes"/>
         </children>
       </component>
 

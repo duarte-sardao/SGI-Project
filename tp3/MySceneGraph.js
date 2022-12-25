@@ -941,7 +941,7 @@ export class MySceneGraph {
                 prim = new MyPatch(this.scene, degree_u, parts_u, degree_v, parts_v, controlpoints);
             } else if(primitiveType == "objfile") {
                 var file = this.reader.getString(grandChildren[0], 'file');
-                if (!(file != null && !isNaN(file)))
+                if (file == null)
                     return "unable to parse file of the primitive coordinates for ID = " + primitiveId;
 
                 prim = new CGFOBJModel(this.scene, file);
