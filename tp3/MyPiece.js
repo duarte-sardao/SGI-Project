@@ -109,7 +109,7 @@ export class MyPiece {
      */
     makeKingVisually(value) {
         this.kingVisual = value;
-        if(value) {
+        if(value) { //use tall or small cylinder base on value
             this.cylUsed = this.cylinderKing;
         } else {
             this.cylUsed = this.cylinder;
@@ -125,9 +125,9 @@ export class MyPiece {
         if(this.animation != null) {
             this.animation.update(t);
             this.position = this.animation.getMatrix();
-            if(this.animation.getDone()) {
+            if(this.animation.getDone()) { //ended
                 this.animation = null;
-                if(this.movedlight) {
+                if(this.movedlight) { //if we had control of light, disable it
                     this.scene.lights[this.scene.lightId[this.light]].disable();
                     this.scene.lights[this.scene.lightId[this.light]].update();
                 }
@@ -153,7 +153,7 @@ export class MyPiece {
      */
     capture(target, speed=2) {
         this.active = false;
-        this.wasKing = this.king;
+        this.wasKing = this.king; //not king when captured, but keep track of last state
         this.makeKing(false, 0.9);
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.8, this.piece_height*5, 0.9);
     }
@@ -165,7 +165,7 @@ export class MyPiece {
      */
     unCapture(target, speed=1) {
         this.active = true;
-        if(this.wasKing)
+        if(this.wasKing) //reset king status
             this.makeKing(true, speed);
         this.animation = new MyArcAnimation(this.scene, this.position, target, speed, 0.2, this.piece_height*5);
     }
@@ -178,24 +178,23 @@ export class MyPiece {
      * @returns 
      */
     display(selected, playable, dospot) {
-        this.movedlight = dospot;
+        this.movedlight = dospot; //keep track if we were told to move the spotlight
         this.scene.pushMatrix();
-        if(selected || playable) {
+        if(selected || playable) { //selected material is used when a piece is selected or playable
             this.selectmat.apply()
-            if(selected)
+            if(selected) //but if selected, the piece moves up a bit
                 this.scene.multMatrix(this.moveUp)
         }
         else
             this.mat.apply()
         this.scene.multMatrix(this.position);
 
-        if(dospot) {
-            //this.scene.lights[this.scene.lightId[this.light]].setVisible(true);
+        if(dospot) {//update spotlight
             this.scene.lights[this.scene.lightId[this.light]].enable();
             this.scene.lights[this.scene.lightId[this.light]].update();
         }
 
-        if(this.active) {
+        if(this.active) { //register if active
             this.scene.registerForPick(this.id, this.circle1);
             this.scene.registerForPick(this.id, this.semicircle1);
             this.scene.registerForPick(this.id, this.semicircle2);
@@ -207,9 +206,9 @@ export class MyPiece {
         this.semicircle2.display();
 
         this.scene.pushMatrix();
-        this.scene.multMatrix(this.circleMove);
+        this.scene.multMatrix(this.circleMove);//move the top towards z
         if(this.kingVisual)
-            this.scene.multMatrix(this.circleMove);
+            this.scene.multMatrix(this.circleMove); //if were king, move twice the distance
         this.scene.multMatrix(this.circleScale);
         this.circle1.display();
         if(this.kingVisual){

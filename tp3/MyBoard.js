@@ -38,6 +38,22 @@ export class MyBoard{
         this.locationSpots = [...Array(size)].map(_=>Array(size).fill(0));
         this.time = time;
         this.capbase = caps;
+        for(let i = 0; i < 2; i++) {
+            if(this.capbase[i] == null) { //default capture, placed around the middle of the board by the sides
+                let gravePosition = mat4.create();
+                let mirror = 1;
+                let x_move = 1;
+                let y_move = 0;
+                if(i==1) {
+                    mirror = -1;
+                    y_move = 1;
+                }
+                else
+                    x_move = this.size
+                gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*mirror, -(this.size/2 - y_move+0.5*(-mirror)), 0]);
+                this.capbase[i] = gravePosition;
+            } 
+        }
 
         this.camera = new MySwitchingCamera(scene, this, graph, cams, textid);
 
@@ -77,43 +93,43 @@ export class MyBoard{
 
         let matArr = [null, app1, app2, app1_high, app2_high]
 
-        let spawnpiece = false;
+        let validspot = false;
         let skiplines = false;
         let piecesSpawn = 1;
         for(let y = 0; y < size; y++){
-            if(!skiplines && y == (size / 2)-1)
+            if(!skiplines && y == (size / 2)-1) //middle two lines should have no pieces enable skiplines on entering the spot before the middle
                 skiplines = true;
-            if(skiplines && y == (size / 2)+1) {
+            if(skiplines && y == (size / 2)+1) { //and reenable after we leave mid
                 piecesSpawn = 2;
                 skiplines = false;
             }
             for(let x = 0; x < size; x++) {
-                let position = mat4.create();
-                position = mat4.translate(position, position, [x, -y, 0]);
-                if(spawnpiece) {
+                if(validspot) { //valid spot(black)
+                    let position = mat4.create();
+                    position = mat4.translate(position, position, [x, -y, 0]);
                     let spotRect = new MyRectangle(this.scene, "", -1/2, 1/2, - 1/2, 1/2);
                     let spotObj = {}
                     spotObj['rect'] = spotRect; spotObj['pos'] = position; spotObj['x'] = x; spotObj['y'] = y;
-                    spotObj['piece'] = "empty"
-                    if(!skiplines) {
+                    spotObj['piece'] = "empty" //save the spot, initially empty
+                    if(!skiplines) {//only spawn pieces of were not skipping the 2 middle lines
                         var piece = new MyPiece(this.scene, this, this.curID, piece_radius, piece_height, position, matArr[piecesSpawn], matArr[piecesSpawn+2], piecesSpawn, spotlight);
-                        this.pieces[this.curID] = piece;
-                        spotObj['piece'] = this.curID;
-                        this.pieceInSpots[this.curID] = this.curID+1;
+                        this.pieces[this.curID] = piece; //piece is saved
+                        spotObj['piece'] = this.curID; //and spot is informed it contains it
+                        this.pieceInSpots[this.curID] = this.curID+1; //and save which spot by id the piece is in
                         this.curID++;
                     }
                     this.spots[this.curID] = spotObj;
                     this.locationSpots[x][y] = this.curID;
                     this.curID++;
                 }
-                spawnpiece = !spawnpiece;
+                validspot = !validspot; //if last spot was valid, next one isnt and vice versa
             }
-            spawnpiece = !spawnpiece;
+            validspot = !validspot; //if switching line, switch too
         }
 
-        this.dead = [0,0];
-        this.graveyard = {};
-        this.winCondition = Object.keys(this.pieces).length / 2;
+        this.dead = [0,0]; //dead count for player 1 and 2
+        this.graveyard = {}; //captured piece dict
+        this.winCondition = Object.keys(this.pieces).length / 2; //game wins when dead pieces for 1 player is half the total pieces (naturally)
 
 
         this.undoID = this.curID++;
@@ -131,17 +147,17 @@ export class MyBoard{
         this.playingDemo = false;
 
         this.spotOffset = mat4.create();
-        this.spotOffset = mat4.translate(this.spotOffset, this.spotOffset, [0,0,0.001])
+        this.spotOffset = mat4.translate(this.spotOffset, this.spotOffset, [0,0,0.001]); //spots need tiny offset to be visible above board
 
         this.gameOver=false;
 
         this.scene.setPickEnabled(true);
-        this.moveList = [];
-        this.fakeCaps = [];
+        this.moveList = []; //list of done moves
+        this.fakeCaps = []; //list of pieces which were visually captured on a timeout end
 
-        this.validPieces = {};
+        this.validPieces = {}; //calculated on switch turn, dict of pieces and valid moves
         this.turn = 2;
-        this.switchTurn(false);
+        this.switchTurn(false); //hack to start as 1 and calculate its moves
     }
 
     /**
@@ -200,10 +216,10 @@ export class MyBoard{
     playInstance() {
         if(this.movieList.length > 0) {
             const move = this.movieList.pop();
-            if(move.fakecapturn != null)
+            if(move.fakecapturn != null) //special version of the move objects
                 this.finalfakecap();
             this.doMove(move.piece, move.playedspot, 0.5, 0.5);
-        } else {
+        } else { //ended
             clearInterval(this.interval);
             this.playingDemo = false;
         }
@@ -215,7 +231,7 @@ export class MyBoard{
      */
     updateAnimations(t) {
         for(const piece in this.pieces) {
-            if(this.pieces[piece].updateAnimations(t) && this.spotFollow == piece) {
+            if(this.pieces[piece].updateAnimations(t) && this.spotFollow == piece) { //updates anim; returns true animation has ended, so set spotlight to following null
                 this.spotFollow = null;
             }
         }
@@ -241,7 +257,7 @@ export class MyBoard{
             this.camButton.playAnim();
             return;
         }
-        if(this.playingDemo)
+        if(this.playingDemo) //during demo plays only cameras should be allowed
             return;
         if(customId == this.restartID) {
             this.restart();
@@ -261,7 +277,7 @@ export class MyBoard{
         if(this.gameOver) //we only want to pick buttons if the game is over
             return;
         let piece = this.pieces[customId];
-        if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {
+        if(piece != null && this.turn == piece.getPlayer() && this.validPieces[customId] != null) {//check validity of selection based on calculated possibilities
             this.selected = customId;
             return;
         }
@@ -280,55 +296,54 @@ export class MyBoard{
         let validMoves = {};
         let notNull = false;
         let notCap = [];
-        const spot = this.spots[this.pieceInSpots[sel_piece]];
-        const x = spot['x']; const y = spot['y'];
-        const offsets = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        const spot = this.spots[this.pieceInSpots[sel_piece]]; //get cur spot
+        const x = spot['x']; const y = spot['y']; //get cur pos from spot
+        const offsets = [[-1,-1],[-1,1],[1,-1],[1,1]]; //4 directions max
         const king = this.pieces[sel_piece].isKing();
         const player = this.pieces[sel_piece].getPlayer();
         for(let i = 0; i < 4; i++) {
-            const mid_x = x + offsets[i][0];
+            const mid_x = x + offsets[i][0]; //first check the immediatly adjacent positions (no capturing)
             const mid_y = y + offsets[i][1];
 
-            if(mid_x < 0 || mid_x >= this.size || mid_y < 0 || mid_y >= this.size)
+            if(mid_x < 0 || mid_x >= this.size || mid_y < 0 || mid_y >= this.size) //outside board
                 continue;
-            const spot_mid = this.locationSpots[mid_x][mid_y]
-            const mid_piece = this.spots[spot_mid]['piece']
+            const spot_mid = this.locationSpots[mid_x][mid_y];//gets spot and piece in it
+            const mid_piece = this.spots[spot_mid]['piece'];
             if(mid_piece == "empty" && (king || (player == 1 && offsets[i][1] > 0) || (player == 2 && offsets[i][1] < 0))) {
-                notCap.push(spot_mid);
+                notCap.push(spot_mid); //if its empty and we can move there (only forward if not king) its a valid non capturing move
                 continue;
             }
-            else if(mid_piece == "empty" || this.pieces[mid_piece].getPlayer() == this.turn)
-                continue;
+            else if(mid_piece == "empty" || this.pieces[mid_piece].getPlayer() == this.turn) //otherwise if its empty but we cant move there or its occupied
+                continue; //by one of our pieces, its of no use to us
 
-            const new_x = x + offsets[i][0]*2;
+            const new_x = x + offsets[i][0]*2; //now checks for captures
             const new_y = y + offsets[i][1]*2;
             if(new_x < 0 || new_x >= this.size || new_y < 0 || new_y >= this.size)
                 continue;
             const spot_target = this.locationSpots[new_x][new_y];
-            if(this.spots[spot_target]['piece'] != "empty")
+            if(this.spots[spot_target]['piece'] != "empty") //due to previous checks, we know theres an enemy piece between target, so we just check if its empty
                 continue;
-            validMoves[spot_target] = mid_piece;
-            notNull = true;
+            validMoves[spot_target] = mid_piece; //save endangered piece
+            notNull = true; //confirmed the presence of captures
         }
-        if(notNull)
+        if(notNull) //if theres captures, return true+the captures
             return [true, validMoves];
         for(let i = 0; i < notCap.length; i++) {
-            validMoves[notCap[i]] = -1;
+            validMoves[notCap[i]] = -1; //-1 signifies no capture on a move
         }
-        return [false, validMoves];
+        return [false, validMoves];//no caps, return false+the moves
     }
 
     /**
      * Switches a turn, either to the opposite of the current or for given in parameter and checks for loss
      * @param {boolean} retry Wether to attempt to maintain the current turn (if player can capture turn doesn't switch) 
      * @param {int} choice Optional parameter for player to switch to
-     * @returns null
      */
     switchTurn(retry, choice) {
-        this.turnStart = new Date();
-        this.validPieces = {};
+        this.turnStart = new Date();//get date for turn timeout
+        this.validPieces = {}; //reset valid piece dict
         let canCap = false;
-        if(this.dead[0] == this.winCondition && !this.gameOver) {
+        if(this.dead[0] == this.winCondition && !this.gameOver) { //check win condition and display appropriate messages
             if(!this.playingDemo)
                 alert("Player 2 won!");
             this.gameOver = true;
@@ -339,39 +354,39 @@ export class MyBoard{
             this.gameOver = true;
             return;
         }
-        if(retry) {
+        if(retry) { //were checking to see if current player has a cap and if so can play again
             for(const piece in this.pieces) {
                 if(this.pieces[piece].getPlayer() != this.turn)
                     continue;
                 const moves = this.calcValidMoves(piece);
-                if(moves[0]) {
+                if(moves[0]) { //its a cap if different from -1
                     canCap = true;
                     this.validPieces[piece] = moves[1];
                 }
             }
-            if(canCap)
+            if(canCap) //ok we can capture so we only want those, current player plays again
                 return;
         }
-        if(choice != null)
+        if(choice != null) //switching turn or setting it if choice wasnt given
             this.turn = choice;
         else if(this.turn == 1)
             this.turn = 2;
         else 
             this.turn = 1;
-        let movePieces = {};
+        let movePieces = {}; //maintain a separate dict for non capturing moves
         for(const piece in this.pieces) {
             if(this.pieces[piece].getPlayer() != this.turn)
                 continue;
             const moves = this.calcValidMoves(piece);
-            if(moves[0]) {
+            if(moves[0]) { //on cap, save it straight to valid pieces
                 canCap = true;
                 this.validPieces[piece] = moves[1];
-            } else if (Object.keys(moves[1]).length) {
+            } else if (Object.keys(moves[1]).length) {//on move save it to aux dict
                 movePieces[piece] = moves[1];
             }
         }
         if(!canCap)
-            this.validPieces = movePieces;
+            this.validPieces = movePieces; //couldnt capture so use non capture moves as valid
     }
 
     /**
@@ -382,12 +397,11 @@ export class MyBoard{
      * @param {int} capspeed seconds for capture animation
      */
     doMove(piece, spot, movespeed = 1, capspeed = 2) {
-        this.selected = null;
-        this.spotFollow = piece;
+        this.selected = null; //delete selection wether its succesfull or not
         const res = this.validPieces[piece][spot];
 
-        if(res != null) {
-            let move = {
+        if(res != null) { //valid move
+            let move = { //set up obj for logging
                 turn: this.turn,
                 piece: piece,
                 spot: this.pieceInSpots[piece],
@@ -396,23 +410,23 @@ export class MyBoard{
                 playedspot: spot,
                 madeking: false
             }
-            this.spots[spot]['piece'] = piece;
+            this.spots[spot]['piece'] = piece; //update info on spots and pieces in origin and target
             this.spots[this.pieceInSpots[piece]]['piece'] = "empty";
             this.pieceInSpots[piece] = spot;
-            this.pieces[piece].move(this.spots[spot]['pos'], movespeed);
-            if(res != -1) {
+            this.pieces[piece].move(this.spots[spot]['pos'], movespeed); //init animation
+            if(res != -1) { //its a capture if -1, update move and capture the piece
                 move.capspot = this.pieceInSpots[res];
                 this.cap(res, capspeed)
             }
             
-            if((this.turn == 1 && this.spots[spot]['y'] == this.size-1) || (this.turn == 2 && this.spots[spot]['y'] == 0)) {
+            if((this.turn == 1 && this.spots[spot]['y'] == this.size-1) || (this.turn == 2 && this.spots[spot]['y'] == 0)) { //reached end
                 this.pieces[piece].makeKing(true, movespeed);
                 move.madeking = true;
             }
 
             this.moveList.push(move);
-
-           + this.switchTurn(res != -1);
+            this.spotFollow = piece;
+            this.switchTurn(res != -1);//check to see if can keep turn if a capture was made
         }
     }
 
@@ -437,29 +451,16 @@ export class MyBoard{
     capturePiece(piece, speed = 2) {
         let gravePosition = mat4.create();
         const pl = piece.getPlayer()-1;
+        gravePosition = mat4.copy(gravePosition, this.capbase[pl]);
         let dead = this.dead[pl];
         this.dead[pl] += 1;
         this.updateHudScoring(pl);
 
 
-        if(this.capbase[pl] == null) {
-            let mirror = 1;
-            let x_move = 1;
-            let y_move = 0;
-            if(piece.getPlayer()==1) {
-                mirror = -1;
-                y_move = 1;
-            }
-            else
-                x_move = this.size
-            let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
-            let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
-            gravePosition = mat4.translate(gravePosition, gravePosition, [(x_move+0.75)*mirror + x_offset, -(this.size/2 - y_move+0.5*(-mirror)) + y_offset, 0]);
-        } else {
-            gravePosition = mat4.copy(gravePosition, this.capbase[pl]);
-        }
-        gravePosition = mat4.translate(gravePosition, gravePosition, [0,0,dead*this.piece_height]);
-        piece.capture(gravePosition, speed);
+        let x_offset = 0.3*(Math.random()-0.5) * this.piece_radius; //give a little randomness to placement
+        let y_offset = 0.3*(Math.random()-0.5) * this.piece_radius;
+        gravePosition = mat4.translate(gravePosition, gravePosition, [x_offset,y_offset,dead*this.piece_height]); //stack
+        piece.capture(gravePosition, speed);//inform piece
     }
 
     /**
@@ -477,34 +478,34 @@ export class MyBoard{
      * Undoes a move
      */
     undoMove() {
-        this.gameOver = false;
+        this.gameOver = false; //if game was over its not anymore
         const move = this.moveList.pop();
-        if(move == null)
+        if(move == null) //no moves to undo
             return;
-        else if (move.fakecapturn != null) {
+        else if (move.fakecapturn != null) { //special move, undo the fake capturing of all pieces in the list
             for(const piece of this.fakeCaps) {
                 this.unCapturePiece(this.pieces[piece], this.pieceInSpots[piece]);
             }
     
-            this.fakeCaps = [];
-            this.switchTurn(false,move.fakecapturn);
+            this.fakeCaps = []; //and empty
+            this.switchTurn(false,move.fakecapturn); //switch to the correct turn
             return;
         }
 
 
-        let piece = this.pieces[move.piece];
-        if(move.madeking)
+        let piece = this.pieces[move.piece]; //normal move, get values
+        if(move.madeking) //undo kinging
             piece.makeKing(false, 0.5);
-        piece.move(this.spots[move.spot].pos, 0.5);
-        this.spots[this.pieceInSpots[move.piece]].piece = "empty";
+        piece.move(this.spots[move.spot].pos, 0.5); //move back
+        this.spots[this.pieceInSpots[move.piece]].piece = "empty"; //update spot and piece info
         this.pieceInSpots[move.piece] = move.spot;
         this.spots[move.spot].piece = move.piece;
 
-        if(move.cappiece != -1) {
+        if(move.cappiece != -1) { //something was captured, update it to
             this.unCap(move.cappiece, move.capspot)
         }
 
-        this.switchTurn(false, move.turn);
+        this.switchTurn(false, move.turn); //switch to correct turn
     }
 
     /**
@@ -537,18 +538,18 @@ export class MyBoard{
      * The turn is then switched to the other player (the winner)
      */
     finalfakecap() {
-        let move = {
+        let move = { //add the special move
             fakecapturn: this.turn
         }
         this.moveList.push(move);
         this.fakeCaps = [];
         for(const piece in this.pieces) {
-            if(this.pieces[piece].getPlayer() == this.turn) {
+            if(this.pieces[piece].getPlayer() == this.turn) { //player who timedout
                 this.fakeCaps.push(piece);
                 this.capturePiece(this.pieces[piece])
             }
         }
-        this.gameOver = true;
+        this.gameOver = true;//ends game and switches (basically so current turn = game winner for ui and such)
         this.switchTurn(false);
     }
 
@@ -556,7 +557,7 @@ export class MyBoard{
      * Checks if current player has timed out their turn and handles loss in such case.
      */
     checkTime() {
-        if(this.turnStart == null || this.gameOver)
+        if(this.turnStart == null || this.gameOver)//before init or after game end irrevelant
             return;
         const diff = Math.floor((new Date() - this.turnStart) / 1000);
         this.hud.setTime(this.time-diff);
@@ -580,8 +581,7 @@ export class MyBoard{
         for(const piece in this.pieces) {
             this.pieces[piece].display(piece == this.selected && !this.playingDemo && !this.gameOver, 
                 Object.keys(this.validPieces).includes(piece) && !this.playingDemo && !this.gameOver,
-                this.spotFollow == piece
-                );
+                this.spotFollow == piece);
         }
 
         for(const piece in this.graveyard) {
@@ -590,15 +590,15 @@ export class MyBoard{
 
         this.scene.pushMatrix();
         this.scene.multMatrix(this.spotOffset);
-        for(const spot in this.spots) {
-            this.scene.pushMatrix();
-            this.scene.multMatrix(this.spots[spot]['pos']);
-            this.scene.registerForPick(spot, this.spots[spot]['rect']);
+        for(const spot in this.spots) { //loops thru spots, checks playables
             if(this.selected != null && Object.keys(this.validPieces[this.selected]).includes(spot) && !this.playingDemo && !this.gameOver) {
+                this.scene.pushMatrix();
+                this.scene.multMatrix(this.spots[spot]['pos']); //layout spots in their right positions
+                this.scene.registerForPick(spot, this.spots[spot]['rect']);
                 this.app_spot.apply();
                 this.spots[spot]['rect'].display();
+                this.scene.popMatrix();
             }
-            this.scene.popMatrix();
         }
         this.scene.popMatrix();
 
