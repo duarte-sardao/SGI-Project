@@ -15,7 +15,7 @@ export class MyPiece {
      * @param {Float} piece_height 
      * @param {mat4} position 
      * @param {CGFappearance} mat 
-     * @param {CGFappearance} selectmat 
+     * @param {CGFappearance} selectmat
      * @param {Integer} player 
      * @param {String} light 
      */
@@ -32,6 +32,20 @@ export class MyPiece {
         this.player = player;
         this.light = light;
 
+        this.crownmat = new CGFappearance(this.scene);
+        this.crownmat.setShininess(51.2);
+        this.crownmat.setEmission(0.1, 0.06, 0.01, 0);
+        this.crownmat.setAmbient(0.24725, 0.1995, 0.0745, 1);
+        this.crownmat.setDiffuse(0.75164, 0.60648, 0.22648, 1);
+        this.crownmat.setSpecular(0.628281, 0.555802, 0.366065, 1);
+
+        this.selectcrownmat = new CGFappearance(this.scene);
+        this.selectcrownmat.setShininess(51.2);
+        this.selectcrownmat.setEmission(0.45, 0.3, 0.1, 1);
+        this.selectcrownmat.setAmbient(0.24725, 0.1995, 0.0745, 1);
+        this.selectcrownmat.setDiffuse(0.75164, 0.60648, 0.22648, 1);
+        this.selectcrownmat.setSpecular(0.628281, 0.555802, 0.366065, 1);
+
         let semi1 = 
         [[[ -piece_radius, 0, 0, 1 ],[ -piece_radius, 0, 0, 5 ],[ piece_radius,  0, 0, 5 ],[ piece_radius,  0, 0, 1 ]],
         [[ -piece_radius, 0, 0, 1 ],[ -piece_radius, piece_radius*1.314, 0, 1 ],[ piece_radius, piece_radius*1.314, 0, 1 ],[ piece_radius,  0, 0, 1 ]]]
@@ -44,6 +58,7 @@ export class MyPiece {
         this.semicircle1 = new MyPatch(this.scene, 1, 8, 3, 8, semi1);
         this.semicircle2 = new MyPatch(this.scene, 1, 8, 3, 8, semi2);
         this.circle1 = new CGFOBJModel(this.scene, "models/piecetop.obj");
+        this.crown = new CGFOBJModel(this.scene, "models/crown.obj");
 
         this.circleMove = mat4.create();
         this.circleMove = mat4.translate(this.circleMove, this.circleMove, [0,0,piece_height]);
@@ -79,7 +94,7 @@ export class MyPiece {
      * Updates to be king or not
      * @param {boolean} value 
      */
-    makeKing(value,delay) {
+    makeKing(value,delay=0) {
         if(this.king == value)
             return;
         this.king = value;
@@ -197,6 +212,13 @@ export class MyPiece {
             this.scene.multMatrix(this.circleMove);
         this.scene.multMatrix(this.circleScale);
         this.circle1.display();
+        if(this.kingVisual){
+            if(selected || playable)
+                this.selectcrownmat.apply();
+            else
+                this.crownmat.apply();
+            this.crown.display();
+        }
         this.scene.popMatrix();
 
         this.scene.popMatrix();
