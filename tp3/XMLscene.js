@@ -1,5 +1,7 @@
 import { CGFcameraOrtho, CGFscene } from '../lib/CGF.js';
 import { CGFaxis,CGFcamera } from '../lib/CGF.js';
+import { MyInterface } from './MyInterface.js';
+import { MySceneGraph } from './MySceneGraph.js';
 
 
 var DEGREE_TO_RAD = Math.PI / 180;
@@ -17,6 +19,9 @@ export class XMLscene extends CGFscene {
 
 
         this.selectedCamera = 0;
+        this.themeList = {"kitchen": 0, "livingroom": 1}
+        this.themeList2 = ["kitchen", "livingroom"]; // auxiliary list of files, need to be in order like object list above if add another scene
+        this.selectedTheme = this.themeList2.indexOf(window.location.href.split("=")[1].split(".")[0]);
         this.interface = myinterface;
     }
 
@@ -40,6 +45,12 @@ export class XMLscene extends CGFscene {
         this.setUpdatePeriod(10);
 
         this.remqueue = [];
+    }
+
+    updateTheme(){
+        let filepath = window.location.href;
+        let filedirect = filepath.split("?")[0]+"?file="+this.themeList2[this.selectedTheme]+".xml";
+        window.location.replace(filedirect);
     }
 
     /**
@@ -146,6 +157,7 @@ export class XMLscene extends CGFscene {
      */
     updateCamera() {
         this.camera = this.cameras[this.selectedCamera];
+        console.log("teste");
         this.interface.setActiveCamera(this.camera);
     }
 
