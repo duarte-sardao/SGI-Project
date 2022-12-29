@@ -21,7 +21,15 @@ export class XMLscene extends CGFscene {
         this.selectedCamera = 0;
         this.themeList = {"kitchen": 0, "livingroom": 1}
         this.themeList2 = ["kitchen", "livingroom"]; // auxiliary list of files, need to be in order like object list above if add another scene
-        this.selectedTheme = this.themeList2.indexOf(window.location.href.split("=")[1].split(".")[0]);
+
+        try{
+            this.selectedTheme = this.themeList2.indexOf(window.location.href.split("=")[1].split(".")[0]);
+        } catch{
+            window.location.replace(window.location.href + "?file=kitchen.xml");
+            this.selectedTheme = this.themeList2.indexOf(window.location.href.split("=")[1].split(".")[0]);
+        }
+
+        
         this.interface = myinterface;
     }
 
