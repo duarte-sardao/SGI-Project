@@ -29,6 +29,7 @@ export class MyInterface extends CGFinterface {
      */
     postParsingSetup() {
         this.gui = new dat.GUI();
+        //var settings = new MyGameSettings();
 
         // add a group of controls (and open/expand by defult)
         this.gui.add(this.scene, 'selectedCamera', this.scene.cameraList).name('Cameras').onChange(this.scene.updateCamera.bind(this.scene));
@@ -40,7 +41,7 @@ export class MyInterface extends CGFinterface {
         for(var key in this.scene.shaderVal) {
             shadefolder.add(this.scene.shaderVal, key).name(key);
         }
-        //this.gui.add(this.scene)
+        this.gui.add(this.scene, 'selectedTheme', this.scene.themeList).name('Themes').onChange(this.scene.updateTheme.bind(this.scene));
 
         this.initKeys();
     }
