@@ -31,7 +31,7 @@ export class MyInterface extends CGFinterface {
         this.gui = new dat.GUI();
         //var settings = new MyGameSettings();
 
-        // add a group of controls (and open/expand by defult)
+        // add a group of controls (and open/expand by default)
         this.gui.add(this.scene, 'selectedCamera', this.scene.cameraList).name('Cameras').onChange(this.scene.updateCamera.bind(this.scene));
         var folder = this.gui.addFolder('Lights');
         var shadefolder = this.gui.addFolder('Shaders');

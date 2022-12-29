@@ -20,7 +20,7 @@ export class XMLscene extends CGFscene {
 
         this.selectedCamera = 0;
         this.themeList = {"kitchen": 0, "livingroom": 1}
-        this.themeList2 = ["kitchen", "livingroom"];
+        this.themeList2 = ["kitchen", "livingroom"]; // auxiliary list of files, need to be in order like object list above if add another scene
         this.selectedTheme = this.themeList2.indexOf(window.location.href.split("=")[1].split(".")[0]);
         this.interface = myinterface;
     }
@@ -46,15 +46,6 @@ export class XMLscene extends CGFscene {
 
         this.remqueue = [];
     }
-
-    getUrlVars() {
-        var vars = {};
-        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
-        function(m,key,value) {
-          vars[decodeURIComponent(key)] = decodeURIComponent(value);
-        });
-        return vars;
-    }	 
 
     updateTheme(){
         let filepath = window.location.href;
