@@ -47,7 +47,7 @@
             <specular r="0.50" g="0.50" b="0.75" a="0.1" />
         </omni>
         
-        <spot id="boardLight" enabled="0" angle="20" exponent="20">
+        <spot id="boardLight" enabled="0" angle="10" exponent="10">
             <location x="0" y="0" z="4" w="1.0" />
             <target x="0" y="0" z="0" w="1.0" />
             <ambient r="0.1" g="0.06" b="0" a="0.1" />
@@ -91,12 +91,8 @@
         <texture id="saltBack" file="scenes/images/salBack.png" />
 
         <texture id="board" file="scenes/images/boardwood.jpg" />
-        <texture id="board6x6" file="scenes/images/boardwood6x6.jpg" />
+        <texture id="board8x8" file="scenes/images/boardwood8x8.jpg" />
         <texture id="woodframe" file="scenes/images/woodframe.jpg" />
-
-        <texture id="board10x10" file="scenes/images/board10x10.png" />
-        <texture id="metalframe" file="scenes/images/metalframe.png" />
-
         
         <texture id="bedWallpaper" file="scenes/images/bedwallpaper.jpg" />
         <texture id="woodBed" file="scenes/images/woodwall.jpg" />
@@ -186,30 +182,24 @@
       </transformation>
 
       <transformation id="undo">
-        <translate x="-1.5" y="0.5" z="0"/>
+        <translate x="9" y="-1" z="0.4"/>
         <rotate axis="z" angle="-90" />
-        <scale x="0.8" y="0.8" z="1" />
+        <scale x="1.2" y="1.2" z="1" />
       </transformation>
       <transformation id="demo">
-        <translate x="-1.5" y="-1.5" z="0"/>
+        <translate x="9" y="-6.5" z="0.4"/>
         <rotate axis="z" angle="-90" />
-        <scale x="0.8" y="0.8" z="1" />
+        <scale x="1.2" y="1.2" z="1" />
       </transformation>
       <transformation id="camera">
-        <translate x="-1.5" y="-3.5" z="0"/>
-        <rotate axis="z" angle="-90" />
-        <scale x="0.8" y="0.8" z="1" />
+        <translate x="-1.7" y="-0.7" z="0.4"/>
+        <rotate axis="z" angle="90" />
+        <scale x="1.2" y="1.2" z="1" />
       </transformation>
       <transformation id="restart">
-        <translate x="-1.4" y="-5.5" z="0"/>
-        <rotate axis="z" angle="-90" />
-        <scale x="0.8" y="0.8" z="1" />
-      </transformation>
-      <transformation id="cap1">
-        <translate x="5" y="1" z="0"/>
-      </transformation>
-      <transformation id="cap2">
-        <translate x="5" y="-6" z="0"/>
+        <translate x="-1.85" y="-6.5" z="0.4"/>
+        <rotate axis="z" angle="90" />
+        <scale x="1.1" y="1.1" z="1" />
       </transformation>
 
       <transformation id="undo2">
@@ -397,18 +387,9 @@
       <primitive id="board_patch">
         <patch degree_u="1" parts_u="3" degree_v="1" parts_v="3">
           <controlpoint x="-0.5" y="0.5" z="0" />
-          <controlpoint x="5.5" y="0.5" z="0" />
-          <controlpoint x="-0.5" y="-5.5" z="0" />
-          <controlpoint x="5.5" y="-5.5" z="0" />
-        </patch>
-      </primitive>
-
-      <primitive id="bigger_board_patch">
-        <patch degree_u="1" parts_u="5" degree_v="1" parts_v="5">
-          <controlpoint x="-0.5" y="0.5" z="0" />
-          <controlpoint x="9.5" y="0.5" z="0" />
-          <controlpoint x="-0.5" y="-9.5" z="0" />
-          <controlpoint x="9.5" y="-9.5" z="0" />
+          <controlpoint x="7.5" y="0.5" z="0" />
+          <controlpoint x="-0.5" y="-7.5" z="0" />
+          <controlpoint x="7.5" y="-7.5" z="0" />
         </patch>
       </primitive>
 
@@ -432,20 +413,6 @@
         <cylinder base="1" top="1" height="0.3" slices="30" stacks="30" />
       </primitive>
 
-      <primitive id="alienBod">
-        <objfile file="scenes/models/alienbod.obj"/>
-      </primitive>
-      <primitive id="alienEyes">
-        <objfile file="scenes/models/alieneyes.obj"/>
-      </primitive>
-      <primitive id="humanBod">
-        <objfile file="scenes/models/humanbod.obj"/>
-      </primitive>
-      <primitive id="humanHelmet">
-        <objfile file="scenes/models/humanhelmet.obj"/>
-      </primitive>
-
-
       <primitive id="testeColchao">
         <objfile file="scenes/models/rounded-cube.obj"/>
       </primitive>
@@ -458,32 +425,27 @@
         <sphere radius="0.25" slices="20" stacks="20"/>
       </primitive>
 
-      
-
     </primitives>
 
     <animations>
     </animations>
 
     <boards>
-      <board id="table_board" size="6" piece_radius="0.4" piece_height="0.35" pos1_mat="blackPlastic" pos2_mat="redMaterial" 
-      spotlight="boardLight" time="30" undo_transform="undo" demo_transform="demo" restart_transform="restart" 
-      capture_1="cap1" capture_2="cap2" camera_transform="camera" ui_frame="woodframe">
+      <board id="board" size="8" piece_radius="0.4" piece_height="0.25" pos1_mat="blackPlastic" pos2_mat="redMaterial" 
+      spotlight="boardLight" time="30" undo_transform="undo" demo_transform="demo" restart_transform="restart" camera_transform="camera" ui_frame="woodframe">
         <perspective near="0.1" far="500" angle="30">
-            <from x="8.5" y="6" z="4" />
-            <to x="8.5" y="2" z="10" />
+            <from x="13" y="4" z="7" />
+            <to x="13" y="1" z="11" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="8.5" y="6" z="12" />
-            <to x="8.5" y="2" z="6" />
+            <from x="13" y="4" z="14" />
+            <to x="13" y="1" z="10" />
         </perspective>
         <perspective near="0.1" far="500" angle="30">
-            <from x="5" y="6" z="8" />
-            <to x="9" y="2" z="8" />
+            <from x="10" y="7" z="11" />
+            <to x="13" y="2" z="11" />
         </perspective>
       </board>
-
-      
     </boards>
 
     <components>
@@ -856,49 +818,19 @@
         </children>
       </component>  
 
-      <component id="board2">
+      <component id="board">
         <transformation>
-          <translate x="11.5" y="2.85" z="6.75" />
+          <translate x="12.5" y="1.3" z="9.75" />
           <rotate axis="x" angle="-90" />
-          <scale x="0.30" y="0.30" z="0.30" />
+          <scale x="0.25" y="0.25" z="0.25" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="board10x10" length_s="1" length_t="1"/>
+        <texture id="board8x8" length_s="1" length_t="1"/>
         <children>
-          <primitiveref id="bigger_board_patch" />
-          <board id="alien_board" />
-          <componentref id="board2outer"/>
-          <componentref id="alien" />
-          <componentref id="human" />
-        </children>
-      </component>
-
-      
-
-      <component id="eyes">
-        <transformation>
-          <translate x="0" y="0" z="0" />
-        </transformation>
-        <materials>
-            <material id="blackPlastic" />
-        </materials>
-        <texture id="none"/>
-        <children>
-          <primitiveref id="alienEyes"/>
-        </children>
-      </component>
-
-      <component id="board2outer">
-        <transformation>
-          <translate x="0" y="0" z="0" />
-        </transformation>
-        <materials>
-            <material id="silver" />
-        </materials>
-        <texture id="none"/>
-        <children>
+          <primitiveref id="board_patch" />
+          <board id="board" />
           <componentref id="boardside"/>
           <componentref id="boardside2"/>
           <componentref id="boardside3"/>
@@ -912,12 +844,12 @@
 
       <component id="boardCap2">
         <transformation>
-          <translate x="-12.4" y="0" z="0" />
+          <translate x="-10.5" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="none"/>
+        <texture id="board" length_s="1" length_t="1"/>
         <children>
           <componentref id="boardCap1"/>
         </children>
@@ -925,13 +857,13 @@
 
       <component id="boardCap1">
         <transformation>
-          <translate x="10.7" y="-4.55" z="-0.4" />
-          <scale x="1" y="2.2" z="0.4"/>
+          <translate x="8.6" y="-3.55" z="-0.4" />
+          <scale x="1" y="1.1" z="0.4"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="1" length_t="1"/>
         <children>
           <componentref id="cube"/>
         </children>
@@ -939,12 +871,12 @@
 
       <component id="boardcontrols3">
         <transformation>
-          <translate x="-12.8" y="0" z="0" />
+          <translate x="-10.75" y="0" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="1" length_t="1"/>
         <children>
           <componentref id="boardcontrols"/>
           <componentref id="boardcontrols2"/>
@@ -953,12 +885,12 @@
 
       <component id="boardcontrols2">
         <transformation>
-          <translate x="0" y="-7.45" z="0" />
+          <translate x="0" y="-5.45" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="1" length_t="1"/>
         <children>
           <componentref id="boardcontrols"/>
         </children>
@@ -966,13 +898,13 @@
 
       <component id="boardcontrols">
         <transformation>
-          <translate x="10.9" y="-0.8" z="-0.3" />
+          <translate x="8.9" y="-0.8" z="-0.3" />
           <scale x="1" y="1.66" z="0.7"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="1" length_t="1"/>
         <children>
           <componentref id="cube"/>
         </children>
@@ -980,14 +912,14 @@
 
       <component id="boardside3">
         <transformation>
-          <translate x="0" y="-9.5" z="0.25" />
+          <translate x="0" y="-7.35" z="0.25" />
           <rotate axis="z" angle="90" />
           <scale x="1.1" y="1" z="1.1" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="5" length_t="5"/>
         <children>
           <componentref id="boardside"/>
           <componentref id="boardside2"/>
@@ -996,12 +928,12 @@
 
       <component id="boardside2">
         <transformation>
-          <translate x="0" y="-10.4" z="0" />
+          <translate x="0" y="-8.4" z="0" />
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="5" length_t="5"/>
         <children>
           <componentref id="boardside"/>
         </children>
@@ -1009,94 +941,17 @@
 
       <component id="boardside">
         <transformation>
-          <translate x="4.5" y="0.7" z="-0.3" />
-          <scale x="5" y="0.2" z="0.7"/>
+          <translate x="3.5" y="0.7" z="-0.3" />
+          <scale x="4" y="0.2" z="0.7"/>
         </transformation>
         <materials>
             <material id="inherit" />
         </materials>
-        <texture id="inherit"/>
+        <texture id="board" length_s="0.1" length_t="0.3"/>
         <children>
           <componentref id="cube"/>
         </children>
       </component>
-
-      <component id="board">
-        <transformation>
-          <translate x="12.5" y="1.4" z="9.7" />
-          <rotate axis="x" angle="-90" />
-          <scale x="0.35" y="0.35" z="0.35" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="board6x6" length_s="1" length_t="1"/>
-        <children>
-          <primitiveref id="board_patch" />
-          <board id="table_board" />
-          <componentref id="boardTop"/>
-          <componentref id="boardRight"/>
-          <componentref id="boardLeft"/>
-          <componentref id="boardBottom"/>
-        </children>
-      </component>
-
-      <component id="boardTop">
-        <transformation>
-          <translate x="0" y="-7" z="0" />
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="board" length_s="0.1" length_t="2"/>
-        <children>
-          <componentref id="boardBottom"/>
-        </children>
-      </component>
-
-      <component id="boardRight">
-        <transformation>
-          <translate x="5.7" y="-2.5" z="0" />
-          <scale x="0.3" y="4" z="0.75"/>
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="board" length_s="1" length_t="1"/>
-        <children>
-          <componentref id="cube"/>
-        </children>
-      </component>
-
-      <component id="boardLeft">
-        <transformation>
-          <translate x="-1.5" y="-2.5" z="-0.5" />
-          <scale x="1" y="3" z="0.5"/>
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="board" length_s="1" length_t="1"/>
-        <children>
-          <componentref id="cube"/>
-        </children>
-      </component>
-
-      <component id="boardBottom">
-        <transformation>
-          <translate x="1.5" y="1" z="-0.5" />
-          <scale x="4" y="0.5" z="0.5"/>
-        </transformation>
-        <materials>
-            <material id="inherit" />
-        </materials>
-        <texture id="board" length_s="0.1" length_t="2"/>
-        <children>
-          <componentref id="cube"/>
-        </children>
-      </component>
-
-      
 
       <component id="barrel">
         <transformation>
