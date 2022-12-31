@@ -39,7 +39,7 @@
 ### [TP3 - Checkers](tp3)
 
 - Board feature implemented, with all functionalities (including optional ones).
-- Very flexible board definition on XML, allowing to define size of board and components, materials for pieces, sprite for UI, position of board elements like buttons etc.
+- Very flexible board definition on XML, allowing to define size of board and components, materials for pieces, sprite for UI, position of board elements like buttons and captures (captures being optional), position of moving camera views, time for turns, spotlight used..
 - Variable scenes displaying some of the varied functionality and flexibility of board definition.
 
 - Due to this flexibility, board setup from scratch can be quite laborious.
